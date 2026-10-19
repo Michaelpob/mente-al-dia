@@ -1,0 +1,295 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+/*
+ * Tema de Tailwind: solo expone los tokens de tokens.css.
+ * Los valores por defecto de color, radio, sombra y curva se borran para que
+ * nadie use valores sueltos fuera del sistema.
+ */
+@theme inline {
+  --color-*: initial;
+  --color-piedra-50: var(--piedra-50);
+  --color-piedra-100: var(--piedra-100);
+  --color-piedra-200: var(--piedra-200);
+  --color-piedra-300: var(--piedra-300);
+  --color-blanco: var(--blanco);
+  --color-grafito-900: var(--grafito-900);
+  --color-grafito-600: var(--grafito-600);
+  --color-grafito-500: var(--grafito-500);
+  --color-borde-campo: var(--borde-campo);
+  --color-pizarra-800: var(--pizarra-800);
+  --color-pizarra-700: var(--pizarra-700);
+  --color-pizarra-100: var(--pizarra-100);
+  --color-salvia-600: var(--salvia-600);
+  --color-salvia-100: var(--salvia-100);
+  --color-arena-400: var(--arena-400);
+  --color-arena-100: var(--arena-100);
+  --color-nivel-adecuado: var(--nivel-adecuado);
+  --color-nivel-adecuado-fondo: var(--nivel-adecuado-fondo);
+  --color-nivel-fortalecer: var(--nivel-fortalecer);
+  --color-nivel-fortalecer-fondo: var(--nivel-fortalecer-fondo);
+  --color-nivel-atencion: var(--nivel-atencion);
+  --color-nivel-atencion-fondo: var(--nivel-atencion-fondo);
+  --color-nivel-sin-dato: var(--nivel-sin-dato);
+  --color-nivel-sin-dato-fondo: var(--nivel-sin-dato-fondo);
+  --color-foco: var(--foco);
+  --color-velo: var(--velo);
+
+  --font-*: initial;
+  --font-titulo: var(--fuente-titulos);
+  --font-cuerpo: var(--fuente-cuerpo);
+  --font-sans: var(--fuente-cuerpo);
+
+  --radius-*: initial;
+  --radius-sm: var(--radio-sm);
+  --radius-md: var(--radio-md);
+  --radius-lg: var(--radio-lg);
+  --radius-xl: var(--radio-xl);
+  --radius-pill: var(--radio-pill);
+
+  --shadow-*: initial;
+  --shadow-1: var(--sombra-1);
+  --shadow-2: var(--sombra-2);
+  --shadow-3: var(--sombra-3);
+
+  --ease-*: initial;
+  --ease-estandar: var(--curva-estandar);
+
+  --perspective-tarjeta: var(--perspectiva-tarjeta);
+}
+
+@theme {
+  --breakpoint-xs: 25rem;
+
+  --container-sitio: 1200px;
+  --container-lectura: 68ch;
+
+  --text-*: initial;
+  --text-display: clamp(2.5rem, 5vw, 4rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 800;
+  --text-h1: clamp(2rem, 3.5vw, 2.75rem);
+  --text-h1--line-height: 1.15;
+  --text-h1--letter-spacing: -0.01em;
+  --text-h1--font-weight: 800;
+  --text-h2: clamp(1.625rem, 2.5vw, 2.125rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--font-weight: 700;
+  --text-h3: 1.375rem;
+  --text-h3--line-height: 1.3;
+  --text-h3--font-weight: 700;
+  --text-cuerpo-grande: 1.1875rem;
+  --text-cuerpo-grande--line-height: 1.6;
+  --text-cuerpo: 1.0625rem;
+  --text-cuerpo--line-height: 1.6;
+  --text-pequeno: 0.875rem;
+  --text-pequeno--line-height: 1.5;
+  --text-etiqueta: 0.8125rem;
+  --text-etiqueta--line-height: 1.4;
+  --text-etiqueta--letter-spacing: 0.08em;
+  --text-etiqueta--font-weight: 600;
+
+  --animate-*: initial;
+  --animate-spin: girar 1s linear infinite;
+  --animate-pulso-suave: pulso-suave 1.6s ease-in-out infinite;
+  --animate-velo-entrar: aparecer var(--duracion-base) var(--curva-estandar);
+  --animate-velo-salir: desaparecer var(--duracion-micro) var(--curva-estandar);
+  --animate-dialogo-entrar: dialogo-entrar var(--duracion-base) var(--curva-estandar);
+  --animate-dialogo-salir: desaparecer var(--duracion-micro) var(--curva-estandar);
+  --animate-panel-derecha-entrar: panel-derecha-entrar var(--duracion-base) var(--curva-estandar);
+  --animate-panel-derecha-salir: panel-derecha-salir var(--duracion-micro) var(--curva-estandar);
+  --animate-panel-izquierda-entrar: panel-izquierda-entrar var(--duracion-base)
+    var(--curva-estandar);
+  --animate-panel-izquierda-salir: panel-izquierda-salir var(--duracion-micro) var(--curva-estandar);
+  --animate-acordeon-abrir: acordeon-abrir var(--duracion-base) var(--curva-estandar);
+  --animate-acordeon-cerrar: acordeon-cerrar var(--duracion-micro) var(--curva-estandar);
+  --animate-toast-entrar: dialogo-entrar var(--duracion-base) var(--curva-estandar);
+  --animate-toast-salir: desaparecer var(--duracion-micro) var(--curva-estandar);
+
+  @keyframes girar {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes pulso-suave {
+    50% {
+      opacity: 0.55;
+    }
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes desaparecer {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes dialogo-entrar {
+    from {
+      opacity: 0;
+      transform: translateY(var(--desplazamiento-entrada));
+    }
+  }
+  @keyframes panel-derecha-entrar {
+    from {
+      opacity: 0;
+      transform: translateX(var(--desplazamiento-panel));
+    }
+  }
+  @keyframes panel-derecha-salir {
+    to {
+      opacity: 0;
+      transform: translateX(var(--desplazamiento-panel));
+    }
+  }
+  @keyframes panel-izquierda-entrar {
+    from {
+      opacity: 0;
+      transform: translateX(calc(var(--desplazamiento-panel) * -1));
+    }
+  }
+  @keyframes panel-izquierda-salir {
+    to {
+      opacity: 0;
+      transform: translateX(calc(var(--desplazamiento-panel) * -1));
+    }
+  }
+  @keyframes acordeon-abrir {
+    from {
+      height: 0;
+      opacity: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes acordeon-cerrar {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+      opacity: 0;
+    }
+  }
+}
+
+/* Variantes propias */
+@custom-variant movimiento {
+  @media (prefers-reduced-motion: no-preference) {
+    &:where(:root:not([data-movimiento='reducido']) *) {
+      @slot;
+    }
+  }
+}
+@custom-variant puntero-fino {
+  @media (hover: hover) and (pointer: fine) {
+    @slot;
+  }
+}
+@custom-variant contraste-alto (&:where([data-contraste='alto'], [data-contraste='alto'] *));
+/* Texto agrandado desde la barra de accesibilidad (más del 100 %). */
+@custom-variant texto-grande (&:where([data-texto='grande'], [data-texto='grande'] *));
+
+/* Utilidades propias */
+@utility contenedor {
+  margin-inline: auto;
+  width: 100%;
+  max-width: var(--container-sitio);
+  padding-inline: 1rem;
+  @variant sm {
+    padding-inline: 1.5rem;
+  }
+  @variant lg {
+    padding-inline: 2rem;
+  }
+}
+
+@utility seccion {
+  padding-block: var(--espacio-seccion);
+}
+
+@utility textura-grano {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: var(--opacidad-grano);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+}
+
+@layer base {
+  html {
+    font-size: calc(100% * var(--escala-texto));
+    background-color: var(--piedra-50);
+    color: var(--grafito-900);
+    font-family: var(--fuente-cuerpo);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-movimiento='reducido']) {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--piedra-50);
+    font-size: var(--text-cuerpo);
+    line-height: var(--text-cuerpo--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--fuente-titulos);
+    color: var(--pizarra-700);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: var(--pizarra-700);
+    text-underline-offset: 0.2em;
+  }
+
+  :root[data-contraste='alto'] a {
+    text-decoration-line: underline;
+  }
+
+  ::placeholder {
+    color: var(--grafito-500);
+    opacity: 1;
+  }
+
+  ::selection {
+    background-color: var(--salvia-100);
+    color: var(--grafito-900);
+  }
+
+  :focus-visible {
+    outline: var(--grosor-foco) solid var(--foco);
+    outline-offset: 2px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}

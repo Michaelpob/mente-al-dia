@@ -1,0 +1,16 @@
+# Pendientes de validación
+
+Todo lo que debe validar el equipo profesional, jurídico o técnico de la Alcaldía antes del lanzamiento. Ningún punto impide seguir construyendo: el sistema queda preparado para ajustarlos sin reprogramar.
+
+> En la Fase 2 se agrega la lista inicial del Anexo I (reglas de puntuación, áreas sensibles, mensajes del módulo infantil, etc.).
+
+| N.º   | Tema                                      | Situación actual                                                                                                                                                                                        | Valida                        | Estado    |
+| ----- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | --------- |
+| F1-01 | Logo oficial de la Alcaldía               | Marcador `[LOGO ALCALDÍA]` en el encabezado, el menú y el pie. Se reemplaza en `src/config/sitio.ts` (`logoAlcaldia`). Formato ideal: SVG horizontal; en el encabezado se muestra a máximo 160 × 40 px. | Comunicaciones de la Alcaldía | Pendiente |
+| F1-02 | Colores institucionales / manual de marca | Paleta neutra «Piedra y Pizarra». Si hay manual, se cambian los tokens de «Marca» en `src/styles/tokens.css` y se ejecuta `pnpm contraste`.                                                             | Comunicaciones de la Alcaldía | Pendiente |
+| F1-03 | Datos institucionales                     | Marcadores `[MUNICIPIO]`, `[SECRETARÍA RESPONSABLE]`, `[CORREO DE CONTACTO]`, `[TELÉFONO DE CONTACTO]` y `[DOMINIO]` en `src/config/sitio.ts`.                                                          | Secretaría responsable        | Pendiente |
+| F1-04 | Logotipo de Mente al Día                  | Provisional: círculo (mente) con arco de horizonte y sol (día).                                                                                                                                         | Comunicaciones de la Alcaldía | Pendiente |
+| F1-05 | Barra y pie GOV.CO                        | Espacio preparado y desactivado (`govco` en `src/config/sitio.ts`).                                                                                                                                     | Oficina TIC                   | Pendiente |
+| F1-06 | Líneas de ayuda locales                   | Valores de ejemplo del Anexo F (123, 141 y 155 nacionales; línea local y servicio de salud con marcador; 106 desactivada).                                                                              | Secretaría de Salud           | Pendiente |
+| F1-07 | Textos nuevos de interfaz (BORRADOR)      | «Si estás en peligro inmediato, llama al 123.» (panel de líneas de ayuda); texto de introducción de `/lineas-de-ayuda`; aviso sin JavaScript en `index.html`; textos de la página 404 y de error.       | Equipo profesional (tono)     | Borrador  |
+| F1-08 | Alojamiento del sitio                     | Debe permitir los encabezados de seguridad de la Fase 10 (CSP, HSTS, frame-ancestors). GitHub Pages no sirve.                                                                                           | Oficina TIC                   | Pendiente |
