@@ -1,0 +1,1358 @@
+{
+  "meta": {
+    "proyecto": "Mente al Día",
+    "version_contenido": "1.0",
+    "fuente": "Documento de conceptualización y requerimientos — Mente al Día",
+    "fecha": "2026-10-19",
+    "notas": [
+      "Los textos marcados como 'documento_base' se copian literalmente, sin modificaciones.",
+      "Los elementos marcados como 'propuesta' o 'borrador' deben ser validados por el equipo profesional de la alcaldía.",
+      "Las 20 preguntas de cada cuestionario corresponden, en el mismo orden, a las 20 áreas."
+    ]
+  },
+  "modulos": {
+    "adulto": {
+      "activo": true,
+      "edad": "18 años o más",
+      "fuente": "documento_base"
+    },
+    "nino": {
+      "activo": true,
+      "edad": "6 a 11 años, con acompañamiento de un adulto responsable",
+      "fuente": "documento_base",
+      "rango_edad_estado": "propuesta"
+    },
+    "adolescente": {
+      "activo": false,
+      "edad": "12 a 17 años",
+      "estado": "pendiente: cuestionario y mensajes por diseñar y validar"
+    }
+  },
+  "opciones_respuesta": {
+    "adulto": [
+      {
+        "valor": "si",
+        "etiqueta": "Sí"
+      },
+      {
+        "valor": "a_veces",
+        "etiqueta": "Algunas veces o parcialmente"
+      },
+      {
+        "valor": "no",
+        "etiqueta": "No o presenta dificultades"
+      },
+      {
+        "valor": "prefiero_no_responder",
+        "etiqueta": "Prefiero no responder"
+      }
+    ],
+    "nino": [
+      {
+        "valor": "si",
+        "etiqueta": "Sí"
+      },
+      {
+        "valor": "a_veces",
+        "etiqueta": "A veces"
+      },
+      {
+        "valor": "no",
+        "etiqueta": "No"
+      }
+    ]
+  },
+  "instrucciones": {
+    "adulto": {
+      "texto": "Responde pensando en cómo te has sentido durante las últimas semanas. No hay respuestas correctas o incorrectas. Si prefieres no contestar alguna pregunta, puedes elegir «Prefiero no responder».",
+      "estado": "borrador"
+    },
+    "nino": {
+      "texto": "Lee cada pregunta con atención y elige la respuesta que más se parezca a lo que has vivido durante las últimas semanas.",
+      "estado": "adaptacion_web",
+      "original": "Lee cada pregunta con atención y marca con una “X” la respuesta que más se parezca a lo que has vivido durante las últimas semanas."
+    }
+  },
+  "registro_nino_campos": {
+    "fuente": "documento_base",
+    "campos": ["Nombre", "Edad", "Grado", "¿Con qué sexo se identifica? (Hombre / Mujer)"],
+    "acudiente": {
+      "estado": "propuesta",
+      "campos": ["Nombre", "Parentesco", "Correo electrónico", "Teléfono", "Lugar de residencia"]
+    }
+  },
+  "registro_adulto_campos": {
+    "fuente": "documento_base",
+    "campos": ["Nombre completo", "Correo electrónico", "Número de teléfono", "Lugar de residencia"]
+  },
+  "niveles": {
+    "adecuado": {
+      "etiqueta": "Adecuado",
+      "definicion": "no se identifican dificultades relevantes en el área evaluada."
+    },
+    "por_fortalecer": {
+      "etiqueta": "Por fortalecer",
+      "definicion": "se identifican algunos aspectos que requieren atención y estrategias de autocuidado."
+    },
+    "requiere_atencion": {
+      "etiqueta": "Requiere atención",
+      "definicion": "se identifican dificultades frecuentes o relevantes que justifican considerar orientación profesional."
+    },
+    "sin_dato": {
+      "etiqueta": "Sin dato",
+      "definicion": "La persona eligió «Prefiero no responder».",
+      "estado": "propuesta"
+    }
+  },
+  "dimensiones": {
+    "estado": "propuesta (solo visual; no altera el cálculo)",
+    "lista": [
+      {
+        "id": "emociones_mente",
+        "nombre": "Emociones y mente",
+        "areas": [1, 9, 11, 20]
+      },
+      {
+        "id": "cuerpo_energia",
+        "nombre": "Cuerpo y energía",
+        "areas": [2, 3, 12, 13]
+      },
+      {
+        "id": "vinculos_apoyo",
+        "nombre": "Vínculos y apoyo",
+        "areas": [6, 7, 8, 18]
+      },
+      {
+        "id": "afrontamiento",
+        "nombre": "Afrontamiento",
+        "areas": [5, 10, 17, 19]
+      },
+      {
+        "id": "proyecto_vida_entorno",
+        "nombre": "Proyecto de vida y entorno",
+        "areas": [4, 14, 15, 16]
+      }
+    ]
+  },
+  "areas": [
+    {
+      "numero": 1,
+      "id": "bienestar_emocional",
+      "nombre": "Bienestar emocional",
+      "dimension": "emociones_mente",
+      "icono_sugerido": "Heart",
+      "descripcion_corta": "Cómo te has sentido en general: tranquilidad y equilibrio.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Durante las últimas semanas, ha experimentado una sensación general de tranquilidad y equilibrio emocional?",
+        "nino": "¿Durante las últimas semanas te has sentido tranquilo(a) y bien contigo mismo(a)?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Tu bienestar emocional se encuentra en un nivel favorable. Continúa fortaleciendo las actividades, relaciones y hábitos que contribuyen a mantener tu equilibrio emocional.",
+        "por_fortalecer": "Se identifican algunos aspectos de tu bienestar emocional que podrían beneficiarse de mayor atención. Procura reservar espacios para el descanso, realizar actividades agradables y conversar con personas de confianza cuando lo necesites.",
+        "requiere_atencion": "Es posible que estés atravesando algunos desafíos en tu bienestar emocional. No estás solo/a: reconocer lo que sientes ya es un paso importante. Sigue avanzando poco a poco, cuida de ti y, si estas dificultades persisten o aumentan, considera buscar orientación profesional."
+      }
+    },
+    {
+      "numero": 2,
+      "id": "sueno_descanso",
+      "nombre": "Sueño y descanso",
+      "dimension": "cuerpo_energia",
+      "icono_sugerido": "Moon",
+      "descripcion_corta": "Si tu descanso te permite recuperar energía.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Ha logrado mantener un descanso nocturno adecuado que le permita recuperar su energía?",
+        "nino": "¿Has podido dormir y descansar bien durante las últimas semanas?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Tus hábitos de descanso parecen favorecer tu bienestar. Mantén horarios regulares de sueño y continúa cuidando tus espacios de descanso.",
+        "por_fortalecer": "Tu descanso podría mejorar. Intenta establecer horarios regulares para dormir, crear una rutina tranquila antes de acostarte y reducir el uso de dispositivos electrónicos durante ese momento.",
+        "requiere_atencion": "Tu descanso es importante y siempre puedes trabajar para mejorarlo. Empieza con pequeños cambios en tus hábitos de sueño y continúa cuidándote. Si las dificultades persisten, considera solicitar orientación profesional."
+      }
+    },
+    {
+      "numero": 3,
+      "id": "energia_vitalidad",
+      "nombre": "Energía y vitalidad",
+      "dimension": "cuerpo_energia",
+      "icono_sugerido": "BatteryCharging",
+      "descripcion_corta": "La energía con la que afrontas tu día a día.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Ha contado con suficiente energía para realizar sus actividades cotidianas?",
+        "nino": "¿Tienes suficiente energía para estudiar, jugar y hacer tus actividades durante el día?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Cuentas con un nivel de energía que parece permitirte desarrollar adecuadamente tus actividades cotidianas. Continúa procurando un equilibrio entre actividad, alimentación, descanso y tiempo personal.",
+        "por_fortalecer": "Puede ser conveniente revisar tus hábitos de descanso, alimentación y actividad diaria. Procura identificar qué situaciones pueden estar contribuyendo a la disminución de tu energía.",
+        "requiere_atencion": "Puede que estés atravesando un período de menor energía. Escucha a tu cuerpo, procura descansar y avanza paso a paso. Si esta situación persiste, considera buscar orientación profesional para recibir apoyo."
+      }
+    },
+    {
+      "numero": 4,
+      "id": "motivacion_interes",
+      "nombre": "Motivación e interés",
+      "dimension": "proyecto_vida_entorno",
+      "icono_sugerido": "Sparkles",
+      "descripcion_corta": "Las ganas de hacer lo que normalmente disfrutas.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Ha mantenido el interés y la motivación para realizar actividades que habitualmente disfruta?",
+        "nino": "¿Tienes ganas de hacer las actividades que normalmente te gustan y disfrutas?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Mantienes interés y motivación por actividades significativas para ti. Continúa dedicando tiempo a aquello que disfrutas y que contribuye a tu bienestar.",
+        "por_fortalecer": "Has identificado cierta disminución en tu interés o motivación. Intenta retomar progresivamente actividades agradables y mantener contacto con personas que representen una fuente de apoyo.",
+        "requiere_atencion": "Es posible que estés pasando por un momento de menor motivación. No significa que no puedas mejorar. Intenta avanzar poco a poco hacia actividades que te hagan bien y, si esta situación persiste, considera buscar orientación profesional."
+      }
+    },
+    {
+      "numero": 5,
+      "id": "manejo_estres",
+      "nombre": "Manejo del estrés",
+      "dimension": "afrontamiento",
+      "icono_sugerido": "Wind",
+      "descripcion_corta": "Tus recursos frente a la presión y la preocupación.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Considera que dispone de recursos adecuados para afrontar situaciones de estrés, preocupación o tensión emocional?",
+        "nino": "Cuando estás preocupado(a), estresado(a) o tienes muchas cosas por hacer, ¿sabes qué puedes hacer para sentirte mejor?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Actualmente cuentas con recursos que te permiten afrontar situaciones de estrés y preocupación. Continúa utilizando estrategias saludables como la organización del tiempo, el descanso y las pausas.",
+        "por_fortalecer": "Puede ser útil fortalecer tus estrategias para manejar el estrés. Considera organizar tus actividades, realizar pausas durante el día, practicar ejercicios de respiración y buscar espacios de descanso.",
+        "requiere_atencion": "Parece que algunas preocupaciones pueden estar siendo difíciles de manejar en este momento. Recuerda que puedes aprender nuevas formas de afrontarlas y que pedir apoyo también es una forma de cuidarte. Si lo necesitas, considera orientación profesional."
+      }
+    },
+    {
+      "numero": 6,
+      "id": "red_apoyo",
+      "nombre": "Red de apoyo",
+      "dimension": "vinculos_apoyo",
+      "icono_sugerido": "Users",
+      "descripcion_corta": "Las personas de confianza con las que cuentas.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Cuenta con al menos una persona de confianza a quien pueda acudir cuando enfrenta una dificultad personal o emocional?",
+        "nino": "¿Tienes una persona de confianza con quien puedas hablar cuando tienes un problema o te sientes mal?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Cuentas con personas a quienes puedes acudir cuando enfrentas dificultades. Continúa fortaleciendo estos vínculos y recuerda que compartir lo que sientes puede favorecer tu bienestar.",
+        "por_fortalecer": "Sería conveniente fortalecer tu red de apoyo. Identifica familiares, amistades u otras personas de confianza con quienes puedas hablar cuando atravieses una situación difícil.",
+        "requiere_atencion": "Puede que en este momento necesites fortalecer tu red de apoyo. Dar el primer paso para acercarte a alguien de confianza puede marcar una diferencia. Sigue adelante y recuerda que pedir compañía y orientación es una forma de cuidarte."
+      }
+    },
+    {
+      "numero": 7,
+      "id": "relaciones_interpersonales",
+      "nombre": "Relaciones interpersonales",
+      "dimension": "vinculos_apoyo",
+      "icono_sugerido": "HeartHandshake",
+      "descripcion_corta": "Cómo tus vínculos aportan a tu bienestar.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Considera que sus relaciones familiares, sociales o de pareja contribuyen positivamente a su bienestar emocional?",
+        "nino": "¿Sientes que tus relaciones con tu familia, amigos y compañeros te hacen sentir bien?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Tus relaciones interpersonales parecen contribuir favorablemente a tu bienestar. Continúa promoviendo una comunicación respetuosa, límites saludables y espacios de diálogo.",
+        "por_fortalecer": "Algunas de tus relaciones pueden estar generando malestar. Puede ser útil identificar las situaciones que generan conflicto y fortalecer una comunicación respetuosa y clara.",
+        "requiere_atencion": "Algunas relaciones pueden estar siendo difíciles para ti. Mereces vínculos basados en el respeto y el bienestar. Sigue trabajando en límites saludables y busca apoyo cuando lo necesites, especialmente ante situaciones de maltrato o violencia."
+      }
+    },
+    {
+      "numero": 8,
+      "id": "valoracion_respeto",
+      "nombre": "Valoración y respeto",
+      "dimension": "vinculos_apoyo",
+      "icono_sugerido": "HandHeart",
+      "descripcion_corta": "Sentir que te valoran y te tratan bien.",
+      "sensible": true,
+      "pregunta": {
+        "adulto": "¿Se siente valorado/a, respetado/a y tratado/a de manera adecuada por las personas de su entorno?",
+        "nino": "¿Te sientes respetado(a), valorado(a) y bien tratado(a) por las personas que te rodean?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Percibes valoración y respeto en tu entorno. Continúa fortaleciendo relaciones saludables y manteniendo límites que protejan tu bienestar.",
+        "por_fortalecer": "Es importante prestar atención a las relaciones en las que no te sientes suficientemente valorado/a o respetado/a. Fortalecer los límites y comunicar tus necesidades puede contribuir a tu bienestar.",
+        "requiere_atencion": "Mereces sentirte valorado/a y respetado/a. Si estás atravesando situaciones de desvalorización o maltrato, recuerda que no tienes que afrontarlas solo/a. Busca apoyo de una persona de confianza o de las rutas institucionales disponibles."
+      }
+    },
+    {
+      "numero": 9,
+      "id": "concentracion",
+      "nombre": "Concentración",
+      "dimension": "emociones_mente",
+      "icono_sugerido": "Focus",
+      "descripcion_corta": "Tu capacidad de enfocarte en lo que haces.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Ha podido mantener una adecuada concentración durante sus actividades de estudio, trabajo o vida cotidiana?",
+        "nino": "¿Puedes concentrarte cuando estás en clase, estudiando o haciendo tus tareas?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Tu capacidad de concentración parece favorecer el desarrollo de tus actividades. Mantén hábitos de descanso, organización y espacios adecuados para estudiar, trabajar o realizar tus actividades.",
+        "por_fortalecer": "Has identificado algunas dificultades para concentrarte. Organizar las tareas, reducir distractores y garantizar períodos adecuados de descanso puede ayudarte.",
+        "requiere_atencion": "Es posible que tu concentración esté atravesando algunas dificultades. Sé paciente contigo mismo/a, organiza tus actividades y avanza paso a paso. Si la dificultad persiste, considera solicitar orientación profesional."
+      }
+    },
+    {
+      "numero": 10,
+      "id": "afrontamiento_dificultades",
+      "nombre": "Afrontamiento de dificultades",
+      "dimension": "afrontamiento",
+      "icono_sugerido": "Mountain",
+      "descripcion_corta": "Cómo enfrentas los problemas que se presentan.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Considera que cuenta con recursos personales para afrontar los problemas y dificultades que se presentan en su vida?",
+        "nino": "Cuando tienes un problema, ¿sientes que puedes encontrar una forma de solucionarlo?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Cuentas con recursos personales que te permiten afrontar las dificultades de tu vida cotidiana. Continúa utilizando estrategias de solución de problemas y apoyándote en personas de confianza cuando sea necesario.",
+        "por_fortalecer": "Algunas situaciones pueden estar resultando difíciles de manejar. Intenta abordar los problemas de manera gradual, establecer prioridades y buscar apoyo cuando lo consideres necesario.",
+        "requiere_atencion": "Puede que algunas situaciones estén resultando especialmente difíciles en este momento. No tienes que resolverlo todo de una vez. Avanza paso a paso, apóyate en personas de confianza y considera orientación profesional si sientes que necesitas acompañamiento."
+      }
+    },
+    {
+      "numero": 11,
+      "id": "regulacion_emocional",
+      "nombre": "Regulación emocional",
+      "dimension": "emociones_mente",
+      "icono_sugerido": "Waves",
+      "descripcion_corta": "Cómo manejas tus emociones en momentos difíciles.",
+      "sensible": true,
+      "pregunta": {
+        "adulto": "¿Ha logrado manejar sus emociones de manera adecuada cuando enfrenta situaciones difíciles o estresantes?",
+        "nino": "Cuando estás triste, enojado(a) o preocupado(a), ¿puedes manejar lo que sientes sin hacerte daño ni lastimar a otras personas?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Has desarrollado recursos que favorecen un manejo adecuado de tus emociones. Continúa reconociendo lo que sientes y utilizando estrategias saludables para afrontar situaciones difíciles.",
+        "por_fortalecer": "Puede ser conveniente fortalecer tus estrategias de regulación emocional. Practicar respiración, realizar pausas y reconocer oportunamente lo que estás sintiendo puede ayudarte.",
+        "requiere_atencion": "Tus emociones pueden estar siendo especialmente intensas en este momento. Recuerda que aprender a manejarlas es un proceso y que puedes avanzar poco a poco. Si lo necesitas, busca acompañamiento profesional."
+      }
+    },
+    {
+      "numero": 12,
+      "id": "actividad_fisica_recreacion",
+      "nombre": "Actividad física y recreación",
+      "dimension": "cuerpo_energia",
+      "icono_sugerido": "Footprints",
+      "descripcion_corta": "Tiempo para moverte, jugar y disfrutar.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Realiza de manera regular actividades físicas, recreativas o de esparcimiento que contribuyan a su bienestar?",
+        "nino": "¿Tienes tiempo para jugar, hacer ejercicio o realizar actividades que te divierten?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Mantienes espacios de actividad física, recreación o esparcimiento que pueden contribuir positivamente a tu bienestar. Continúa incorporándolos dentro de tu rutina.",
+        "por_fortalecer": "Podrías beneficiarte de incorporar más espacios de actividad física, recreación o esparcimiento. Comienza progresivamente con actividades que sean agradables y adecuadas para ti.",
+        "requiere_atencion": "Quizás ha sido difícil encontrar tiempo para actividades que te hagan bien. Empieza con pequeños espacios para caminar, descansar, compartir o hacer algo que disfrutes. Cada pequeño paso cuenta."
+      }
+    },
+    {
+      "numero": 13,
+      "id": "equilibrio_responsabilidades_descanso",
+      "nombre": "Equilibrio entre responsabilidades y descanso",
+      "dimension": "cuerpo_energia",
+      "icono_sugerido": "Scale",
+      "descripcion_corta": "Espacio para ti en medio de tus deberes.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Dispone de tiempo suficiente para descansar y realizar actividades que favorezcan su bienestar personal?",
+        "nino": "¿Tienes suficiente tiempo para hacer tus tareas, descansar y realizar actividades que te gustan?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Mantienes un equilibrio favorable entre tus responsabilidades, el descanso y tus actividades personales. Continúa protegiendo estos espacios dentro de tu rutina.",
+        "por_fortalecer": "Tu tiempo disponible para descansar y realizar actividades personales parece ser limitado. Revisa la distribución de tus responsabilidades e intenta establecer espacios regulares para el descanso.",
+        "requiere_atencion": "Parece que necesitas recuperar un poco el equilibrio entre tus responsabilidades y tu bienestar. Permítete hacer pausas y reservar momentos para ti. Cuidarte también es una responsabilidad importante."
+      }
+    },
+    {
+      "numero": 14,
+      "id": "seguridad_entorno",
+      "nombre": "Seguridad y entorno",
+      "dimension": "proyecto_vida_entorno",
+      "icono_sugerido": "ShieldCheck",
+      "descripcion_corta": "Sentir seguridad en tu hogar, estudio, trabajo y barrio.",
+      "sensible": true,
+      "pregunta": {
+        "adulto": "¿Se siente seguro/a en los espacios donde desarrolla habitualmente sus actividades, como el hogar, trabajo, estudio y entorno cercano?",
+        "nino": "¿Te sientes seguro(a) en los lugares donde pasas la mayor parte del tiempo, como tu casa, colegio y barrio?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Percibes seguridad en los principales espacios donde desarrollas tus actividades. Continúa identificando y manteniendo condiciones que favorezcan tu bienestar y protección.",
+        "por_fortalecer": "Algunas situaciones de tu entorno pueden estar afectando tu sensación de seguridad. Identifica los factores que generan preocupación y conversa con una persona de confianza sobre ellos.",
+        "requiere_atencion": "Tu seguridad es importante. Si estás viviendo una situación de violencia, amenaza o riesgo, no tienes que afrontarla solo/a. Busca apoyo oportunamente y acude a las rutas de atención y protección disponibles."
+      }
+    },
+    {
+      "numero": 15,
+      "id": "perspectiva_futuro",
+      "nombre": "Perspectiva frente al futuro",
+      "dimension": "proyecto_vida_entorno",
+      "icono_sugerido": "Sunrise",
+      "descripcion_corta": "La tranquilidad con la que miras lo que viene.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Durante las últimas semanas, ha logrado mantener una perspectiva tranquila frente a su futuro?",
+        "nino": "¿Te sientes tranquilo(a) cuando piensas en tu futuro?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Mantienes una perspectiva favorable frente a tu futuro. Continúa estableciendo objetivos realistas y enfocándote en acciones que puedas desarrollar progresivamente.",
+        "por_fortalecer": "Es posible que algunas preocupaciones estén afectando tu tranquilidad frente al futuro. Puede ayudarte establecer metas pequeñas y alcanzables y conversar sobre tus preocupaciones con alguien de confianza.",
+        "requiere_atencion": "Es normal tener dudas o preocupaciones sobre el futuro. Intenta concentrarte en pequeños pasos y metas que puedas alcanzar hoy. Si la preocupación se mantiene y te genera malestar, considera buscar orientación profesional."
+      }
+    },
+    {
+      "numero": 16,
+      "id": "proposito_sentido_vida",
+      "nombre": "Propósito y sentido de vida",
+      "dimension": "proyecto_vida_entorno",
+      "icono_sugerido": "Compass",
+      "descripcion_corta": "Metas, proyectos y aquello que le da sentido a tu vida.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "¿Considera que actualmente tiene un propósito, proyecto o sentido que le resulte significativo en su vida?",
+        "nino": "¿Tienes sueños, metas o cosas que te gustaría lograr en el futuro?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Identificas actividades, relaciones, proyectos o metas que aportan significado a tu vida. Continúa fortaleciendo aquellos aspectos que consideras importantes para ti.",
+        "por_fortalecer": "Puede ser útil explorar nuevamente qué actividades, relaciones, proyectos o metas son significativos para ti. Establecer pequeños objetivos personales puede ayudarte a fortalecer esta área.",
+        "requiere_atencion": "Puede que en este momento estés buscando un nuevo sentido o propósito. Date permiso para explorar, descubrir y avanzar a tu propio ritmo. Si sientes que necesitas acompañamiento, conversar con un profesional puede ayudarte."
+      }
+    },
+    {
+      "numero": 17,
+      "id": "afrontamiento_consumo_sustancias",
+      "nombre": "Afrontamiento y consumo de sustancias",
+      "dimension": "afrontamiento",
+      "icono_sugerido": "Sprout",
+      "descripcion_corta": "Formas saludables de afrontar el malestar.",
+      "sensible": true,
+      "pregunta": {
+        "adulto": "¿Ha evitado recurrir al alcohol, sustancias psicoactivas u otras sustancias como una forma de afrontar dificultades emocionales?",
+        "nino": "Cuando te sientes mal o tienes un problema, ¿evitas usar alcohol, cigarrillos, vapeadores u otras sustancias para sentirte mejor?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "No identificas el consumo de alcohol u otras sustancias como una estrategia principal para afrontar tus dificultades emocionales. Continúa fortaleciendo alternativas saludables de afrontamiento.",
+        "por_fortalecer": "Es importante observar las formas que utilizas para afrontar el malestar emocional. Procura priorizar estrategias saludables y buscar apoyo cuando sientas que necesitas ayuda para manejar una dificultad.",
+        "requiere_atencion": "Si estás utilizando alguna sustancia para afrontar el malestar o sientes que te cuesta controlar su consumo, recuerda que buscar ayuda es un paso de fortaleza. Puedes empezar a construir otras formas de afrontar las dificultades con acompañamiento profesional."
+      }
+    },
+    {
+      "numero": 18,
+      "id": "busqueda_ayuda",
+      "nombre": "Búsqueda de ayuda",
+      "dimension": "vinculos_apoyo",
+      "icono_sugerido": "LifeBuoy",
+      "descripcion_corta": "Saber a quién acudir y pedir apoyo a tiempo.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "Cuando enfrenta una situación que supera sus recursos personales, ¿puede identificar y solicitar apoyo oportunamente?",
+        "nino": "Cuando tienes un problema que no puedes solucionar solo(a), ¿sabes a quién pedirle ayuda?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Reconoces la importancia de solicitar apoyo cuando una situación supera tus recursos personales. Continúa identificando personas e instituciones a las que puedas acudir cuando lo necesites.",
+        "por_fortalecer": "Puede resultarte difícil solicitar ayuda en algunas situaciones. Recuerda que pedir apoyo oportunamente es una estrategia de cuidado. Identifica previamente personas o servicios a los que puedas acudir.",
+        "requiere_atencion": "Pedir ayuda puede ser difícil, pero aprender a hacerlo es una fortaleza. Empieza identificando una persona o servicio en quien puedas confiar. No tienes que afrontar todo por tu cuenta."
+      }
+    },
+    {
+      "numero": 19,
+      "id": "funcionamiento_cotidiano",
+      "nombre": "Funcionamiento cotidiano",
+      "dimension": "afrontamiento",
+      "icono_sugerido": "CalendarCheck",
+      "descripcion_corta": "Mantener tus rutinas y responsabilidades.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "A pesar de las dificultades emocionales, ¿ha logrado mantener sus actividades habituales, responsabilidades y rutinas de autocuidado?",
+        "nino": "Aunque tengas algún problema o estés triste, ¿puedes continuar con tus actividades, tareas y responsabilidades?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Has logrado mantener tus actividades, responsabilidades y rutinas de autocuidado a pesar de las dificultades que puedan presentarse. Continúa manteniendo hábitos que favorezcan tu bienestar.",
+        "por_fortalecer": "Algunas dificultades emocionales pueden estar afectando parcialmente tus actividades habituales. Intenta mantener rutinas sencillas, establecer prioridades y buscar apoyo cuando lo necesites.",
+        "requiere_atencion": "Puede que las dificultades emocionales estén haciendo más difícil mantener tus actividades habituales. Sé amable contigo y avanza paso a paso. Si estas dificultades están interfiriendo de manera importante en tu vida, considera solicitar orientación profesional."
+      }
+    },
+    {
+      "numero": 20,
+      "id": "bienestar_psicologico_general",
+      "nombre": "Bienestar psicológico general",
+      "dimension": "emociones_mente",
+      "icono_sugerido": "Sun",
+      "descripcion_corta": "Tu percepción global de bienestar.",
+      "sensible": false,
+      "pregunta": {
+        "adulto": "En términos generales, ¿considera que su bienestar psicológico actual es adecuado?",
+        "nino": "En general, ¿sientes que estás bien emocionalmente?"
+      },
+      "mensajes_adulto": {
+        "adecuado": "Tu percepción general de bienestar psicológico es favorable. Continúa fortaleciendo tus hábitos de autocuidado, relaciones de apoyo y actividades significativas.",
+        "por_fortalecer": "Se identifican algunos aspectos de tu bienestar psicológico que podrían beneficiarse de mayor atención. Revisa las áreas señaladas en tus resultados y considera implementar estrategias de autocuidado y apoyo.",
+        "requiere_atencion": "Tus resultados muestran algunas áreas que merecen mayor cuidado. Recuerda que este resultado no define quién eres ni determina tu futuro. Cada pequeño paso hacia el bienestar cuenta. Revisa las recomendaciones, cuida de ti y considera buscar orientación profesional si sientes que necesitas apoyo."
+      }
+    }
+  ],
+  "mensajes_nino_por_nivel": {
+    "estado": "borrador",
+    "adecuado": "¡Qué bien! En esta parte de tu vida te estás sintiendo bien. Sigue haciendo las cosas que te ayudan a estar así.",
+    "por_fortalecer": "Esta parte de tu vida se puede cuidar un poquito más. Cuéntale a un adulto de confianza cómo te sientes y busquen juntos pequeñas ideas para estar mejor.",
+    "requiere_atencion": "Parece que esto ha sido difícil para ti últimamente, y está bien contarlo. No estás solo(a): habla con un adulto de confianza para que te acompañe. Pedir ayuda es una forma de cuidarte."
+  },
+  "mensajes_generales": {
+    "adulto": {
+      "estado": "documento_base",
+      "favorable": "Tu resultado refleja un nivel favorable de bienestar en las áreas evaluadas. Continúa fortaleciendo tus hábitos de autocuidado, tus relaciones de apoyo y las actividades que aportan bienestar y significado a tu vida.",
+      "por_fortalecer": "Tus resultados muestran algunas áreas que podrían beneficiarse de mayor atención. Revisa las recomendaciones específicas que aparecen en cada área e intenta incorporar progresivamente estrategias que favorezcan tu bienestar.",
+      "desafios": "Tus resultados muestran algunas áreas que pueden necesitar mayor cuidado. Esto no constituye un diagnóstico ni define quién eres. Tómalo como una oportunidad para conocerte, cuidarte y seguir avanzando. Revisa las recomendaciones y considera buscar orientación profesional si sientes que necesitas acompañamiento."
+    },
+    "nino": {
+      "estado": "borrador",
+      "favorable": "¡Gracias por responder! Te estás sintiendo bien en muchas cosas. Sigue cuidándote y compartiendo con las personas que quieres.",
+      "por_fortalecer": "¡Gracias por responder! Hay algunas cosas que puedes cuidar un poquito más. Un adulto de confianza puede ayudarte a encontrar ideas. Cada pequeño paso cuenta.",
+      "desafios": "¡Gracias por responder con sinceridad! Algunas cosas han sido difíciles para ti, y eso no te hace menos valioso(a). Habla con un adulto de confianza: pedir ayuda es una forma de cuidarte."
+    },
+    "adulto_acompanante": {
+      "estado": "borrador",
+      "texto": "Estos resultados son una orientación y no un diagnóstico. Conversen con calma sobre las áreas «para cuidar primero» y «por fortalecer», escuchen sin juzgar y reconozcan lo que va bien. Si alguna dificultad persiste, aumenta o les preocupa, busquen orientación profesional en el servicio de salud o con la orientación escolar. Ante cualquier situación de peligro, comuníquense de inmediato con las líneas de ayuda."
+    },
+    "insuficiente": {
+      "estado": "borrador",
+      "texto": "Para darte una orientación general necesitamos más respuestas. Aun así, aquí puedes ver las áreas que respondiste y las líneas de ayuda disponibles. Puedes volver a intentarlo cuando quieras."
+    },
+    "parcial": {
+      "estado": "borrador",
+      "texto": "Respondiste {respondidas} de 20 preguntas, por eso tu resultado general es aproximado. Las áreas sin respuesta aparecen como «Sin dato»."
+    },
+    "sin_dato_area": {
+      "estado": "propuesta",
+      "texto": "No respondiste esta pregunta."
+    }
+  },
+  "atencion_especial": {
+    "mensaje": {
+      "estado": "documento_base",
+      "texto": "Si consideras que estás en peligro inmediato, que podrías hacerte daño o que otra persona podría hacerlo, no permanezcas solo/a. Busca apoyo inmediato de una persona de confianza y comunícate con los servicios de emergencia o acude al servicio de salud más cercano."
+    },
+    "mensaje_nino": {
+      "estado": "borrador",
+      "texto": "Si sientes que estás en peligro, que alguien te puede hacer daño o que tú podrías hacerte daño, no te quedes solo(a). Busca ahora mismo a un adulto de confianza (tu mamá, tu papá, tu cuidador o tu profesor) y cuéntale lo que pasa. Ese adulto puede llamar a las líneas de ayuda."
+    }
+  },
+  "lineas_ayuda_ejemplo": {
+    "estado": "valores de ejemplo para Colombia; confirmar con la Secretaría de Salud antes del lanzamiento",
+    "lineas": [
+      {
+        "numero": "123",
+        "nombre": "Línea de emergencias",
+        "atiende": "Cualquier situación de peligro inmediato",
+        "horario": "24 horas",
+        "cobertura": "Nacional",
+        "estado": "verificada"
+      },
+      {
+        "numero": "141",
+        "nombre": "Línea ICBF",
+        "atiende": "Protección de niñas, niños y adolescentes",
+        "horario": "24 horas, gratuita",
+        "cobertura": "Nacional",
+        "estado": "verificada"
+      },
+      {
+        "numero": "155",
+        "nombre": "Línea 155",
+        "atiende": "Orientación a mujeres víctimas de violencia",
+        "horario": "24 horas",
+        "cobertura": "Nacional",
+        "estado": "verificada"
+      },
+      {
+        "numero": "[LÍNEA DE SALUD MENTAL LOCAL]",
+        "nombre": "Línea de salud mental del municipio o departamento",
+        "atiende": "Escucha y orientación en salud mental",
+        "horario": "[COMPLETAR]",
+        "cobertura": "[MUNICIPIO]",
+        "estado": "completar"
+      },
+      {
+        "numero": "106",
+        "nombre": "Línea 106 «El poder de ser escuchado»",
+        "atiende": "Escucha y orientación (incluye niñas, niños y adolescentes)",
+        "horario": "[VERIFICAR]",
+        "cobertura": "Solo Bogotá: activar únicamente si aplica",
+        "estado": "opcional"
+      },
+      {
+        "numero": "[DIRECCIÓN Y TELÉFONO]",
+        "nombre": "Servicio de salud más cercano / Secretaría de Salud",
+        "atiende": "Atención presencial y rutas de atención",
+        "horario": "[COMPLETAR]",
+        "cobertura": "[MUNICIPIO]",
+        "estado": "completar"
+      }
+    ]
+  },
+  "frases_guia": {
+    "estado": "documento_base",
+    "lista": [
+      "Sigue avanzando.",
+      "Cada pequeño paso cuenta.",
+      "Cuidarte también es importante.",
+      "Pedir ayuda es una forma de cuidarte."
+    ]
+  },
+  "lenguaje": {
+    "usar": [
+      "orientación",
+      "áreas para cuidar primero",
+      "por fortalecer",
+      "tus fortalezas",
+      "acompañamiento",
+      "bienestar",
+      "pedir apoyo",
+      "pequeños pasos",
+      "en este momento",
+      "es posible que"
+    ],
+    "evitar": [
+      "diagnóstico (salvo para aclarar que no lo es)",
+      "trastorno",
+      "enfermedad",
+      "anormal",
+      "riesgo alto",
+      "puntaje bajo",
+      "fallaste",
+      "grave",
+      "peligroso",
+      "paciente",
+      "caso (frente al participante)"
+    ]
+  },
+  "reglas_provisionales": {
+    "version": "0.1-provisional",
+    "valor_a_nivel": {
+      "si": "adecuado",
+      "a_veces": "por_fortalecer",
+      "no": "requiere_atencion",
+      "prefiero_no_responder": "sin_dato"
+    },
+    "puntos": {
+      "si": 2,
+      "a_veces": 1,
+      "no": 0
+    },
+    "umbral_favorable": 80,
+    "umbral_desafios": 50,
+    "min_respondidas": 10,
+    "min_respondidas_completo": 14,
+    "ajuste_atencion_no_favorable": 3,
+    "ajuste_atencion_desafios": 6,
+    "areas_sensibles": [8, 11, 14, 17],
+    "prioridad_por_desafios": true,
+    "estado": "PROVISIONAL — pendiente de validación por el equipo profesional"
+  },
+  "casos_prueba": [
+    {
+      "id": "T01",
+      "modulo": "adulto",
+      "descripcion": "«Sí» en las 20 preguntas",
+      "respuestas": {
+        "1": "si",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "si",
+        "13": "si",
+        "14": "si",
+        "15": "si",
+        "16": "si",
+        "17": "si",
+        "18": "si",
+        "19": "si",
+        "20": "si"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 40,
+        "indice": 100,
+        "resultado_general": "favorable",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 0
+      }
+    },
+    {
+      "id": "T02",
+      "modulo": "adulto",
+      "descripcion": "«Algunas veces» en las 20 preguntas",
+      "respuestas": {
+        "1": "a_veces",
+        "2": "a_veces",
+        "3": "a_veces",
+        "4": "a_veces",
+        "5": "a_veces",
+        "6": "a_veces",
+        "7": "a_veces",
+        "8": "a_veces",
+        "9": "a_veces",
+        "10": "a_veces",
+        "11": "a_veces",
+        "12": "a_veces",
+        "13": "a_veces",
+        "14": "a_veces",
+        "15": "a_veces",
+        "16": "a_veces",
+        "17": "a_veces",
+        "18": "a_veces",
+        "19": "a_veces",
+        "20": "a_veces"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 20,
+        "indice": 50,
+        "resultado_general": "por_fortalecer",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 0
+      }
+    },
+    {
+      "id": "T03",
+      "modulo": "adulto",
+      "descripcion": "«No» en las 20 preguntas",
+      "respuestas": {
+        "1": "no",
+        "2": "no",
+        "3": "no",
+        "4": "no",
+        "5": "no",
+        "6": "no",
+        "7": "no",
+        "8": "no",
+        "9": "no",
+        "10": "no",
+        "11": "no",
+        "12": "no",
+        "13": "no",
+        "14": "no",
+        "15": "no",
+        "16": "no",
+        "17": "no",
+        "18": "no",
+        "19": "no",
+        "20": "no"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 0,
+        "indice": 0,
+        "resultado_general": "desafios",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": true,
+        "prioridad": true,
+        "motivos_prioridad": [
+          "Área sensible en «requiere atención»: Valoración y respeto",
+          "Área sensible en «requiere atención»: Regulación emocional",
+          "Área sensible en «requiere atención»: Seguridad y entorno",
+          "Área sensible en «requiere atención»: Afrontamiento y consumo de sustancias",
+          "Resultado general con desafíos actuales"
+        ],
+        "n_atencion": 20
+      }
+    },
+    {
+      "id": "T04",
+      "modulo": "adulto",
+      "descripcion": "«Sí» en 1–12 y «Algunas veces» en 13–20 (umbral exacto 80)",
+      "respuestas": {
+        "1": "si",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "si",
+        "13": "a_veces",
+        "14": "a_veces",
+        "15": "a_veces",
+        "16": "a_veces",
+        "17": "a_veces",
+        "18": "a_veces",
+        "19": "a_veces",
+        "20": "a_veces"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 32,
+        "indice": 80,
+        "resultado_general": "favorable",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 0
+      }
+    },
+    {
+      "id": "T05",
+      "modulo": "adulto",
+      "descripcion": "«Sí» en 1–11 y «Algunas veces» en 12–20 (redondeo 77,5 → 78)",
+      "respuestas": {
+        "1": "si",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "a_veces",
+        "13": "a_veces",
+        "14": "a_veces",
+        "15": "a_veces",
+        "16": "a_veces",
+        "17": "a_veces",
+        "18": "a_veces",
+        "19": "a_veces",
+        "20": "a_veces"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 31,
+        "indice": 78,
+        "resultado_general": "por_fortalecer",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 0
+      }
+    },
+    {
+      "id": "T06",
+      "modulo": "adulto",
+      "descripcion": "«Sí» en todas, excepto «No» en las áreas 1, 2 y 3",
+      "respuestas": {
+        "1": "no",
+        "2": "no",
+        "3": "no",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "si",
+        "13": "si",
+        "14": "si",
+        "15": "si",
+        "16": "si",
+        "17": "si",
+        "18": "si",
+        "19": "si",
+        "20": "si"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 34,
+        "indice": 85,
+        "resultado_general": "por_fortalecer",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 3
+      }
+    },
+    {
+      "id": "T07",
+      "modulo": "adulto",
+      "descripcion": "«Sí» en todas, excepto «No» en el área 11 (Regulación emocional)",
+      "respuestas": {
+        "1": "si",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "no",
+        "12": "si",
+        "13": "si",
+        "14": "si",
+        "15": "si",
+        "16": "si",
+        "17": "si",
+        "18": "si",
+        "19": "si",
+        "20": "si"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 38,
+        "indice": 95,
+        "resultado_general": "favorable",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": true,
+        "prioridad": true,
+        "motivos_prioridad": ["Área sensible en «requiere atención»: Regulación emocional"],
+        "n_atencion": 1
+      }
+    },
+    {
+      "id": "T08",
+      "modulo": "adulto",
+      "descripcion": "«Sí» en todas, excepto «No» en las áreas 1 a 6",
+      "respuestas": {
+        "1": "no",
+        "2": "no",
+        "3": "no",
+        "4": "no",
+        "5": "no",
+        "6": "no",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "si",
+        "13": "si",
+        "14": "si",
+        "15": "si",
+        "16": "si",
+        "17": "si",
+        "18": "si",
+        "19": "si",
+        "20": "si"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 28,
+        "indice": 70,
+        "resultado_general": "desafios",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": true,
+        "motivos_prioridad": ["Resultado general con desafíos actuales"],
+        "n_atencion": 6
+      }
+    },
+    {
+      "id": "T09",
+      "modulo": "adulto",
+      "descripcion": "«Algunas veces» en todas, excepto «No» en las áreas 1 y 2",
+      "respuestas": {
+        "1": "no",
+        "2": "no",
+        "3": "a_veces",
+        "4": "a_veces",
+        "5": "a_veces",
+        "6": "a_veces",
+        "7": "a_veces",
+        "8": "a_veces",
+        "9": "a_veces",
+        "10": "a_veces",
+        "11": "a_veces",
+        "12": "a_veces",
+        "13": "a_veces",
+        "14": "a_veces",
+        "15": "a_veces",
+        "16": "a_veces",
+        "17": "a_veces",
+        "18": "a_veces",
+        "19": "a_veces",
+        "20": "a_veces"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 18,
+        "indice": 45,
+        "resultado_general": "desafios",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": true,
+        "motivos_prioridad": ["Resultado general con desafíos actuales"],
+        "n_atencion": 2
+      }
+    },
+    {
+      "id": "T10",
+      "modulo": "adulto",
+      "descripcion": "«Sí» en 1–12 y «Prefiero no responder» en 13–20",
+      "respuestas": {
+        "1": "si",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "si",
+        "13": "prefiero_no_responder",
+        "14": "prefiero_no_responder",
+        "15": "prefiero_no_responder",
+        "16": "prefiero_no_responder",
+        "17": "prefiero_no_responder",
+        "18": "prefiero_no_responder",
+        "19": "prefiero_no_responder",
+        "20": "prefiero_no_responder"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 12,
+        "puntos": 24,
+        "indice": 100,
+        "resultado_general": "favorable",
+        "resultado_parcial": true,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 0
+      }
+    },
+    {
+      "id": "T11",
+      "modulo": "adulto",
+      "descripcion": "«Sí» en 1–9 y «Prefiero no responder» en 10–20",
+      "respuestas": {
+        "1": "si",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "prefiero_no_responder",
+        "11": "prefiero_no_responder",
+        "12": "prefiero_no_responder",
+        "13": "prefiero_no_responder",
+        "14": "prefiero_no_responder",
+        "15": "prefiero_no_responder",
+        "16": "prefiero_no_responder",
+        "17": "prefiero_no_responder",
+        "18": "prefiero_no_responder",
+        "19": "prefiero_no_responder",
+        "20": "prefiero_no_responder"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 9,
+        "puntos": 18,
+        "indice": null,
+        "resultado_general": "insuficiente",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 0
+      }
+    },
+    {
+      "id": "T12",
+      "modulo": "adulto",
+      "descripcion": "«Prefiero no responder» en las 20 preguntas",
+      "respuestas": {
+        "1": "prefiero_no_responder",
+        "2": "prefiero_no_responder",
+        "3": "prefiero_no_responder",
+        "4": "prefiero_no_responder",
+        "5": "prefiero_no_responder",
+        "6": "prefiero_no_responder",
+        "7": "prefiero_no_responder",
+        "8": "prefiero_no_responder",
+        "9": "prefiero_no_responder",
+        "10": "prefiero_no_responder",
+        "11": "prefiero_no_responder",
+        "12": "prefiero_no_responder",
+        "13": "prefiero_no_responder",
+        "14": "prefiero_no_responder",
+        "15": "prefiero_no_responder",
+        "16": "prefiero_no_responder",
+        "17": "prefiero_no_responder",
+        "18": "prefiero_no_responder",
+        "19": "prefiero_no_responder",
+        "20": "prefiero_no_responder"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 0,
+        "puntos": 0,
+        "indice": null,
+        "resultado_general": "insuficiente",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 0
+      }
+    },
+    {
+      "id": "T13",
+      "modulo": "adulto",
+      "descripcion": "«Sí» en 2–11, «Algunas veces» en 12–13, «No» en el área 1 y «Prefiero no responder» en 14–20",
+      "respuestas": {
+        "1": "no",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "a_veces",
+        "13": "a_veces",
+        "14": "prefiero_no_responder",
+        "15": "prefiero_no_responder",
+        "16": "prefiero_no_responder",
+        "17": "prefiero_no_responder",
+        "18": "prefiero_no_responder",
+        "19": "prefiero_no_responder",
+        "20": "prefiero_no_responder"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 13,
+        "puntos": 22,
+        "indice": 85,
+        "resultado_general": "favorable",
+        "resultado_parcial": true,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 1
+      }
+    },
+    {
+      "id": "T14",
+      "modulo": "adulto",
+      "descripcion": "«No» en el área 14 (Seguridad y entorno) y «Prefiero no responder» en las demás",
+      "respuestas": {
+        "1": "prefiero_no_responder",
+        "2": "prefiero_no_responder",
+        "3": "prefiero_no_responder",
+        "4": "prefiero_no_responder",
+        "5": "prefiero_no_responder",
+        "6": "prefiero_no_responder",
+        "7": "prefiero_no_responder",
+        "8": "prefiero_no_responder",
+        "9": "prefiero_no_responder",
+        "10": "prefiero_no_responder",
+        "11": "prefiero_no_responder",
+        "12": "prefiero_no_responder",
+        "13": "prefiero_no_responder",
+        "14": "no",
+        "15": "prefiero_no_responder",
+        "16": "prefiero_no_responder",
+        "17": "prefiero_no_responder",
+        "18": "prefiero_no_responder",
+        "19": "prefiero_no_responder",
+        "20": "prefiero_no_responder"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 1,
+        "puntos": 0,
+        "indice": null,
+        "resultado_general": "insuficiente",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": true,
+        "prioridad": true,
+        "motivos_prioridad": ["Área sensible en «requiere atención»: Seguridad y entorno"],
+        "n_atencion": 1
+      }
+    },
+    {
+      "id": "T15",
+      "modulo": "nino",
+      "descripcion": "Módulo niñas y niños: «Sí» en las 20 preguntas",
+      "respuestas": {
+        "1": "si",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "si",
+        "13": "si",
+        "14": "si",
+        "15": "si",
+        "16": "si",
+        "17": "si",
+        "18": "si",
+        "19": "si",
+        "20": "si"
+      },
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 40,
+        "indice": 100,
+        "resultado_general": "favorable",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 0
+      }
+    },
+    {
+      "id": "T16",
+      "modulo": "adulto",
+      "descripcion": "Igual que T04, pero con umbral_favorable = 85 (cambio de configuración)",
+      "respuestas": {
+        "1": "si",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "si",
+        "13": "a_veces",
+        "14": "a_veces",
+        "15": "a_veces",
+        "16": "a_veces",
+        "17": "a_veces",
+        "18": "a_veces",
+        "19": "a_veces",
+        "20": "a_veces"
+      },
+      "config": {
+        "umbral_favorable": 85
+      },
+      "invertidas": [],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 32,
+        "indice": 80,
+        "resultado_general": "por_fortalecer",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 0
+      }
+    },
+    {
+      "id": "T17",
+      "modulo": "adulto",
+      "descripcion": "Instrumento de prueba con la pregunta 1 marcada como invertida; «Sí» en las 20",
+      "respuestas": {
+        "1": "si",
+        "2": "si",
+        "3": "si",
+        "4": "si",
+        "5": "si",
+        "6": "si",
+        "7": "si",
+        "8": "si",
+        "9": "si",
+        "10": "si",
+        "11": "si",
+        "12": "si",
+        "13": "si",
+        "14": "si",
+        "15": "si",
+        "16": "si",
+        "17": "si",
+        "18": "si",
+        "19": "si",
+        "20": "si"
+      },
+      "config": {},
+      "invertidas": [1],
+      "esperado": {
+        "respondidas": 20,
+        "puntos": 38,
+        "indice": 95,
+        "resultado_general": "favorable",
+        "resultado_parcial": false,
+        "ruta_atencion_especial": false,
+        "prioridad": false,
+        "motivos_prioridad": [],
+        "n_atencion": 1
+      }
+    },
+    {
+      "id": "T18",
+      "modulo": "nino",
+      "descripcion": "Módulo niñas y niños con «Prefiero no responder» en la pregunta 5",
+      "respuestas": null,
+      "config": {},
+      "invertidas": [],
+      "esperado": {
+        "error": "El módulo infantil no admite «prefiero no responder»"
+      }
+    }
+  ]
+}

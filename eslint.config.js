@@ -31,6 +31,11 @@ export default defineConfig([
     extends: [jsxA11y.flatConfigs.recommended],
   },
   {
+    // En las pruebas, «!» afirma que un elemento existe; si no existe, la prueba falla igual.
+    files: ['src/**/*.test.ts', 'e2e/**/*.ts'],
+    rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
+  },
+  {
     files: ['scripts/**/*.mjs', '*.config.{js,ts}', 'e2e/**/*.ts'],
     languageOptions: {
       globals: globals.node,

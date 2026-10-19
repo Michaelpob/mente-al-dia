@@ -15,6 +15,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "contraste": "node scripts/verificar-contraste.mjs",
+    "contenido": "node scripts/generar-contenido.mjs && prettier --write src/content/v1",
+    "test": "vitest run",
+    "test:cobertura": "vitest run --coverage",
     "test:e2e": "playwright test"
   },
   "dependencies": {
@@ -59,6 +62,7 @@
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^5.2.0",
+    "@vitest/coverage-v8": "^3.2.7",
     "eslint": "^9.39.5",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react-hooks": "^5.2.0",
@@ -69,6 +73,7 @@
     "tailwindcss": "^4.3.3",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.71.2",
-    "vite": "^7.3.7"
+    "vite": "^7.3.7",
+    "vitest": "^3.2.7"
   }
 }
