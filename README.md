@@ -13,17 +13,18 @@ Es una página web responsiva (no es una app nativa ni una APK). Ofrece orientac
 
 ## Scripts
 
-| Comando                       | Qué hace                                                                                                        |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `corepack pnpm install`       | Instala las dependencias.                                                                                       |
-| `corepack pnpm dev`           | Servidor de desarrollo (incluye `/guia-de-estilo`).                                                             |
-| `corepack pnpm build`         | Build de producción (sin guía de estilo).                                                                       |
-| `corepack pnpm build:pruebas` | Build de pruebas: igual que producción, pero con `/guia-de-estilo`.                                             |
-| `corepack pnpm typecheck`     | Verificación de tipos de TypeScript (modo estricto).                                                            |
-| `corepack pnpm lint`          | ESLint (incluye reglas de accesibilidad jsx-a11y), sin advertencias permitidas.                                 |
-| `corepack pnpm format`        | Formatea el código con Prettier.                                                                                |
-| `corepack pnpm contraste`     | Verifica el contraste AA de todos los pares de color de los tokens.                                             |
-| `corepack pnpm test:e2e`      | Pruebas de Playwright + axe. Compila la build de pruebas, levanta un servidor temporal y lo cierra al terminar. |
+| Comando                            | Qué hace                                                                                                        |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `corepack pnpm install`            | Instala las dependencias.                                                                                       |
+| `corepack pnpm dev`                | Servidor de desarrollo (incluye `/guia-de-estilo`).                                                             |
+| `corepack pnpm build`              | Build de producción (sin guía de estilo).                                                                       |
+| `corepack pnpm build:pruebas`      | Build de pruebas: igual que producción, pero con `/guia-de-estilo`.                                             |
+| `corepack pnpm build:vista-previa` | Vista previa en un solo HTML (`dist-vista-previa/mente-al-dia.html`) para publicar como Artifact de claude.ai.  |
+| `corepack pnpm typecheck`          | Verificación de tipos de TypeScript (modo estricto).                                                            |
+| `corepack pnpm lint`               | ESLint (incluye reglas de accesibilidad jsx-a11y), sin advertencias permitidas.                                 |
+| `corepack pnpm format`             | Formatea el código con Prettier.                                                                                |
+| `corepack pnpm contraste`          | Verifica el contraste AA de todos los pares de color de los tokens.                                             |
+| `corepack pnpm test:e2e`           | Pruebas de Playwright + axe. Compila la build de pruebas, levanta un servidor temporal y lo cierra al terminar. |
 
 ## Estructura
 

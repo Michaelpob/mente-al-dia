@@ -1,5 +1,6 @@
 import { lazy } from 'react';
-import { createBrowserRouter, type RouteObject } from 'react-router';
+import { createBrowserRouter, createMemoryRouter, type RouteObject } from 'react-router';
+import { guiaEstiloHabilitada, vistaPrevia } from '@/config/entorno';
 import { PanelLayout } from './layouts/PanelLayout';
 import { PublicLayout } from './layouts/PublicLayout';
 import { RouteErrorPage } from './pages/RouteErrorPage';
@@ -19,10 +20,6 @@ const PanelPage = lazy(() => import('@/features/panel/PanelPage'));
 const GuiaEstiloPage = lazy(() => import('@/features/guia-estilo/GuiaEstiloPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
-/** La guía de estilo existe en desarrollo y en la build de pruebas (VITE_GUIA_ESTILO=true). */
-export const guiaEstiloHabilitada =
-  import.meta.env.DEV || import.meta.env.VITE_GUIA_ESTILO === 'true';
-
 const publicRoutes: RouteObject[] = [
   { index: true, element: <InicioPage /> },
   { path: 'registro', element: <RegistroPage /> },
@@ -38,7 +35,7 @@ const publicRoutes: RouteObject[] = [
   { path: '*', element: <NotFoundPage /> },
 ];
 
-export const router = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     element: <PublicLayout />,
     children: [{ errorElement: <RouteErrorPage />, children: publicRoutes }],
@@ -50,4 +47,9 @@ export const router = createBrowserRouter([
       { errorElement: <RouteErrorPage />, children: [{ index: true, element: <PanelPage /> }] },
     ],
   },
-]);
+];
+
+// En la vista previa (Artifact de claude.ai) la dirección no se puede cambiar: se navega en memoria.
+export const router = vistaPrevia
+  ? createMemoryRouter(routes, { initialEntries: ['/guia-de-estilo'] })
+  : createBrowserRouter(routes);

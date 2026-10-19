@@ -214,4 +214,18 @@ export const textos = {
       'No pudimos cargar esta página. Revisa tu conexión e inténtalo de nuevo. Si necesitas apoyo ahora, las líneas de ayuda siguen disponibles.',
     reintentar: 'Intentar de nuevo',
   },
+
+  /** Solo en la vista previa publicada como Artifact (no existe en producción). */
+  vistaPrevia: {
+    etiqueta: 'Páginas de la vista previa',
+    titulo: 'Vista previa · Fase 1',
+    enlaces: [
+      { to: '/guia-de-estilo', label: 'Guía de estilo' },
+      { to: '/', label: 'Inicio' },
+      { to: '/lineas-de-ayuda', label: 'Líneas de ayuda' },
+      { to: '/registro', label: 'Registro' },
+      { to: '/esta-pagina-no-existe', label: 'Página 404' },
+      { to: '/panel', label: 'Panel' },
+    ],
+  },
 } as const;

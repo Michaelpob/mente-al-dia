@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { Outlet, ScrollRestoration } from 'react-router';
 import { MenteAlDiaLogo } from '@/components/brand/logos';
 import { PageLoading } from '@/components/layout/page';
+import { PreviewBar } from '@/components/layout/preview-bar';
 import { MAIN_CONTENT_ID, SkipLink } from '@/components/layout/skip-link';
 import { textos } from '@/content/textos-interfaz';
 
@@ -10,6 +11,7 @@ export function PanelLayout() {
   return (
     <div className="flex min-h-dvh flex-col bg-piedra-50">
       <SkipLink />
+      <PreviewBar />
       <header className="border-b border-piedra-200 bg-blanco">
         <div className="contenedor flex min-h-16 items-center gap-4">
           <MenteAlDiaLogo />

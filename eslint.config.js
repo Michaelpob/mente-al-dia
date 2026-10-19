@@ -7,7 +7,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default defineConfig([
-  globalIgnores(['dist', 'playwright-report', 'test-results', 'node_modules']),
+  globalIgnores(['dist', 'dist-vista-previa', 'playwright-report', 'test-results', 'node_modules']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, tseslint.configs.strict, tseslint.configs.stylistic],

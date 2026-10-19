@@ -1,4 +1,5 @@
 dist
+dist-vista-previa
 node_modules
 pnpm-lock.yaml
 playwright-report

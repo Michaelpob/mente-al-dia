@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:pruebas": "tsc -b && vite build --mode pruebas",
+    "build:vista-previa": "tsc -b && vite build --mode vista-previa && node scripts/empaquetar-vista-previa.mjs",
     "preview": "vite preview",
     "typecheck": "tsc -b --pretty",
     "lint": "eslint . --max-warnings 0",
