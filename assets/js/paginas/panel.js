@@ -2,7 +2,7 @@
  * Vista previa del panel profesional (Fases 8 y 9) con datos ficticios.
  * Sobria y sin 3D: tablero, registros, prioritarios, seguimiento y herramientas de gestión.
  */
-import { activarDialogo, esc, logoMenteAlDia, montarChrome, notificar, pintarIconos } from '../comun.js';
+import { activarDialogo, esc, logoMenteAlDia, notificar, pintarIconos } from '../comun.js';
 import { icono } from '../iconos.js';
 import { ESTADOS, HOY, LUGARES, PROFESIONALES, registros } from '../datos-ficticios.js';
 import { areaPorId, instrumentoDe } from '../motor-demo.js';
@@ -10,10 +10,13 @@ import { areas } from '../proyecto/areas.js';
 import { cuestionarios } from '../proyecto/cuestionarios.js';
 import { etiquetasNivel } from '../rueda.js';
 
-montarChrome({ pagina: 'panel', encabezado: 'ninguno', pie: false });
+// El encabezado de la demo y el ingreso los prepara panel-acceso.js, que carga este módulo al ingresar.
 pintarIconos();
 document.querySelector('[data-panel-marca]').innerHTML = `<div>${logoMenteAlDia(false)}<p class="panel__titulo">Panel profesional</p></div>
-  <button class="boton boton--fantasma boton--icono panel__accesibilidad-movil" type="button" data-abrir="cajon-accesibilidad" aria-label="Accesibilidad">${icono('accessibility', 'icono icono--grande')}</button>`;
+  <div class="panel__acciones-movil">
+    <button class="boton boton--fantasma boton--icono" type="button" data-abrir="cajon-accesibilidad" aria-label="Accesibilidad">${icono('accessibility', 'icono icono--grande')}</button>
+    <button class="boton boton--fantasma boton--icono" type="button" data-salir-panel aria-label="Salir del panel">${icono('log-out', 'icono icono--grande')}</button>
+  </div>`;
 
 document.querySelector('[data-panel-aviso]').insertAdjacentHTML('afterbegin', icono('info'));
 

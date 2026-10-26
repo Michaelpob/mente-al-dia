@@ -323,7 +323,7 @@ function crearDialogoIngresar() {
       <p class="texto-secundario">En esta demostración no se crean cuentas ni se guardan datos.</p>
       <div class="grupo-botones">
         <a class="boton boton--primario" href="cuestionario.html">Probar el cuestionario</a>
-        <a class="boton boton--secundario" href="panel.html">Ver el panel profesional</a>
+        <a class="boton boton--secundario" href="panel.html">Panel profesional (administración)</a>
       </div>
       <button class="boton boton--enlace" type="button" data-cerrar>Cerrar</button>
     </div>`;

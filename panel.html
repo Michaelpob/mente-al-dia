@@ -43,29 +43,31 @@
         } catch (e) {}
       })();
     </script>
-    <script type="module" src="assets/js/paginas/panel.js"></script>
+    <script type="module" src="assets/js/paginas/panel-acceso.js"></script>
   </head>
   <body class="pagina-panel">
     <a class="saltar" href="#contenido">Saltar al contenido</a>
     <div id="chrome-superior"></div>
-    <div class="panel">
+    <!-- Ingreso de administración: el panel solo se muestra después de ingresar (D-64). -->
+    <div data-ingreso-panel></div>
+    <div class="panel" data-panel hidden>
       <div class="panel__lateral">
         <div class="panel__marca" data-panel-marca></div>
         <nav aria-label="Secciones del panel">
           <ul class="panel__menu" data-panel-menu></ul>
         </nav>
         <div class="panel__usuario">
-          <p class="texto-pequeno"><strong>Profesional de demostración</strong></p>
-          <p class="texto-pequeno texto-secundario">Rol profesional, con doble factor activo</p>
+          <p class="texto-pequeno"><strong>Administración</strong></p>
+          <p class="texto-pequeno texto-secundario" data-panel-correo></p>
           <div class="panel__usuario-acciones">
             <button class="boton boton--fantasma boton--sm" type="button" data-abrir="cajon-accesibilidad">
               <span data-icono="accessibility"></span>Accesibilidad
             </button>
-            <a class="boton boton--fantasma boton--sm" href="./"><span data-icono="log-out"></span>Salir</a>
+            <button class="boton boton--fantasma boton--sm" type="button" data-salir-panel><span data-icono="log-out"></span>Salir</button>
           </div>
         </div>
       </div>
-      <main id="contenido" class="panel__principal" tabindex="-1">
+      <main id="contenido-panel" class="panel__principal" tabindex="-1">
         <div class="aviso aviso--demo panel__aviso" data-panel-aviso>
           <div class="aviso__cuerpo">
             <p class="aviso__titulo">Vista previa con datos ficticios</p>
