@@ -5,6 +5,7 @@ import { Callout } from '@/components/ui/feedback';
 import { TextField } from '@/components/ui/field';
 import { textos } from '@/content/textos-interfaz';
 import { mensajeError } from './errores';
+import type { MotivoSinAcceso } from './estado-sesion';
 import { useSesion, type InscripcionDobleFactor } from './sesion-context';
 
 const t = textos.accesoPanel;
@@ -238,13 +239,16 @@ export function InscribirDobleFactor() {
   );
 }
 
-export function SinAcceso({ motivo }: { motivo: 'sin_perfil' | 'inactivo' }) {
+const TEXTO_SIN_ACCESO: Record<MotivoSinAcceso, string> = {
+  sin_perfil: t.sinPerfil,
+  inactivo: t.inactivo,
+  sin_permiso: t.soloAdministracion,
+};
+
+export function SinAcceso({ motivo }: { motivo: MotivoSinAcceso }) {
   const { cerrarSesion } = useSesion();
   return (
-    <TarjetaAcceso
-      titulo={t.sinAccesoTitulo}
-      texto={motivo === 'inactivo' ? t.inactivo : t.sinPerfil}
-    >
+    <TarjetaAcceso titulo={t.sinAccesoTitulo} texto={TEXTO_SIN_ACCESO[motivo]}>
       <BotonCerrarSesion onClick={cerrarSesion} />
     </TarjetaAcceso>
   );

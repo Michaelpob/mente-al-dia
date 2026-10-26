@@ -93,4 +93,4 @@ La base `mente_al_dia_pruebas` se borra y se vuelve a crear en cada ejecución.
 
 ## Al cambiar el motor o el contenido
 
-Cada cambio en `src/lib/motor-resultados` o en `src/content/v1` necesita `corepack pnpm funciones:sincronizar` (y `demo:sincronizar` para la demostración). `test:funciones` falla si se olvida. Si cambian las reglas, no se edita la migración: se crea una versión nueva en `reglas_resultados` y se activa.
+Cada cambio en `src/lib/motor-resultados` o en `src/content/v1` necesita `corepack pnpm funciones:sincronizar`. `test:funciones` falla si se olvida. Si cambian las reglas, no se edita la migración: se crea una versión nueva en `reglas_resultados` y se activa.

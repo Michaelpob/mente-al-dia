@@ -105,7 +105,7 @@ export const inicio = {
         texto: 'Antes de empezar te pedimos tu autorización. Ninguna casilla viene marcada.',
       },
       {
-        titulo: 'Solo profesionales autorizados',
+        titulo: 'Solo la administración autorizada',
         texto: 'Nadie más ve tus respuestas, y cada consulta queda registrada.',
       },
       { titulo: 'Información cifrada', texto: 'Tus datos viajan y se guardan cifrados.' },
@@ -128,7 +128,7 @@ export const inicio = {
       {
         pregunta: '¿Quién puede ver mis respuestas?',
         respuesta:
-          'Solo profesionales autorizados de la Alcaldía, para orientar y hacer seguimiento cuando sea necesario. Cada acceso queda registrado.',
+          'Solo la administración autorizada de la Alcaldía, para orientar y hacer seguimiento cuando sea necesario. Cada acceso queda registrado.',
       },
       {
         pregunta: '¿Cuánto tiempo tarda?',

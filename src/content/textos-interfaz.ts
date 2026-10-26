@@ -69,7 +69,7 @@ const paginas = {
   },
   panel: {
     titulo: 'Panel profesional',
-    descripcion: 'Espacio privado para profesionales autorizados de la Alcaldía.',
+    descripcion: 'Espacio privado de la administración de la Alcaldía.',
     fase: 8,
     indexable: false,
   },
@@ -200,10 +200,10 @@ export const textos = {
     descripcion: 'Todas las páginas públicas de Mente al Día.',
   },
 
-  /** Ingreso al panel profesional (Fase 4): contraseña y doble factor obligatorio. */
+  /** Ingreso al panel (Fase 4): solo el administrador, con contraseña y doble factor (D-65). */
   accesoPanel: {
-    titulo: 'Ingresar al panel',
-    descripcion: 'Espacio privado para profesionales autorizados de la Alcaldía.',
+    titulo: 'Ingreso de administración',
+    descripcion: 'Solo el administrador puede ver el panel. Ingresa con tu correo y tu contraseña.',
     correo: 'Correo institucional',
     contrasena: 'Contraseña',
     ingresar: 'Ingresar',
@@ -215,7 +215,7 @@ export const textos = {
     enlaceEnviado:
       'Si el correo tiene una cuenta del panel, te llegará un enlace en unos minutos. Revisa también la carpeta de correo no deseado.',
     volverIngreso: 'Volver al ingreso',
-    soloInvitacion: 'Las cuentas del panel se crean por invitación del superadministrador.',
+    soloInvitacion: 'Las cuentas de administración se crean por invitación de otro administrador.',
     verificarTitulo: 'Verificación en dos pasos',
     verificarTexto: 'Escribe el código de 6 dígitos que muestra tu aplicación de autenticación.',
     codigo: 'Código de verificación',
@@ -232,6 +232,8 @@ export const textos = {
       'Tu cuenta no tiene un rol asignado. Pide al superadministrador que revise tu invitación.',
     inactivo:
       'Tu cuenta está desactivada. Si crees que es un error, escríbele al superadministrador.',
+    soloAdministracion:
+      'El panel es solo para el administrador. Tu cuenta tiene otro rol, así que no puede verlo.',
     cerrarSesion: 'Cerrar sesión',
     sesionComo: (nombre: string, rol: string) => `Sesión iniciada como ${nombre} (${rol}).`,
     roles: {

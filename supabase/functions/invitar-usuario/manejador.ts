@@ -1,6 +1,7 @@
 /**
  * Invitación de cuentas del panel (Fase 4). Las cuentas no se registran solas: el
- * superadministrador, con doble factor, invita por correo y elige el rol.
+ * superadministrador, con doble factor, invita por correo. El panel es solo del administrador
+ * (D-65), así que solo se invitan cuentas de superadministrador.
  * La persona invitada define su contraseña y su doble factor al abrir el enlace.
  */
 import { esquemaInvitacion, problemas, type Invitacion } from '../_compartido/esquemas.ts';

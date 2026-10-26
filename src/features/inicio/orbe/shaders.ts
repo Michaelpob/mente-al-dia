@@ -1,7 +1,6 @@
 /**
  * Shaders del «Orbe de equilibrio»: una esfera satinada que respira, rodeada por dos anillos.
- * Es el mismo dibujo de la demostración pública (demo/assets/js/orbe.js): un único shader de
- * WebGL 1 sobre un triángulo que cubre el lienzo, sin librerías.
+ * Un único shader de WebGL 1 sobre un triángulo que cubre el lienzo, sin librerías.
  */
 export const VERTICES = `
 attribute vec2 aPos;

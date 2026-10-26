@@ -38,8 +38,8 @@ function dependencias(perfil: PerfilSesion | null = SUPER, cambios: Partial<Depe
 
 const invitacion = {
   correo: 'Nueva@Alcaldia.gov.co',
-  nombre: 'Profesional Nueva',
-  rol: 'profesional',
+  nombre: 'Administradora Nueva',
+  rol: 'superadministrador',
 };
 const pedir = (cuerpo: unknown = invitacion, token: string | null = 'token') =>
   new Request('http://localhost/invitar-usuario', {
@@ -84,6 +84,10 @@ Deno.test('solo invita el superadministrador activo y con doble factor', async (
 Deno.test('valida el rol y el correo', async () => {
   const { deps, llamadas } = dependencias();
   assertEquals((await crearManejador(deps)(pedir({ ...invitacion, rol: 'dueño' }))).status, 400);
+  // El panel es solo del administrador (D-65): no se invitan profesionales ni consulta.
+  for (const rol of ['profesional', 'consulta']) {
+    assertEquals((await crearManejador(deps)(pedir({ ...invitacion, rol }))).status, 400);
+  }
   assertEquals((await crearManejador(deps)(pedir({ ...invitacion, correo: 'x' }))).status, 400);
   assertEquals(llamadas.invitados.length, 0);
 });

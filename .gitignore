@@ -1,9 +1,8 @@
 node_modules
 dist
 dist-vista-previa
+dist-pages
 *.local
-# Notas locales con datos de acceso (scripts/definir-admin-demo.mjs)
-*.local.md
 .env
 .env.*
 !.env.example

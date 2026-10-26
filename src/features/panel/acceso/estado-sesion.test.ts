@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { resolverEstado, type PerfilPanel } from './estado-sesion';
 
-const perfil: PerfilPanel = { id: 'p1', nombre: 'Profesional', rol: 'profesional', activo: true };
+const perfil: PerfilPanel = {
+  id: 'p1',
+  nombre: 'Administración',
+  rol: 'superadministrador',
+  activo: true,
+};
 const base = { haySesion: true, nivel: 'aal1' as const, factoresVerificados: [], perfil };
 
 describe('resolverEstado', () => {
@@ -23,6 +28,19 @@ describe('resolverEstado', () => {
       tipo: 'sin_acceso',
       motivo: 'inactivo',
     });
+  });
+
+  it('el panel es solo del administrador: profesional y consulta no entran (D-65)', () => {
+    for (const rol of ['profesional', 'consulta'] as const) {
+      expect(
+        resolverEstado({
+          ...base,
+          nivel: 'aal2',
+          factoresVerificados: ['f1'],
+          perfil: { ...perfil, rol },
+        }),
+      ).toEqual({ tipo: 'sin_acceso', motivo: 'sin_permiso' });
+    }
   });
 
   it('sin factores verificados pide activar el doble factor', () => {

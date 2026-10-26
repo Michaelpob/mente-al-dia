@@ -100,7 +100,7 @@ test.describe('Rutas públicas', () => {
   test('/panel sin sesión lleva al ingreso', async ({ page }) => {
     await page.goto('/panel');
     await expect(page).toHaveURL(/\/panel\/ingresar$/);
-    await expect(page.locator('h1')).toHaveText('Ingresar al panel');
+    await expect(page.locator('h1')).toHaveText('Ingreso de administración');
     expect(await violacionesGraves(page)).toEqual([]);
   });
 

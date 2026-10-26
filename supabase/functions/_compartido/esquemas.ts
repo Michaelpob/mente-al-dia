@@ -104,7 +104,8 @@ export const esquemaInvitacion = z
   .object({
     correo,
     nombre: texto(2, 120),
-    rol: z.enum(['superadministrador', 'profesional', 'consulta']),
+    // El panel es solo del administrador (D-65): únicamente se invitan cuentas de superadministrador.
+    rol: z.literal('superadministrador').default('superadministrador'),
   })
   .strict();
 export type Invitacion = z.infer<typeof esquemaInvitacion>;
