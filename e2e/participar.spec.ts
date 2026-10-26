@@ -14,18 +14,6 @@ const CORS = {
   'Access-Control-Allow-Headers': 'authorization, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
-const RESULTADO = {
-  resultadoGeneral: 'favorable',
-  niveles: {},
-  mensajes: {},
-  conteo: { adecuado: 20, porFortalecer: 0, requiereAtencion: 0, sinDato: 0 },
-  respondidas: 20,
-  resultadoParcial: false,
-  rutaAtencionEspecial: false,
-  reglasVersion: '0.1-provisional',
-  instrumentoVersion: '1.0',
-};
-
 type Cuerpo = Record<string, unknown> & { claveEnvio?: string; respuestas?: unknown[] };
 
 /** Simula la función: cada envío recibe la siguiente respuesta de la lista (por defecto, éxito). */
@@ -69,6 +57,33 @@ const AREAS = [
   'bienestar_psicologico_general',
 ];
 const todasSi = Object.fromEntries(AREAS.map((area) => [area, 'si']));
+
+/** Niveles de ejemplo: 2 para cuidar primero, 5 por fortalecer, 12 fortalezas y 1 sin dato. */
+const NIVELES = Object.fromEntries(
+  AREAS.map((area, i) => [
+    area,
+    i < 2 ? 'requiere_atencion' : i < 7 ? 'por_fortalecer' : i < 19 ? 'adecuado' : 'sin_dato',
+  ]),
+);
+const RESULTADO = {
+  resultadoGeneral: 'por_fortalecer',
+  niveles: NIVELES,
+  mensajes: {},
+  conteo: { adecuado: 12, porFortalecer: 5, requiereAtencion: 2, sinDato: 1 },
+  respondidas: 20,
+  resultadoParcial: false,
+  rutaAtencionEspecial: false,
+  reglasVersion: '0.1-provisional',
+  instrumentoVersion: '1.0',
+};
+
+/** Último envío guardado en la pestaña (lo que lee /resultados). */
+const enviado = (modulo = 'adulto', cambios: Record<string, unknown> = {}) => ({
+  modulo,
+  codigo: 'MD-0042',
+  resultado: { ...RESULTADO, ...cambios },
+  fecha: '2026-10-27T15:00:00.000Z',
+});
 
 /** Estado guardado en la pestaña, como si la persona ya se hubiera registrado. */
 async function conEstado(page: Page, cambios: Record<string, unknown>) {
@@ -225,4 +240,85 @@ test('sin violaciones de accesibilidad en la pregunta y en la revisión', async 
   await page.keyboard.press('Enter');
   await expect(page.locator('h1')).toHaveText('Revisa tus respuestas');
   expect(await violacionesGraves(page)).toEqual([]);
+});
+
+test('los resultados muestran la rueda y las tarjetas agrupadas por nivel', async ({ page }) => {
+  await conEstado(page, { registroCompleto: false, enviado: enviado() });
+  await page.goto('/resultados');
+  await expect(page.locator('h1')).toHaveText('Tus resultados');
+  await expect(page.getByText(/27 de octubre de 2026/)).toBeVisible();
+  await expect(
+    page.getByText('12 fortalezas, 5 por fortalecer y 2 para cuidar primero. 1 sin dato.'),
+  ).toBeVisible();
+  for (const grupo of ['Para cuidar primero', 'Por fortalecer', 'Tus fortalezas', 'Sin dato']) {
+    await expect(page.getByRole('heading', { level: 3, name: new RegExp(grupo) })).toBeVisible();
+  }
+  // Lo que más cuidado necesita está abierto; lo demás, cerrado.
+  await expect(page.locator('#area-bienestar_emocional')).toHaveAttribute('open', '');
+  await expect(page.locator('#area-concentracion')).not.toHaveAttribute('open', '');
+
+  // La rueda tiene las 20 áreas con su nivel; al elegir una se abre su tarjeta con el foco.
+  await expect(page.locator('svg [data-area]')).toHaveCount(20);
+  await expect(page.locator('svg [data-area="manejo_estres"]')).toHaveAttribute(
+    'data-nivel',
+    'por_fortalecer',
+  );
+  await page.locator('svg [data-area="concentracion"]').dispatchEvent('click');
+  await expect(page.locator('#area-concentracion')).toHaveAttribute('open', '');
+  await expect(page.locator('#area-concentracion summary')).toBeFocused();
+  expect(await violacionesGraves(page)).toEqual([]);
+});
+
+test('la versión imprimible abre todas las tarjetas y deja solo el contenido', async ({ page }) => {
+  await conEstado(page, { registroCompleto: false, enviado: enviado() });
+  await page.goto('/resultados');
+  await page.evaluate(() => {
+    const w = window as unknown as { vecesImpreso: number };
+    w.vecesImpreso = 0;
+    window.print = () => {
+      w.vecesImpreso += 1;
+    };
+  });
+  await page.getByRole('button', { name: 'Descargar o imprimir' }).click();
+  expect(
+    await page.evaluate(() => (window as unknown as { vecesImpreso: number }).vecesImpreso),
+  ).toBe(1);
+
+  await page.evaluate(() => window.dispatchEvent(new Event('beforeprint')));
+  await page.emulateMedia({ media: 'print' });
+  await expect(page.locator('main details:not([open])')).toHaveCount(0);
+  await expect(page.getByRole('banner')).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Descargar o imprimir' })).toBeHidden();
+  await expect(page.getByText(/no constituye un diagnóstico/)).toBeVisible();
+
+  await page.evaluate(() => window.dispatchEvent(new Event('afterprint')));
+  await page.emulateMedia({ media: 'screen' });
+  await expect(page.locator('#area-concentracion')).not.toHaveAttribute('open', '');
+});
+
+test('con ruta de atención especial, el apoyo inmediato va antes que todo', async ({ page }) => {
+  await conEstado(page, {
+    registroCompleto: false,
+    enviado: enviado('adulto', { rutaAtencionEspecial: true }),
+  });
+  await page.goto('/resultados');
+  await expect(
+    page.getByRole('heading', { name: 'Si lo necesitas, hay apoyo ahora mismo' }),
+  ).toBeVisible();
+  const titulos = await page.locator('main h1, main h2').allTextContents();
+  expect(titulos[0]).toBe('Si lo necesitas, hay apoyo ahora mismo');
+  await expect(
+    page
+      .locator('main')
+      .getByRole('link', { name: /Llamar al 123/ })
+      .first(),
+  ).toBeVisible();
+  expect(await violacionesGraves(page)).toEqual([]);
+});
+
+test('en el módulo infantil hay un mensaje para el adulto que acompaña', async ({ page }) => {
+  await conEstado(page, { registroCompleto: false, enviado: enviado('nino') });
+  await page.goto('/resultados');
+  await expect(page.getByText(/Cuestionario de niñas y niños/)).toBeVisible();
+  await expect(page.getByText('Para el adulto que acompaña')).toBeVisible();
 });

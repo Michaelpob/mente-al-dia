@@ -68,3 +68,11 @@ Todo lo que debe validar el equipo profesional, jurídico o técnico de la Alcal
 | F5-03 | Continuar más tarde con el correo                   | Hoy el avance solo se conserva en la pestaña (D-51). Guardarlo en el servidor exige decidir cómo se identifica a la persona y por cuánto tiempo se guarda un cuestionario sin terminar.            | Secretaría responsable y oficina jurídica | Pendiente |
 | F5-04 | Política y términos enlazados desde la autorización | `/privacidad` y `/terminos` siguen siendo páginas provisionales. Es el pendiente 11.                                                                                                               | Oficina jurídica                          | Pendiente |
 | F6-01 | Resultado favorable con apoyo inmediato             | Si un área sensible queda en «requiere atención», se muestra primero el apoyo inmediato y después el mensaje general, que puede ser favorable. Revisar que el tono de los dos juntos sea adecuado. | Equipo profesional                        | Pendiente |
+
+## Resultados (Fase 7)
+
+| N.º   | Tema                                | Situación actual                                                                                                                                        | Valida                    | Estado    |
+| ----- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | --------- |
+| F7-01 | Textos de la página de resultados   | Borrador en `src/content/participar.ts` (`resultados`): títulos del resultado general, resumen, nombres de los grupos y aviso de la versión imprimible. | Equipo profesional (tono) | Borrador  |
+| F7-02 | Volver a ver los resultados después | Hoy solo se ven en la pestaña donde se envió; para conservarlos se imprimen o se guardan en PDF (D-61). Depende de F5-03.                               | Secretaría responsable    | Pendiente |
+| F7-03 | Colores de la rueda por nivel       | Tokens `--rueda-*` de la demostración, con patrón además del color.                                                                                     | Comunicaciones            | Pendiente |

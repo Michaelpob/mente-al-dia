@@ -180,9 +180,15 @@ describe('reducir', () => {
       tipo: 'enviado',
       codigo: 'MD-0001',
       resultado,
+      fecha: '2026-10-27T15:00:00.000Z',
       claveSiguiente: 'otra-clave',
     });
-    expect(estado.enviado).toEqual({ modulo: 'adulto', codigo: 'MD-0001', resultado });
+    expect(estado.enviado).toEqual({
+      modulo: 'adulto',
+      codigo: 'MD-0001',
+      resultado,
+      fecha: '2026-10-27T15:00:00.000Z',
+    });
     expect(estado.valores).toEqual({ participante: {}, acudiente: {} });
     expect(estado.respuestas).toEqual({});
     expect(estado.claveEnvio).toBe('otra-clave');

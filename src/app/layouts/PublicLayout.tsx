@@ -29,8 +29,9 @@ export function PublicLayout() {
     target?.scrollIntoView({ block: 'start' });
   }, [location.pathname, location.hash]);
 
+  // Al imprimir (resultados) solo queda el contenido: sin encabezado, pie ni barras.
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-dvh flex-col print:[&>:not(main)]:hidden">
       <SkipLink />
       <PreviewBar />
       <GovCoTopBar />

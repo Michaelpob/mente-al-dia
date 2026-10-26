@@ -197,6 +197,41 @@ export const participar = {
     reintentar: 'Intentar de nuevo',
   },
 
+  /** Resultados (Fase 7). BORRADOR, los mismos de la demostración. */
+  resultados: {
+    titulo: 'Tus resultados',
+    modulo: { adulto: 'Cuestionario de personas adultas', nino: 'Cuestionario de niñas y niños' },
+    orientacionNoDiagnostico: 'Orientación, no diagnóstico',
+    titulosGenerales: {
+      favorable: 'Tu resultado es favorable',
+      por_fortalecer: 'Hay aspectos por fortalecer',
+      desafios: 'Algunas áreas necesitan más cuidado',
+      insuficiente: 'Necesitamos más respuestas',
+    },
+    apoyoTitulo: 'Si lo necesitas, hay apoyo ahora mismo',
+    llamar123: 'Llamar al 123',
+    areasTitulo: 'Tus 20 áreas',
+    resumen: {
+      fortaleza: (n: number) => `${n} ${n === 1 ? 'fortaleza' : 'fortalezas'}`,
+      porFortalecer: (n: number) => `${n} por fortalecer`,
+      cuidarPrimero: (n: number) => `${n} para cuidar primero`,
+      sinDato: (n: number) => `${n} sin dato`,
+    },
+    grupos: {
+      requiere_atencion: 'Para cuidar primero',
+      por_fortalecer: 'Por fortalecer',
+      adecuado: 'Tus fortalezas',
+      sin_dato: 'Sin dato',
+    },
+    centroRueda: { titulo: 'Tus áreas', detalle: 'Elige una para ver su mensaje' },
+    leyenda: 'Leyenda de niveles',
+    pausa: 'Una pausa para ti',
+    lineasTexto: 'Si necesitas hablar con alguien, puedes comunicarte con estas líneas.',
+    imprimir: 'Descargar o imprimir',
+    aviso:
+      'Este resultado es orientativo y no constituye un diagnóstico psicológico ni médico. Si estás en peligro inmediato, llama al 123.',
+  },
+
   enviado: {
     titulo: 'Gracias por responder',
     codigo: 'Código de tu cuestionario',

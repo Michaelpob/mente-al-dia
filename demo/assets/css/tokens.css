@@ -32,6 +32,13 @@
   --dimension-afrontamiento: #d4ccbf;
   --dimension-proyecto: #d6dde2;
 
+  /* Rueda de resultados: relleno decorativo por nivel, con patrón además del color
+     (íconos grafito encima, nunca texto) */
+  --rueda-adecuado: #86a992;
+  --rueda-fortalecer: #d8b76e;
+  --rueda-atencion: #cc8c78;
+  --rueda-sin-dato: #c9ced2;
+
   /* Niveles: siempre con ícono + texto, nunca solo color */
   --nivel-adecuado: #3f6b52;
   --nivel-adecuado-fondo: #e4efe8;

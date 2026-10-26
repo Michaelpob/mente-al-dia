@@ -366,7 +366,13 @@ function Revision({ modulo, tituloRef }: VistaProps) {
     try {
       const { codigo, resultado } = await enviador.enviar(datos);
       // Sin registro pendiente, la página lleva a los resultados.
-      despachar({ tipo: 'enviado', codigo, resultado, claveSiguiente: nuevaClaveEnvio() });
+      despachar({
+        tipo: 'enviado',
+        codigo,
+        resultado,
+        fecha: new Date().toISOString(),
+        claveSiguiente: nuevaClaveEnvio(),
+      });
     } catch (error) {
       setEnvio({ tipo: 'error', codigo: error instanceof ErrorEnvio ? error.codigo : 'servidor' });
     }

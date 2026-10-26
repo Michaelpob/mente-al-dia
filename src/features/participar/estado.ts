@@ -28,6 +28,8 @@ export interface Enviado {
   modulo: ModuloDisponible;
   codigo: string;
   resultado: ResultadoParticipante;
+  /** ISO 8601. Opcional: los envíos guardados antes de la Fase 7 no la tienen. */
+  fecha?: string;
 }
 
 export interface EstadoParticipacion {
@@ -66,6 +68,7 @@ export type Accion =
       tipo: 'enviado';
       codigo: string;
       resultado: ResultadoParticipante;
+      fecha: string;
       claveSiguiente: string;
     }
   | { tipo: 'reiniciar'; claveEnvio: string };
@@ -173,7 +176,12 @@ export function reducir(estado: EstadoParticipacion, accion: Accion): EstadoPart
       // Guardado en el servidor: aquí ya no quedan datos personales ni respuestas.
       return {
         ...estadoInicial(accion.claveSiguiente),
-        enviado: { modulo: estado.modulo, codigo: accion.codigo, resultado: accion.resultado },
+        enviado: {
+          modulo: estado.modulo,
+          codigo: accion.codigo,
+          resultado: accion.resultado,
+          fecha: accion.fecha,
+        },
       };
 
     case 'reiniciar':

@@ -80,6 +80,12 @@ const pares = [
     `dimension-${d}`,
     COMPONENTE,
   ]),
+  // Resultados: íconos de la rueda sobre el color de cada nivel.
+  ...['adecuado', 'fortalecer', 'atencion', 'sin-dato'].map((n) => [
+    'grafito-900',
+    `rueda-${n}`,
+    COMPONENTE,
+  ]),
 ];
 
 // Combinaciones que NO cumplen y por eso están prohibidas en el diseño (se informan, no fallan).
