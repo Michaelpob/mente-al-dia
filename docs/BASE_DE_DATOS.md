@@ -32,7 +32,9 @@ Ninguno de los tres entra sin **doble factor**: las políticas exigen que la ses
 - **Notas inmutables.** Las notas de seguimiento se agregan a nombre de quien las escribe y no se editan ni se borran.
 - **Auditoría de solo lectura.** `auditoria` registra quién, cuándo y qué: aplicaciones registradas, consultas de datos de contacto, cambios de estado y asignación, notas, reportes, invitaciones, cambios de rol, reglas y configuración. No guarda nombres, correos ni teléfonos, ni el texto de las notas. Un disparador impide editarla, borrarla o vaciarla, incluso al dueño de la base de datos.
 - **Reglas con versión.** Una versión de reglas no se modifica: se crea otra y se activa con `activar_reglas`. Cada aplicación guarda la versión con la que se calculó.
-- **Tiempo de conservación.** `purgar_datos_vencidos()` borra los datos personales que superen `retencion_meses`. Mientras la oficina jurídica no lo defina (pendiente 12) el valor es `null` y no borra nada. Se programará con pg_cron en la Fase 11.
+- **Tiempo de conservación.** `purgar_datos_vencidos()` borra los datos personales que superen `retencion_meses`. Mientras la oficina jurídica no lo defina (pendiente 12) el valor es `null` y no borra nada. Solo admite un número entero de meses, mínimo 1: con 0 se borraría todo. Se programará con pg_cron en la Fase 11.
+- **Reportes en hora de Colombia.** Los días y las semanas de `reporte_agregado` y `reporte_nominal` se cuentan en hora de Colombia (`America/Bogota`), no en UTC.
+- **Grupos pequeños ocultos.** `reporte_agregado` no muestra grupos de menos de `reporte_minimo_grupo` personas (mínimo y valor inicial: 5): se suman en una fila por semana con `grupos_pequenos = true`, sin módulo, lugar ni resultado, y si esa suma tampoco llega al mínimo su total es `null`. El periodo pedido se amplía a semanas completas (de lunes a domingo), para que no se pueda restar un reporte de otro y aislar a una persona.
 
 ## Poner en marcha el proyecto
 
@@ -44,7 +46,7 @@ Lo que tiene que hacer una persona con acceso a Supabase (una sola vez):
    npx supabase@2.119.0 login
    npx supabase@2.119.0 link --project-ref <ref-del-proyecto>
    ```
-3. **Aplicar la migración**: `npx supabase@2.119.0 db push`.
+3. **Aplicar las migraciones**: `npx supabase@2.119.0 db push`.
 4. **Configurar Auth** en el panel de Supabase (Authentication):
    - _Sign In / Providers_: desactivar «Allow new users to sign up» (las cuentas son por invitación) y dejar activo Email.
    - _Multi-Factor_: activar TOTP (inscripción y verificación).

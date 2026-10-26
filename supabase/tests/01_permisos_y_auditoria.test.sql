@@ -159,10 +159,11 @@ select is((select count(*) from public.mi_perfil()), 0::bigint, 'Una cuenta sin 
 -- -------------------------------------------------------------------------------- consulta
 select set_config('request.jwt.claims', (select valor from claims where nombre = 'consulta'), true);
 select is((select count(*) from public.aplicaciones), 0::bigint, 'El rol consulta no ve registros individuales');
-select is(
-  (select sum(total) from public.reporte_agregado(current_date - 30, current_date)),
-  2::numeric,
-  'El rol consulta ve el reporte agregado'
+-- Con solo 2 registros, todo queda como grupo pequeño (ver 02_reportes_y_conservacion).
+select results_eq(
+  $$select grupos_pequenos, total from public.reporte_agregado(current_date - 30, current_date)$$,
+  $$values (true, null::bigint)$$,
+  'El rol consulta ve el reporte agregado, sin detalle de los grupos pequeños'
 );
 select throws_ok(
   $$select public.ver_datos_contacto((select id from registradas limit 1))$$,
