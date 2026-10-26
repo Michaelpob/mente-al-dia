@@ -32,7 +32,7 @@ export default defineConfig([
   },
   {
     // En las pruebas, «!» afirma que un elemento existe; si no existe, la prueba falla igual.
-    files: ['src/**/*.test.ts', 'e2e/**/*.ts'],
+    files: ['src/**/*.test.ts', 'supabase/functions/**/*.test.ts', 'e2e/**/*.ts'],
     rules: { '@typescript-eslint/no-non-null-assertion': 'off' },
   },
   {

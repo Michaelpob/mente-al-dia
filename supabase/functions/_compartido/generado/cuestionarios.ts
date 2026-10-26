@@ -1,0 +1,301 @@
+// GENERADO por scripts/sincronizar-funciones.mjs desde src/content/v1/cuestionarios.ts. No editar a mano.
+// GENERADO por scripts/generar-contenido.mjs desde fuente/mente-al-dia-contenido.json.
+// No editar a mano: cambia el JSON fuente (con validación del equipo profesional) y vuelve a generar.
+import type { Cuestionario, Modulo } from './dominio.ts';
+
+/** Preguntas y opciones: DOCUMENTO BASE. Instrucciones: BORRADOR (el documento base no las trae). */
+export const cuestionarioAdulto: Cuestionario = {
+  modulo: 'adulto',
+  version: '1.0',
+  estado: 'validado',
+  fuente: 'documento base',
+  activo: true,
+  edad: '18 años o más',
+  instrucciones: {
+    texto:
+      'Responde pensando en cómo te has sentido durante las últimas semanas. No hay respuestas correctas o incorrectas. Si prefieres no contestar alguna pregunta, puedes elegir «Prefiero no responder».',
+    estado: 'borrador',
+  },
+  opciones: [
+    { valor: 'si', etiqueta: 'Sí' },
+    { valor: 'a_veces', etiqueta: 'Algunas veces o parcialmente' },
+    { valor: 'no', etiqueta: 'No o presenta dificultades' },
+    { valor: 'prefiero_no_responder', etiqueta: 'Prefiero no responder' },
+  ],
+  preguntas: [
+    {
+      numero: 1,
+      areaId: 'bienestar_emocional',
+      texto:
+        '¿Durante las últimas semanas, ha experimentado una sensación general de tranquilidad y equilibrio emocional?',
+    },
+    {
+      numero: 2,
+      areaId: 'sueno_descanso',
+      texto:
+        '¿Ha logrado mantener un descanso nocturno adecuado que le permita recuperar su energía?',
+    },
+    {
+      numero: 3,
+      areaId: 'energia_vitalidad',
+      texto: '¿Ha contado con suficiente energía para realizar sus actividades cotidianas?',
+    },
+    {
+      numero: 4,
+      areaId: 'motivacion_interes',
+      texto:
+        '¿Ha mantenido el interés y la motivación para realizar actividades que habitualmente disfruta?',
+    },
+    {
+      numero: 5,
+      areaId: 'manejo_estres',
+      texto:
+        '¿Considera que dispone de recursos adecuados para afrontar situaciones de estrés, preocupación o tensión emocional?',
+    },
+    {
+      numero: 6,
+      areaId: 'red_apoyo',
+      texto:
+        '¿Cuenta con al menos una persona de confianza a quien pueda acudir cuando enfrenta una dificultad personal o emocional?',
+    },
+    {
+      numero: 7,
+      areaId: 'relaciones_interpersonales',
+      texto:
+        '¿Considera que sus relaciones familiares, sociales o de pareja contribuyen positivamente a su bienestar emocional?',
+    },
+    {
+      numero: 8,
+      areaId: 'valoracion_respeto',
+      texto:
+        '¿Se siente valorado/a, respetado/a y tratado/a de manera adecuada por las personas de su entorno?',
+    },
+    {
+      numero: 9,
+      areaId: 'concentracion',
+      texto:
+        '¿Ha podido mantener una adecuada concentración durante sus actividades de estudio, trabajo o vida cotidiana?',
+    },
+    {
+      numero: 10,
+      areaId: 'afrontamiento_dificultades',
+      texto:
+        '¿Considera que cuenta con recursos personales para afrontar los problemas y dificultades que se presentan en su vida?',
+    },
+    {
+      numero: 11,
+      areaId: 'regulacion_emocional',
+      texto:
+        '¿Ha logrado manejar sus emociones de manera adecuada cuando enfrenta situaciones difíciles o estresantes?',
+    },
+    {
+      numero: 12,
+      areaId: 'actividad_fisica_recreacion',
+      texto:
+        '¿Realiza de manera regular actividades físicas, recreativas o de esparcimiento que contribuyan a su bienestar?',
+    },
+    {
+      numero: 13,
+      areaId: 'equilibrio_responsabilidades_descanso',
+      texto:
+        '¿Dispone de tiempo suficiente para descansar y realizar actividades que favorezcan su bienestar personal?',
+    },
+    {
+      numero: 14,
+      areaId: 'seguridad_entorno',
+      texto:
+        '¿Se siente seguro/a en los espacios donde desarrolla habitualmente sus actividades, como el hogar, trabajo, estudio y entorno cercano?',
+    },
+    {
+      numero: 15,
+      areaId: 'perspectiva_futuro',
+      texto:
+        '¿Durante las últimas semanas, ha logrado mantener una perspectiva tranquila frente a su futuro?',
+    },
+    {
+      numero: 16,
+      areaId: 'proposito_sentido_vida',
+      texto:
+        '¿Considera que actualmente tiene un propósito, proyecto o sentido que le resulte significativo en su vida?',
+    },
+    {
+      numero: 17,
+      areaId: 'afrontamiento_consumo_sustancias',
+      texto:
+        '¿Ha evitado recurrir al alcohol, sustancias psicoactivas u otras sustancias como una forma de afrontar dificultades emocionales?',
+    },
+    {
+      numero: 18,
+      areaId: 'busqueda_ayuda',
+      texto:
+        'Cuando enfrenta una situación que supera sus recursos personales, ¿puede identificar y solicitar apoyo oportunamente?',
+    },
+    {
+      numero: 19,
+      areaId: 'funcionamiento_cotidiano',
+      texto:
+        'A pesar de las dificultades emocionales, ¿ha logrado mantener sus actividades habituales, responsabilidades y rutinas de autocuidado?',
+    },
+    {
+      numero: 20,
+      areaId: 'bienestar_psicologico_general',
+      texto: 'En términos generales, ¿considera que su bienestar psicológico actual es adecuado?',
+    },
+  ],
+};
+
+/** Preguntas y opciones: DOCUMENTO BASE. Instrucciones: adaptación web (PROPUESTA) del texto original. */
+export const cuestionarioNino: Cuestionario = {
+  modulo: 'nino',
+  version: '1.0',
+  estado: 'validado',
+  fuente: 'documento base',
+  activo: true,
+  edad: '6 a 11 años, con acompañamiento de un adulto responsable',
+  instrucciones: {
+    texto:
+      'Lee cada pregunta con atención y elige la respuesta que más se parezca a lo que has vivido durante las últimas semanas.',
+    estado: 'borrador',
+  },
+  opciones: [
+    { valor: 'si', etiqueta: 'Sí' },
+    { valor: 'a_veces', etiqueta: 'A veces' },
+    { valor: 'no', etiqueta: 'No' },
+  ],
+  preguntas: [
+    {
+      numero: 1,
+      areaId: 'bienestar_emocional',
+      texto: '¿Durante las últimas semanas te has sentido tranquilo(a) y bien contigo mismo(a)?',
+    },
+    {
+      numero: 2,
+      areaId: 'sueno_descanso',
+      texto: '¿Has podido dormir y descansar bien durante las últimas semanas?',
+    },
+    {
+      numero: 3,
+      areaId: 'energia_vitalidad',
+      texto:
+        '¿Tienes suficiente energía para estudiar, jugar y hacer tus actividades durante el día?',
+    },
+    {
+      numero: 4,
+      areaId: 'motivacion_interes',
+      texto: '¿Tienes ganas de hacer las actividades que normalmente te gustan y disfrutas?',
+    },
+    {
+      numero: 5,
+      areaId: 'manejo_estres',
+      texto:
+        'Cuando estás preocupado(a), estresado(a) o tienes muchas cosas por hacer, ¿sabes qué puedes hacer para sentirte mejor?',
+    },
+    {
+      numero: 6,
+      areaId: 'red_apoyo',
+      texto:
+        '¿Tienes una persona de confianza con quien puedas hablar cuando tienes un problema o te sientes mal?',
+    },
+    {
+      numero: 7,
+      areaId: 'relaciones_interpersonales',
+      texto:
+        '¿Sientes que tus relaciones con tu familia, amigos y compañeros te hacen sentir bien?',
+    },
+    {
+      numero: 8,
+      areaId: 'valoracion_respeto',
+      texto:
+        '¿Te sientes respetado(a), valorado(a) y bien tratado(a) por las personas que te rodean?',
+    },
+    {
+      numero: 9,
+      areaId: 'concentracion',
+      texto: '¿Puedes concentrarte cuando estás en clase, estudiando o haciendo tus tareas?',
+    },
+    {
+      numero: 10,
+      areaId: 'afrontamiento_dificultades',
+      texto: 'Cuando tienes un problema, ¿sientes que puedes encontrar una forma de solucionarlo?',
+    },
+    {
+      numero: 11,
+      areaId: 'regulacion_emocional',
+      texto:
+        'Cuando estás triste, enojado(a) o preocupado(a), ¿puedes manejar lo que sientes sin hacerte daño ni lastimar a otras personas?',
+    },
+    {
+      numero: 12,
+      areaId: 'actividad_fisica_recreacion',
+      texto: '¿Tienes tiempo para jugar, hacer ejercicio o realizar actividades que te divierten?',
+    },
+    {
+      numero: 13,
+      areaId: 'equilibrio_responsabilidades_descanso',
+      texto:
+        '¿Tienes suficiente tiempo para hacer tus tareas, descansar y realizar actividades que te gustan?',
+    },
+    {
+      numero: 14,
+      areaId: 'seguridad_entorno',
+      texto:
+        '¿Te sientes seguro(a) en los lugares donde pasas la mayor parte del tiempo, como tu casa, colegio y barrio?',
+    },
+    {
+      numero: 15,
+      areaId: 'perspectiva_futuro',
+      texto: '¿Te sientes tranquilo(a) cuando piensas en tu futuro?',
+    },
+    {
+      numero: 16,
+      areaId: 'proposito_sentido_vida',
+      texto: '¿Tienes sueños, metas o cosas que te gustaría lograr en el futuro?',
+    },
+    {
+      numero: 17,
+      areaId: 'afrontamiento_consumo_sustancias',
+      texto:
+        'Cuando te sientes mal o tienes un problema, ¿evitas usar alcohol, cigarrillos, vapeadores u otras sustancias para sentirte mejor?',
+    },
+    {
+      numero: 18,
+      areaId: 'busqueda_ayuda',
+      texto:
+        'Cuando tienes un problema que no puedes solucionar solo(a), ¿sabes a quién pedirle ayuda?',
+    },
+    {
+      numero: 19,
+      areaId: 'funcionamiento_cotidiano',
+      texto:
+        'Aunque tengas algún problema o estés triste, ¿puedes continuar con tus actividades, tareas y responsabilidades?',
+    },
+    {
+      numero: 20,
+      areaId: 'bienestar_psicologico_general',
+      texto: 'En general, ¿sientes que estás bien emocionalmente?',
+    },
+  ],
+};
+
+/** Texto original del documento base para niñas y niños (en papel: «marca con una X»). */
+export const instruccionesNinoOriginal =
+  'Lee cada pregunta con atención y marca con una “X” la respuesta que más se parezca a lo que has vivido durante las últimas semanas.';
+
+/** Módulo PREPARADO y DESACTIVADO: sin cuestionario validado. No se inventan preguntas. */
+export const cuestionarioAdolescente: Cuestionario = {
+  modulo: 'adolescente',
+  version: '1.0',
+  estado: 'borrador',
+  fuente: 'propuesta',
+  activo: false,
+  edad: '12 a 17 años',
+  instrucciones: { texto: '', estado: 'borrador' },
+  opciones: [],
+  preguntas: [],
+};
+
+export const cuestionarios: Record<Modulo, Cuestionario> = {
+  adulto: cuestionarioAdulto,
+  nino: cuestionarioNino,
+  adolescente: cuestionarioAdolescente,
+};
