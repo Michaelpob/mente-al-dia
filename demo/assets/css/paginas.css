@@ -1688,6 +1688,126 @@ label.opcion {
   font-weight: 600;
 }
 
+.panel__acciones-movil {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* ---------------------------------------------------------------- Ingreso de administración (D-64)
+   La tarjeta es blanca: los bordes de campo no alcanzan 3:1 sobre piedra-100 (D-14). */
+.ingreso-panel {
+  display: grid;
+  place-items: center;
+  min-height: calc(100dvh - var(--alto-barra-demo));
+  padding: clamp(1.5rem, 5vw, 3rem) max(1rem, env(safe-area-inset-right, 0px)) clamp(1.5rem, 5vw, 3rem)
+    max(1rem, env(safe-area-inset-left, 0px));
+  outline: none;
+}
+
+.ingreso-panel__tarjeta {
+  display: grid;
+  gap: 1.25rem;
+  width: min(100%, 28rem);
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+}
+
+.ingreso-panel__marca {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ingreso-panel__marca .logo-mad__texto {
+  display: inline;
+}
+
+.ingreso-panel__icono {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--salvia-100);
+  color: var(--salvia-600);
+}
+
+.ingreso-panel__titulo {
+  font-size: var(--t-h2);
+}
+
+.ingreso-panel__titulo + p {
+  margin-top: 0.5rem;
+}
+
+.ingreso-panel__formulario {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.ingreso-panel__aviso > p {
+  margin: 0;
+}
+
+.campo__con-boton {
+  position: relative;
+  display: flex;
+}
+
+.campo__con-boton input {
+  flex: 1;
+  min-width: 0;
+  padding-right: 3.25rem;
+}
+
+.campo__con-boton .boton {
+  position: absolute;
+  top: 50%;
+  right: 0.25rem;
+  transform: translateY(-50%);
+}
+
+.campo input[aria-invalid='true'] {
+  border-color: var(--nivel-atencion);
+}
+
+.campo__error {
+  color: var(--nivel-atencion);
+  font-size: var(--t-pequeno);
+  font-weight: 600;
+}
+
+.ingreso-panel__error {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radio-md);
+  background: var(--nivel-atencion-fondo);
+  color: var(--nivel-atencion);
+  font-weight: 600;
+}
+
+.ingreso-panel__error:empty {
+  display: none;
+}
+
+.ingreso-panel__error p {
+  margin: 0;
+}
+
+.ingreso-panel__error .icono {
+  margin-top: 0.15rem;
+}
+
+.ingreso-panel__boton {
+  width: 100%;
+}
+
+.ingreso-panel__volver {
+  justify-self: start;
+}
+
 .panel__menu {
   position: relative;
   display: flex;
@@ -2379,7 +2499,7 @@ label.opcion {
     border-bottom: 0;
     background: transparent;
   }
-  .panel__accesibilidad-movil {
+  .panel__acciones-movil {
     display: none;
   }
   .panel__marca {

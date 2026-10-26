@@ -13,6 +13,7 @@ Es una página web responsiva (no es una app nativa ni una APK). Ofrece orientac
 Una versión navegable de lo que tendrá la plataforma, para verla desde cualquier celular o computador: sitio público con el orbe 3D, cuestionario de adultos y de niñas y niños, resultados con la rueda de bienestar, panel profesional con 232 registros ficticios y la página «El proyecto» con las 12 fases y lo que falta validar.
 
 - Vive en `demo/`: HTML, CSS y JavaScript sin compilar, sin base de datos y sin servidor. Nada de lo que se responde sale del navegador.
+- El panel (`panel.html`) pide el correo y la contraseña del administrador (D-64). Para cambiarlos: `corepack pnpm demo:admin -- --correo <correo>` (pide la contraseña) o con `--generar` (crea una y la guarda en `acceso-admin-demo.local.md`, que no se sube a GitHub). Después hay que volver a publicar `gh-pages`.
 - Usa el mismo contenido y el mismo motor de resultados que la plataforma: `corepack pnpm demo:sincronizar` copia `src/content/v1`, `src/content/lineas-ayuda.ts`, el motor y `tokens.css` a `demo/assets/` (transpilados a JavaScript). Hay que ejecutarlo cada vez que cambien.
 - Se publica con GitHub Pages desde la rama `gh-pages`, que contiene solo el contenido de `demo/`. Para actualizarla: sincronizar, revisar y volver a publicar esa carpeta en `gh-pages`.
 - La plataforma real también se publica como vista previa en `plataforma/` (misma rama `gh-pages`), sin base de datos y sin indexar: `VITE_EJEMPLOS=true vite build --base /mente-al-dia/plataforma/`, más una copia de `index.html` en la carpeta de cada ruta (D-62).
@@ -36,6 +37,7 @@ Una versión navegable de lo que tendrá la plataforma, para verla desde cualqui
 | `corepack pnpm lint`                  | ESLint (incluye reglas de accesibilidad jsx-a11y), sin advertencias permitidas.                                       |
 | `corepack pnpm format`                | Formatea el código con Prettier.                                                                                      |
 | `corepack pnpm contraste`             | Verifica el contraste AA de todos los pares de color de los tokens.                                                   |
+| `corepack pnpm demo:admin`            | Define el correo y la contraseña del administrador del panel de la demostración (D-64).                               |
 | `corepack pnpm demo:sincronizar`      | Copia el contenido, el motor y los tokens a la demostración pública (`demo/`).                                        |
 | `corepack pnpm funciones:sincronizar` | Copia el motor y el contenido a las Edge Functions de Supabase (`supabase/functions/_compartido/generado`).           |
 | `corepack pnpm test:funciones`        | Comprueba esas copias, el tipado de las Edge Functions y sus pruebas (Deno).                                          |
