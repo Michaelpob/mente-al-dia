@@ -195,6 +195,9 @@ export const participar = {
         'No pudimos guardar tus respuestas en este momento. Siguen guardadas en esta pestaña: inténtalo de nuevo en unos minutos.',
     },
     reintentar: 'Intentar de nuevo',
+    vistaPrevia:
+      'Esta vista previa no está conectada a la base de datos, así que tus respuestas no se pueden enviar. Puedes ver tu resultado calculado en este navegador: no se guarda ni se envía a nadie.',
+    verEjemplo: 'Ver mi resultado (sin guardar)',
   },
 
   /** Resultados (Fase 7). BORRADOR, los mismos de la demostración. */
@@ -228,6 +231,8 @@ export const participar = {
     pausa: 'Una pausa para ti',
     lineasTexto: 'Si necesitas hablar con alguien, puedes comunicarte con estas líneas.',
     imprimir: 'Descargar o imprimir',
+    ejemplo:
+      'Resultado de ejemplo: se calculó en este navegador con el mismo motor de la plataforma y no se guardó ni se envió.',
     aviso:
       'Este resultado es orientativo y no constituye un diagnóstico psicológico ni médico. Si estás en peligro inmediato, llama al 123.',
   },

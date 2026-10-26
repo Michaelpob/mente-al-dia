@@ -15,6 +15,7 @@ Una versión navegable de lo que tendrá la plataforma, para verla desde cualqui
 - Vive en `demo/`: HTML, CSS y JavaScript sin compilar, sin base de datos y sin servidor. Nada de lo que se responde sale del navegador.
 - Usa el mismo contenido y el mismo motor de resultados que la plataforma: `corepack pnpm demo:sincronizar` copia `src/content/v1`, `src/content/lineas-ayuda.ts`, el motor y `tokens.css` a `demo/assets/` (transpilados a JavaScript). Hay que ejecutarlo cada vez que cambien.
 - Se publica con GitHub Pages desde la rama `gh-pages`, que contiene solo el contenido de `demo/`. Para actualizarla: sincronizar, revisar y volver a publicar esa carpeta en `gh-pages`.
+- La plataforma real también se publica como vista previa en `plataforma/` (misma rama `gh-pages`), sin base de datos y sin indexar: `VITE_EJEMPLOS=true vite build --base /mente-al-dia/plataforma/`, más una copia de `index.html` en la carpeta de cada ruta (D-62).
 - GitHub Pages sirve solo para la demostración: la plataforma real necesita un alojamiento con los encabezados de seguridad de la Fase 10 (ver F1-08 en `docs/PENDIENTES_VALIDACION.md`).
 
 ## Requisitos

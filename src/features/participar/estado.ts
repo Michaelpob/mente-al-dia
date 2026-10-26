@@ -30,6 +30,8 @@ export interface Enviado {
   resultado: ResultadoParticipante;
   /** ISO 8601. Opcional: los envíos guardados antes de la Fase 7 no la tienen. */
   fecha?: string;
+  /** Calculado en el navegador y sin guardar (vista previa sin base de datos, D-62). */
+  ejemplo?: boolean;
 }
 
 export interface EstadoParticipacion {
@@ -70,6 +72,7 @@ export type Accion =
       resultado: ResultadoParticipante;
       fecha: string;
       claveSiguiente: string;
+      ejemplo?: boolean;
     }
   | { tipo: 'reiniciar'; claveEnvio: string };
 
@@ -181,6 +184,7 @@ export function reducir(estado: EstadoParticipacion, accion: Accion): EstadoPart
           codigo: accion.codigo,
           resultado: accion.resultado,
           fecha: accion.fecha,
+          ...(accion.ejemplo ? { ejemplo: true } : {}),
         },
       };
 

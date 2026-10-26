@@ -229,6 +229,21 @@ export function construirEnvio(datos: DatosEnvio): EnvioCuestionario {
   };
 }
 
+/** Lo que se muestra a quien responde: sin índice, puntos ni motivos de prioridad (D-41). */
+export function paraParticipante(resultado: ResultadoAplicacion): ResultadoParticipante {
+  return {
+    resultadoGeneral: resultado.resultadoGeneral,
+    niveles: resultado.niveles,
+    mensajes: resultado.mensajes,
+    conteo: resultado.conteo,
+    respondidas: resultado.respondidas,
+    resultadoParcial: resultado.resultadoParcial,
+    rutaAtencionEspecial: resultado.rutaAtencionEspecial,
+    reglasVersion: resultado.reglasVersion,
+    instrumentoVersion: resultado.instrumentoVersion,
+  };
+}
+
 /** Lo que la Edge Function devuelve a quien responde: sin índice ni motivos de prioridad (D-41). */
 export type ResultadoParticipante = Pick<
   ResultadoAplicacion,

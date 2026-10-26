@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { cuestionarios } from '@/content/v1/cuestionarios';
+import { calcularParaModulo } from '@/lib/motor-resultados';
 import { crearEnviador, ErrorEnvio } from './envio';
 import {
   estadoInicial,
@@ -12,6 +13,7 @@ import {
 import {
   construirEnvio,
   EnvioIncompleto,
+  paraParticipante,
   validarRegistro,
   type ResultadoParticipante,
 } from './modelo';
@@ -286,5 +288,29 @@ describe('crearEnviador', () => {
 
   it('sin configuración no intenta enviar', () => {
     expect(crearEnviador({ url: undefined, clave: undefined }).configurado).toBe(false);
+  });
+});
+
+describe('resultado de ejemplo (vista previa sin base de datos)', () => {
+  it('no muestra el índice, los puntos ni los motivos de prioridad', () => {
+    const envio = construirEnvio({ ...respondido('adulto'), modulo: 'adulto' });
+    const resultado = paraParticipante(calcularParaModulo('adulto', envio.respuestas));
+    for (const campo of ['indice', 'puntos', 'prioridad', 'motivosPrioridad']) {
+      expect(resultado).not.toHaveProperty(campo);
+    }
+    expect(Object.keys(resultado.niveles)).toHaveLength(20);
+  });
+
+  it('queda marcado como ejemplo y sin datos personales en la pestaña', () => {
+    const estado = con(respondido('adulto'), {
+      tipo: 'enviado',
+      codigo: '',
+      resultado: { resultadoGeneral: 'favorable' } as ResultadoParticipante,
+      fecha: '2026-10-27T15:00:00.000Z',
+      claveSiguiente: 'otra',
+      ejemplo: true,
+    });
+    expect(estado.enviado?.ejemplo).toBe(true);
+    expect(estado.valores.participante).toEqual({});
   });
 });

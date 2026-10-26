@@ -93,6 +93,7 @@ export default function ResultadosPage() {
       <div ref={contenedorRef}>
         <section className="contenedor pt-[clamp(2rem,5vw,4rem)]">
           <div className="mx-auto max-w-lectura">
+            {enviado.ejemplo ? <Callout className="mb-8">{t.ejemplo}</Callout> : null}
             {resultado.rutaAtencionEspecial ? (
               <ApoyoInmediato modulo={modulo} titulo={t.apoyoTitulo} />
             ) : null}
@@ -173,7 +174,7 @@ export default function ResultadosPage() {
           </div>
         </section>
 
-        <section className="contenedor pb-[clamp(2rem,5vw,4rem)]">
+        <section className={enviado.ejemplo ? 'hidden' : 'contenedor pb-[clamp(2rem,5vw,4rem)]'}>
           <div className="mx-auto max-w-lectura rounded-lg border border-piedra-200 bg-blanco p-5">
             <p className="text-pequeno text-grafito-600">{participar.enviado.codigo}</p>
             <p className="font-titulo text-h2 text-pizarra-700 tabular-nums">{codigo}</p>

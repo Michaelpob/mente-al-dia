@@ -36,17 +36,20 @@ import { participar } from '@/content/participar';
 import { textos } from '@/content/textos-interfaz';
 import { areas } from '@/content/v1/areas';
 import { cuestionarios } from '@/content/v1/cuestionarios';
+import { ejemplosHabilitados } from '@/config/entorno';
 import { enviador, ErrorEnvio, type CodigoErrorEnvio } from '@/features/participar/envio';
 import { nuevaClaveEnvio } from '@/features/participar/estado';
 import {
   construirEnvio,
   contarRespondidas,
+  paraParticipante,
   type ModuloDisponible,
 } from '@/features/participar/modelo';
 import { useParticipacion } from '@/features/participar/participacion-context';
 import { PantallaParticipacion, PasosParticipacion } from '@/features/participar/piezas';
 import { useTituloDelPaso } from '@/features/participar/use-titulo-del-paso';
 import { useAccessibility } from '@/lib/a11y/accessibility-context';
+import { calcularParaModulo } from '@/lib/motor-resultados';
 import type { Pregunta as PreguntaCuestionario, ValorRespuesta } from '@/types/dominio';
 
 const areaPorId = new Map(areas.map((area) => [area.id, area]));
@@ -354,6 +357,26 @@ function Revision({ modulo, tituloRef }: VistaProps) {
   const { opciones, preguntas } = cuestionarios[modulo];
   const etiquetas = new Map(opciones.map((o) => [o.valor, o.etiqueta]));
 
+  /** Vista previa sin base de datos: resultado calculado aquí, marcado como ejemplo (D-62). */
+  const soloEjemplo = ejemplosHabilitados && !enviador.configurado;
+  function verEjemplo() {
+    let datos;
+    try {
+      datos = construirEnvio({ ...estado, modulo });
+    } catch {
+      setEnvio({ tipo: 'error', codigo: 'datos_invalidos' });
+      return;
+    }
+    despachar({
+      tipo: 'enviado',
+      codigo: '',
+      resultado: paraParticipante(calcularParaModulo(modulo, datos.respuestas)),
+      fecha: new Date().toISOString(),
+      claveSiguiente: nuevaClaveEnvio(),
+      ejemplo: true,
+    });
+  }
+
   async function enviar() {
     let datos;
     try {
@@ -424,7 +447,9 @@ function Revision({ modulo, tituloRef }: VistaProps) {
       </ol>
 
       <div className="mt-8 flex flex-col gap-4" role="status">
-        {!enviador.configurado ? (
+        {soloEjemplo ? (
+          <Callout>{participar.envio.vistaPrevia}</Callout>
+        ) : !enviador.configurado ? (
           <Callout>{participar.envio.noConectado}</Callout>
         ) : envio.tipo === 'error' ? (
           <Callout>{participar.envio.errores[envio.codigo]}</Callout>
@@ -434,8 +459,14 @@ function Revision({ modulo, tituloRef }: VistaProps) {
       </div>
 
       <div className="mt-8 flex flex-wrap gap-3">
+        {soloEjemplo ? (
+          <Button size="lg" onClick={verEjemplo}>
+            {participar.envio.verEjemplo}
+          </Button>
+        ) : null}
         <Button
           size="lg"
+          className={soloEjemplo ? 'hidden' : undefined}
           onClick={() => void enviar()}
           disabled={!enviador.configurado}
           loading={envio.tipo === 'enviando'}
