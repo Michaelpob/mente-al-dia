@@ -11,6 +11,8 @@ interface RadioCardGroupProps extends Omit<
   /** Pregunta o título del grupo (se anuncia como nombre del radiogroup). */
   legend: string;
   hideLegend?: boolean;
+  /** id de un título que ya está en la página (por ejemplo, la pregunta): reemplaza a legend. */
+  labelledBy?: string;
   error?: string;
   children: ReactNode;
 }
@@ -19,6 +21,7 @@ interface RadioCardGroupProps extends Omit<
 export function RadioCardGroup({
   legend,
   hideLegend = false,
+  labelledBy,
   error,
   className,
   children,
@@ -29,11 +32,13 @@ export function RadioCardGroup({
   const errorId = `grupo-${id}-error`;
   return (
     <div className="flex flex-col gap-3">
-      <p id={legendId} className={cn('font-semibold text-grafito-900', hideLegend && 'sr-only')}>
-        {legend}
-      </p>
+      {labelledBy ? null : (
+        <p id={legendId} className={cn('font-semibold text-grafito-900', hideLegend && 'sr-only')}>
+          {legend}
+        </p>
+      )}
       <RadioGroupPrimitive.Root
-        aria-labelledby={legendId}
+        aria-labelledby={labelledBy ?? legendId}
         aria-describedby={error ? errorId : undefined}
         aria-invalid={error ? true : undefined}
         className={cn('grid gap-3', className)}

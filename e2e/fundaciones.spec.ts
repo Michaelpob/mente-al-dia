@@ -64,6 +64,8 @@ test.describe('Rutas públicas', () => {
     for (const ruta of RUTAS_PUBLICAS) {
       await page.goto(ruta);
       await expect(page.locator('h1')).toHaveCount(1);
+      // /cuestionario sin registro lleva al registro: su título es el del registro.
+      if (new URL(page.url()).pathname !== ruta) continue;
       titulos.set(ruta, await page.title());
     }
     const valores = [...titulos.values()];
@@ -93,16 +95,19 @@ test.describe('Rutas públicas', () => {
     await expect(page.locator('main').getByRole('link', { name: /Llamar al 123/ })).toBeVisible();
   });
 
-  test('/panel no muestra el encabezado público', async ({ page }) => {
+  // La build de pruebas apunta a un Supabase ficticio (.env.pruebas): el panel se comporta
+  // como conectado y, sin sesión guardada, no hace ninguna llamada.
+  test('/panel sin sesión lleva al ingreso', async ({ page }) => {
     await page.goto('/panel');
-    await expect(page.locator('h1')).toHaveText('Panel profesional');
+    await expect(page).toHaveURL(/\/panel\/ingresar$/);
+    await expect(page.locator('h1')).toHaveText('Ingresar al panel');
     expect(await violacionesGraves(page)).toEqual([]);
   });
 
-  test('/panel/ingresar avisa que falta conectar la base de datos', async ({ page }) => {
+  test('/panel/ingresar pide correo institucional y contraseña', async ({ page }) => {
     await page.goto('/panel/ingresar');
-    await expect(page.locator('h1')).toHaveText('Ingresar al panel');
-    await expect(page.getByText(/todavía no está conectado a la base de datos/)).toBeVisible();
+    await expect(page.getByLabel('Correo institucional')).toBeVisible();
+    await expect(page.getByRole('textbox', { name: 'Contraseña' })).toBeVisible();
     expect(await violacionesGraves(page)).toEqual([]);
   });
 });

@@ -8,6 +8,7 @@ import { RequierePanel } from '@/features/panel/acceso/RequierePanel';
 
 // Carga diferida por ruta: cada página es un archivo JS aparte.
 const InicioPage = lazy(() => import('@/features/inicio/InicioPage'));
+const Participacion = lazy(() => import('@/features/participar/Participacion'));
 const RegistroPage = lazy(() => import('@/features/registro/RegistroPage'));
 const IngresarPage = lazy(() => import('@/features/registro/IngresarPage'));
 const CuestionarioPage = lazy(() => import('@/features/cuestionario/CuestionarioPage'));
@@ -26,10 +27,16 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 const publicRoutes: RouteObject[] = [
   { index: true, element: <InicioPage /> },
-  { path: 'registro', element: <RegistroPage /> },
+  {
+    // Registro, cuestionario y resultados comparten el estado de esta pestaña.
+    element: <Participacion />,
+    children: [
+      { path: 'registro', element: <RegistroPage /> },
+      { path: 'cuestionario', element: <CuestionarioPage /> },
+      { path: 'resultados', element: <ResultadosPage /> },
+    ],
+  },
   { path: 'ingresar', element: <IngresarPage /> },
-  { path: 'cuestionario', element: <CuestionarioPage /> },
-  { path: 'resultados', element: <ResultadosPage /> },
   { path: 'lineas-de-ayuda', element: <LineasAyudaPage /> },
   { path: 'privacidad', element: <PrivacidadPage /> },
   { path: 'terminos', element: <TerminosPage /> },
@@ -72,4 +79,5 @@ const routes: RouteObject[] = [
 // En la vista previa (Artifact de claude.ai) la dirección no se puede cambiar: se navega en memoria.
 export const router = vistaPrevia
   ? createMemoryRouter(routes, { initialEntries: ['/guia-de-estilo'] })
-  : createBrowserRouter(routes);
+  : // Con `vite build --base /carpeta/` el sitio vive en una subcarpeta (vista previa en GitHub Pages).
+    createBrowserRouter(routes, { basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/' });

@@ -27,7 +27,10 @@ function dependencias(cambios: Partial<Dependencias> = {}) {
 const respuestas = (valor: (i: number) => ValorRespuesta) =>
   areas.map((a, i) => ({ areaId: a.id, valor: valor(i) }));
 
+const CLAVE = '6f1c2a4e-8b3d-4c5f-9a7e-1d2b3c4d5e6f';
+
 const envioAdulto = (cambios: Record<string, unknown> = {}) => ({
+  claveEnvio: CLAVE,
   modulo: 'adulto',
   participante: {
     nombre: 'Persona de Prueba',
@@ -41,6 +44,7 @@ const envioAdulto = (cambios: Record<string, unknown> = {}) => ({
 });
 
 const envioNino = (cambios: Record<string, unknown> = {}) => ({
+  claveEnvio: CLAVE,
   modulo: 'nino',
   participante: { nombre: 'Niña', edad: 9, grado: 'Cuarto' },
   acudiente: {
@@ -118,6 +122,24 @@ Deno.test('usa las reglas vigentes de la base de datos, no las del código', asy
   assertEquals(cuerpo.resultado.reglasVersion, '0.2-prueba');
   assertEquals(cuerpo.resultado.resultadoGeneral, 'por_fortalecer');
   assertEquals(registros[0]!.resultado.reglasVersion, '0.2-prueba');
+});
+
+Deno.test('pasa la clave de envío a la base de datos para no duplicar un reintento', async () => {
+  const { deps, registros } = dependencias();
+  await crearManejador(deps)(enviar(envioAdulto()));
+  assertEquals(registros[0]!.claveEnvio, CLAVE);
+});
+
+Deno.test('exige una clave de envío válida', async () => {
+  const { deps, registros } = dependencias();
+  const sinClave = envioAdulto();
+  delete (sinClave as { claveEnvio?: string }).claveEnvio;
+  assertEquals((await crearManejador(deps)(enviar(sinClave))).status, 400);
+  assertEquals(
+    (await crearManejador(deps)(enviar(envioAdulto({ claveEnvio: 'no-es-uuid' })))).status,
+    400,
+  );
+  assertEquals(registros.length, 0);
 });
 
 Deno.test('rechaza un resultado enviado por el navegador', async () => {

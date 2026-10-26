@@ -19,6 +19,8 @@ import type { ResultadoAplicacion } from '../_compartido/generado/dominio.ts';
 import { Http, leerPeticion } from '../_compartido/http.ts';
 
 export interface DatosRegistro {
+  /** Clave del navegador: si ya se guardó, la base de datos devuelve el mismo código. */
+  claveEnvio: string;
   participante: Record<string, unknown>;
   consentimientos: Record<string, string>;
   respuestas: Envio['respuestas'];
@@ -31,7 +33,7 @@ export interface Dependencias {
   reglasVigentes(): Promise<unknown>;
   /** Versión de los textos legales que se aceptan (configuración «version_textos_legales»). */
   versionTextosLegales(): Promise<string>;
-  /** Llama a public.registrar_aplicacion. */
+  /** Llama a public.registrar_aplicacion (con la clave de envío: un reintento no duplica). */
   registrar(datos: DatosRegistro): Promise<{ codigo: string }>;
   registrarError(mensaje: string, error: unknown): void;
 }
@@ -75,6 +77,7 @@ export function crearManejador(deps: Dependencias) {
       });
       const version = await deps.versionTextosLegales();
       const { codigo } = await deps.registrar({
+        claveEnvio: envio.data.claveEnvio,
         participante: participanteParaGuardar(envio.data),
         consentimientos: consentimientos(envio.data, version),
         respuestas: envio.data.respuestas,

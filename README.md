@@ -4,7 +4,7 @@ Plataforma web de orientación y bienestar emocional de la Alcaldía de [MUNICIP
 
 Es una página web responsiva (no es una app nativa ni una APK). Ofrece orientación y no reemplaza la atención profesional ni los servicios de emergencia.
 
-> Estado: **Fases 0 a 4 terminadas** (fundaciones, sistema de diseño, contenido del instrumento, motor de resultados, página de inicio con el orbe 3D, y base de datos con permisos por rol, ingreso con doble factor, cálculo oficial en el servidor y auditoría). Las demás pantallas se construyen por fases (ver `docs/`). La puesta en marcha de Supabase está en `docs/BASE_DE_DATOS.md`.
+> Estado: **Fases 0 a 6 terminadas** (fundaciones, sistema de diseño, contenido del instrumento, motor de resultados, página de inicio con el orbe 3D, base de datos con permisos por rol, ingreso con doble factor, cálculo oficial en el servidor y auditoría, y registro y cuestionario conectados al servidor). Las demás pantallas se construyen por fases (ver `docs/`). La puesta en marcha de Supabase está en `docs/BASE_DE_DATOS.md`.
 
 ## Demostración pública
 

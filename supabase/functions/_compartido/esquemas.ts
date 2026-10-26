@@ -21,6 +21,9 @@ const telefono = z
   .trim()
   .regex(/^\+?[0-9()\s-]{7,20}$/, 'Teléfono no válido');
 
+/** La genera el navegador al empezar; con ella un reintento no duplica el envío (D-50). */
+const claveEnvio = z.uuid();
+
 const respuestas = z
   .array(z.object({ areaId: z.enum(idsAreas), valor: z.enum(valores) }).strict())
   .min(1)
@@ -29,6 +32,7 @@ const respuestas = z
 /** Envío del cuestionario de adultos (campos del documento base). */
 const envioAdulto = z
   .object({
+    claveEnvio,
     modulo: z.literal('adulto'),
     participante: z
       .object({
@@ -48,6 +52,7 @@ const envioAdulto = z
 /** Envío del módulo infantil: datos de la niña o el niño y del adulto responsable. */
 const envioNino = z
   .object({
+    claveEnvio,
     modulo: z.literal('nino'),
     participante: z
       .object({
