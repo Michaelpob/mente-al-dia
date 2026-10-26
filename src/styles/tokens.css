@@ -25,6 +25,13 @@
   --arena-400: #c9b79c; /* acento cálido decorativo (no usar para texto) */
   --arena-100: #f3ede3;
 
+  /* Dimensiones del bienestar: tonos decorativos de la rueda (íconos grafito encima, nunca texto) */
+  --dimension-emociones: #bccbd4;
+  --dimension-cuerpo: #dcd2c2;
+  --dimension-vinculos: #c6d7cc;
+  --dimension-afrontamiento: #d4ccbf;
+  --dimension-proyecto: #d6dde2;
+
   /* Niveles: siempre con ícono + texto, nunca solo color */
   --nivel-adecuado: #3f6b52;
   --nivel-adecuado-fondo: #e4efe8;

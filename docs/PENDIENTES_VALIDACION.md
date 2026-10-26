@@ -36,3 +36,11 @@ Todo lo que debe validar el equipo profesional, jurídico o técnico de la Alcal
 | F1-06 | Líneas de ayuda locales                   | Valores de ejemplo del Anexo F (123, 141 y 155 nacionales; línea local y servicio de salud con marcador; 106 desactivada).                                                                              | Secretaría de Salud           | Pendiente |
 | F1-07 | Textos nuevos de interfaz (BORRADOR)      | «Si estás en peligro inmediato, llama al 123.» (panel de líneas de ayuda); texto de introducción de `/lineas-de-ayuda`; aviso sin JavaScript en `index.html`; textos de la página 404 y de error.       | Equipo profesional (tono)     | Borrador  |
 | F1-08 | Alojamiento del sitio                     | Debe permitir los encabezados de seguridad de la Fase 10 (CSP, HSTS, frame-ancestors). GitHub Pages no sirve.                                                                                           | Oficina TIC                   | Pendiente |
+
+## Página de inicio (Fase 3)
+
+| N.º   | Tema                                 | Situación actual                                                                                                                                                               | Valida                         | Estado    |
+| ----- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ | --------- |
+| F3-01 | Textos de la página de inicio        | Borrador en `src/content/inicio.ts` (los mismos de la demostración): portada, qué es y qué no es, pasos, públicos, privacidad, respiración y preguntas frecuentes.             | Equipo profesional (tono)      | Borrador  |
+| F3-02 | Promesas de privacidad de la portada | «Información cifrada», «cada consulta queda registrada» y «Desde Mi cuenta puedes solicitarlo» dependen de la Fase 4 (base de datos y auditoría). Confirmar antes de publicar. | Oficina jurídica y oficina TIC | Pendiente |
+| F3-03 | Duración anunciada                   | «Unos 10 minutos». Medir con personas reales antes del lanzamiento.                                                                                                            | Equipo profesional             | Pendiente |

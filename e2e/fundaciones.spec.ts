@@ -32,6 +32,9 @@ async function violacionesGraves(page: Page) {
 function vigilarConsola(page: Page): string[] {
   const mensajes: string[] = [];
   page.on('console', (m) => {
+    // Avisos de rendimiento del controlador de GPU por software del navegador de pruebas
+    // (aparecen cuando axe lee la página con el orbe 3D); no vienen del sitio.
+    if (m.text().includes('GL Driver Message')) return;
     if (m.type() === 'error' || m.type() === 'warning') mensajes.push(`${m.type()}: ${m.text()}`);
   });
   page.on('pageerror', (error) => mensajes.push(`pageerror: ${error.message}`));

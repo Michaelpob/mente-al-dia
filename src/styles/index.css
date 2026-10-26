@@ -24,6 +24,11 @@
   --color-salvia-100: var(--salvia-100);
   --color-arena-400: var(--arena-400);
   --color-arena-100: var(--arena-100);
+  --color-dimension-emociones: var(--dimension-emociones);
+  --color-dimension-cuerpo: var(--dimension-cuerpo);
+  --color-dimension-vinculos: var(--dimension-vinculos);
+  --color-dimension-afrontamiento: var(--dimension-afrontamiento);
+  --color-dimension-proyecto: var(--dimension-proyecto);
   --color-nivel-adecuado: var(--nivel-adecuado);
   --color-nivel-adecuado-fondo: var(--nivel-adecuado-fondo);
   --color-nivel-fortalecer: var(--nivel-fortalecer);

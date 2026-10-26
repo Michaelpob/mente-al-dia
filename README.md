@@ -4,7 +4,7 @@ Plataforma web de orientación y bienestar emocional de la Alcaldía de [MUNICIP
 
 Es una página web responsiva (no es una app nativa ni una APK). Ofrece orientación y no reemplaza la atención profesional ni los servicios de emergencia.
 
-> Estado: **Fases 0 a 2 terminadas** (fundaciones, sistema de diseño, contenido del instrumento y motor de resultados). Las demás pantallas se construyen por fases (ver `docs/`).
+> Estado: **Fases 0 a 3 terminadas** (fundaciones, sistema de diseño, contenido del instrumento, motor de resultados y página de inicio con el orbe 3D). Las demás pantallas se construyen por fases (ver `docs/`).
 
 ## Demostración pública
 
