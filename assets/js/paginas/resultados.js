@@ -8,7 +8,6 @@ import { icono } from '../iconos.js';
 import { CLAVE_RESULTADO, calcular } from '../motor-demo.js';
 import { lineasAyuda } from '../proyecto/lineas-ayuda.js';
 import { frasesGuia, mensajesAdulto, mensajesAtencionEspecial, mensajesGenerales, mensajesNinoPorNivel } from '../proyecto/mensajes.js';
-import { activarRespiracion, respiracionHtml } from '../respiracion.js';
 import { activarRueda, etiquetasNivel, leyendaNivelesHtml, ordenRueda, ruedaHtml } from '../rueda.js';
 
 montarChrome({ pagina: 'resultados' });
@@ -206,7 +205,6 @@ function pintarResultados({ modulo, respuestas, fecha }, numeroEjemplo) {
 
     <section class="seccion seccion--alterna no-imprimir" aria-label="Recursos">
       <div class="contenedor recursos">
-        <div data-respiracion-contenedor></div>
         <div>
           <h2>Líneas de ayuda</h2>
           <p class="texto-secundario" style="margin:0.5rem 0 1.5rem">Si necesitas hablar con alguien, puedes comunicarte con estas líneas.</p>
@@ -273,8 +271,5 @@ function pintarResultados({ modulo, respuestas, fecha }, numeroEjemplo) {
     if (evento.target.closest('[data-repetir]')) sesion.borrar(CLAVE_RESULTADO);
   });
 
-  const respiracion = contenedor.querySelector('[data-respiracion-contenedor]');
-  respiracion.innerHTML = respiracionHtml({ titulo: 'Una pausa para ti' });
-  activarRespiracion(respiracion);
   pintarIconos(contenedor);
 }
