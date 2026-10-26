@@ -4,3 +4,6 @@ node_modules
 pnpm-lock.yaml
 playwright-report
 test-results
+# Demostración: archivos generados por scripts/sincronizar-demo.mjs y el mapa de íconos
+demo/assets/js/proyecto
+demo/assets/js/iconos.js

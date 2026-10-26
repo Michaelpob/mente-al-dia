@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cuestionario de prueba · Mente al Día</title>
+    <meta
+      name="description"
+      content="Prueba el cuestionario de Mente al Día tal como lo responderán las personas. En esta demostración no se piden datos ni se guardan respuestas."
+    />
+    <meta name="theme-color" content="#F7F5F1" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:title" content="Cuestionario de prueba · Mente al Día" />
+    <meta
+      property="og:description"
+      content="Prueba el cuestionario de Mente al Día tal como lo responderán las personas. En esta demostración no se piden datos ni se guardan respuestas."
+    />
+    <meta property="og:image" content="https://michaelpob.github.io/mente-al-dia/assets/img/compartir.jpg" />
+    <meta property="og:url" content="https://michaelpob.github.io/mente-al-dia/cuestionario.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="assets/fuentes/manrope-variable.woff" as="font" type="font/woff" crossorigin />
+    <link rel="preload" href="assets/fuentes/public-sans-variable.woff" as="font" type="font/woff" crossorigin />
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/estilos.css" />
+    <link rel="stylesheet" href="assets/css/paginas.css" />
+    <script>
+      // Preferencias de accesibilidad antes de pintar (mismo formato que la plataforma).
+      (function () {
+        try {
+          var p = JSON.parse(localStorage.getItem('mente-al-dia:accesibilidad') || 'null');
+          if (!p) return;
+          var pasos = [0.9, 1, 1.1, 1.25, 1.4];
+          var i = Math.min(Math.max(Math.round(p.textScaleStep == null ? 1 : p.textScaleStep), 0), 4);
+          var r = document.documentElement;
+          r.style.setProperty('--escala-texto', pasos[i]);
+          if (pasos[i] > 1) r.setAttribute('data-texto', 'grande');
+          if (p.highContrast) r.setAttribute('data-contraste', 'alto');
+          if (p.reducedMotion) r.setAttribute('data-movimiento', 'reducido');
+          if (p.easyReading) r.setAttribute('data-lectura', 'facil');
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" src="assets/js/paginas/cuestionario.js"></script>
+  </head>
+  <body class="pagina-cuestionario">
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    <div id="chrome-superior" class="chrome-reserva"></div>
+    <main id="contenido" tabindex="-1">
+      <div class="contenedor cuestionario" id="vista" aria-live="off">
+        <p class="texto-secundario">Cargando el cuestionario…</p>
+      </div>
+    </main>
+    <noscript>
+      <p class="contenedor" style="padding-block: 1rem">Para responder el cuestionario necesitas activar JavaScript. Si necesitas apoyo inmediato, llama a la línea de emergencias 123.</p>
+    </noscript>
+  </body>
+</html>

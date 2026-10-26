@@ -1,0 +1,134 @@
+/*
+ * Tokens del sistema visual «Piedra y Pizarra».
+ * Esta es la ÚNICA fuente de colores, tipografías, radios, sombras y tiempos.
+ * Si la Alcaldía entrega un manual de marca, se reemplazan los valores de «Marca» aquí,
+ * sin tocar los componentes. Después de cambiar un color, ejecuta `pnpm contraste`.
+ */
+:root {
+  /* Neutros */
+  --piedra-50: #f7f5f1; /* fondo general */
+  --piedra-100: #efebe4; /* secciones alternas */
+  --piedra-200: #e2dcd2; /* bordes suaves y divisores */
+  --piedra-300: #cfc7ba; /* divisores marcados (decorativos) */
+  --blanco: #ffffff; /* superficies y tarjetas */
+  --grafito-900: #1e2a32; /* texto principal */
+  --grafito-600: #4e5b65; /* texto secundario */
+  --grafito-500: #5a6670; /* texto de apoyo y placeholders */
+  --borde-campo: #858e96; /* borde de campos (3:1 sobre blanco y piedra-50; NO sobre piedra-100) */
+
+  /* Marca */
+  --pizarra-800: #243a47; /* hover y estados activos */
+  --pizarra-700: #2f4858; /* color principal: botones, enlaces, títulos */
+  --pizarra-100: #e3eaee; /* fondos informativos */
+  --salvia-600: #4e6e5d; /* acento de calma */
+  --salvia-100: #e5ede8;
+  --arena-400: #c9b79c; /* acento cálido decorativo (no usar para texto) */
+  --arena-100: #f3ede3;
+
+  /* Niveles: siempre con ícono + texto, nunca solo color */
+  --nivel-adecuado: #3f6b52;
+  --nivel-adecuado-fondo: #e4efe8;
+  --nivel-fortalecer: #7a5a12;
+  --nivel-fortalecer-fondo: #f6edd6;
+  --nivel-atencion: #9a4532;
+  --nivel-atencion-fondo: #f5e3dd;
+  --nivel-sin-dato: #5f6b75;
+  --nivel-sin-dato-fondo: #eceff1;
+
+  /* Foco */
+  --foco: #2f4858;
+  --grosor-foco: 3px;
+
+  /* Velo de diálogos y paneles laterales (grafito-900 al 45 %) */
+  --velo: rgb(30 42 50 / 0.45);
+
+  /* Tipografía */
+  --fuente-titulos: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  --fuente-cuerpo: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
+  --fuente-lectura-facil: 'Atkinson Hyperlegible', 'Verdana', sans-serif;
+  --escala-texto: 1; /* la cambia la barra de accesibilidad (A-, A, A+) */
+
+  /* Espaciado y formas */
+  --espacio-seccion: clamp(64px, 10vw, 128px);
+  --radio-sm: 8px;
+  --radio-md: 12px;
+  --radio-lg: 20px;
+  --radio-xl: 28px;
+  --radio-pill: 9999px;
+
+  /* Sombras suaves en capas, color grafito en baja opacidad */
+  --sombra-1: 0 1px 2px rgb(30 42 50 / 0.06), 0 1px 3px rgb(30 42 50 / 0.06);
+  --sombra-2: 0 2px 4px rgb(30 42 50 / 0.05), 0 6px 16px rgb(30 42 50 / 0.08);
+  --sombra-3: 0 4px 8px rgb(30 42 50 / 0.05), 0 16px 40px rgb(30 42 50 / 0.12);
+
+  /* Movimiento */
+  --duracion-micro: 150ms;
+  --duracion-base: 250ms;
+  --duracion-seccion: 450ms;
+  --duracion-escena: 700ms;
+  --curva-estandar: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --desplazamiento-entrada: 16px;
+  --escalonado-entrada: 60ms;
+  --inclinacion-maxima: 6deg;
+  --perspectiva-tarjeta: 900px;
+  --escala-presion: 0.98;
+  --desplazamiento-panel: 100%;
+
+  /* Textura de grano (máximo 3 %) */
+  --opacidad-grano: 0.03;
+}
+
+/* Reducir movimiento: sin desplazamientos ni parallax, solo fundidos cortos. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --desplazamiento-entrada: 0px;
+    --desplazamiento-panel: 0%;
+    --inclinacion-maxima: 0deg;
+    --escala-presion: 1;
+    --duracion-seccion: 150ms;
+    --duracion-escena: 150ms;
+  }
+}
+
+:root[data-movimiento='reducido'] {
+  --desplazamiento-entrada: 0px;
+  --desplazamiento-panel: 0%;
+  --inclinacion-maxima: 0deg;
+  --escala-presion: 1;
+  --duracion-seccion: 150ms;
+  --duracion-escena: 150ms;
+}
+
+/* Alto contraste (barra de accesibilidad): texto casi negro sobre blanco, bordes marcados. */
+:root[data-contraste='alto'] {
+  --piedra-50: #ffffff;
+  --piedra-100: #f4f4f4;
+  --piedra-200: #1e2a32;
+  --piedra-300: #1e2a32;
+  --grafito-900: #0f1820;
+  --grafito-600: #0f1820;
+  --grafito-500: #0f1820;
+  --borde-campo: #0f1820;
+  --pizarra-800: #0b1820;
+  --pizarra-700: #142734;
+  --pizarra-100: #ffffff;
+  --salvia-600: #24402f;
+  --salvia-100: #ffffff;
+  --arena-100: #ffffff;
+  --nivel-adecuado: #1f4330;
+  --nivel-fortalecer: #4f3a08;
+  --nivel-atencion: #6e2a1b;
+  --nivel-sin-dato: #313b44;
+  --foco: #0f1820;
+  --grosor-foco: 4px;
+  --opacidad-grano: 0;
+  --sombra-1: none;
+  --sombra-2: none;
+  --sombra-3: none;
+}
+
+/* Fuente de lectura fácil (barra de accesibilidad). */
+:root[data-lectura='facil'] {
+  --fuente-titulos: var(--fuente-lectura-facil);
+  --fuente-cuerpo: var(--fuente-lectura-facil);
+}

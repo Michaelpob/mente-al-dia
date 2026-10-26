@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>El proyecto · Mente al Día</title>
+    <meta
+      name="description"
+      content="Qué incluye Mente al Día, cómo avanza por fases y qué falta validar con la Alcaldía."
+    />
+    <meta name="theme-color" content="#F7F5F1" />
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:title" content="El proyecto · Mente al Día" />
+    <meta
+      property="og:description"
+      content="Qué incluye Mente al Día, cómo avanza por fases y qué falta validar con la Alcaldía."
+    />
+    <meta property="og:image" content="https://michaelpob.github.io/mente-al-dia/assets/img/compartir.jpg" />
+    <meta property="og:url" content="https://michaelpob.github.io/mente-al-dia/proyecto.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preload" href="assets/fuentes/manrope-variable.woff" as="font" type="font/woff" crossorigin />
+    <link rel="preload" href="assets/fuentes/public-sans-variable.woff" as="font" type="font/woff" crossorigin />
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/estilos.css" />
+    <link rel="stylesheet" href="assets/css/paginas.css" />
+    <script>
+      // Preferencias de accesibilidad antes de pintar (mismo formato que la plataforma).
+      (function () {
+        try {
+          var p = JSON.parse(localStorage.getItem('mente-al-dia:accesibilidad') || 'null');
+          if (!p) return;
+          var pasos = [0.9, 1, 1.1, 1.25, 1.4];
+          var i = Math.min(Math.max(Math.round(p.textScaleStep == null ? 1 : p.textScaleStep), 0), 4);
+          var r = document.documentElement;
+          r.style.setProperty('--escala-texto', pasos[i]);
+          if (pasos[i] > 1) r.setAttribute('data-texto', 'grande');
+          if (p.highContrast) r.setAttribute('data-contraste', 'alto');
+          if (p.reducedMotion) r.setAttribute('data-movimiento', 'reducido');
+          if (p.easyReading) r.setAttribute('data-lectura', 'facil');
+        } catch (e) {}
+      })();
+    </script>
+    <script type="module" src="assets/js/paginas/proyecto.js"></script>
+  </head>
+  <body class="pagina-proyecto">
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+    <div id="chrome-superior" class="chrome-reserva"></div>
+
+    <main id="contenido" tabindex="-1">
+      <section class="proyecto-hero" aria-labelledby="proyecto-titulo">
+        <div class="contenedor proyecto-hero__rejilla">
+          <div class="proyecto-hero__texto">
+            <p class="antetitulo">Alcaldía de <span class="marcador">[MUNICIPIO]</span></p>
+            <h1 id="proyecto-titulo" class="texto-display">Lo que tendrá Mente al Día</h1>
+            <p class="texto-grande texto-secundario">
+              Una plataforma web de orientación y bienestar emocional que funciona en cualquier celular, tableta o
+              computador, sin descargar nada. Aquí ves qué incluye, cómo se construye por fases y qué falta definir con
+              la Alcaldía.
+            </p>
+            <div class="grupo-botones">
+              <a class="boton boton--primario boton--lg" href="#recorrido">Recorrer la demostración</a>
+              <a class="boton boton--secundario boton--lg" href="#fases">Ver las 12 fases</a>
+            </div>
+          </div>
+
+          <div class="avance tarjeta" aria-labelledby="avance-titulo">
+            <h2 id="avance-titulo" class="avance__titulo">Avance del proyecto</h2>
+            <ol class="avance__pista" aria-label="Estado de las 12 fases">
+              <li class="avance__fase avance__fase--hecha"><span class="sr-only">Fase 0, hecha</span><span aria-hidden="true">0</span></li>
+              <li class="avance__fase avance__fase--hecha"><span class="sr-only">Fase 1, hecha</span><span aria-hidden="true">1</span></li>
+              <li class="avance__fase avance__fase--hecha"><span class="sr-only">Fase 2, hecha</span><span aria-hidden="true">2</span></li>
+              <li class="avance__fase avance__fase--demo"><span class="sr-only">Fase 3, en la demostración</span><span aria-hidden="true">3</span></li>
+              <li class="avance__fase"><span class="sr-only">Fase 4, por construir</span><span aria-hidden="true">4</span></li>
+              <li class="avance__fase avance__fase--demo"><span class="sr-only">Fase 5, en la demostración</span><span aria-hidden="true">5</span></li>
+              <li class="avance__fase avance__fase--demo"><span class="sr-only">Fase 6, en la demostración</span><span aria-hidden="true">6</span></li>
+              <li class="avance__fase avance__fase--demo"><span class="sr-only">Fase 7, en la demostración</span><span aria-hidden="true">7</span></li>
+              <li class="avance__fase avance__fase--demo"><span class="sr-only">Fase 8, en la demostración</span><span aria-hidden="true">8</span></li>
+              <li class="avance__fase avance__fase--demo"><span class="sr-only">Fase 9, en la demostración</span><span aria-hidden="true">9</span></li>
+              <li class="avance__fase"><span class="sr-only">Fase 10, por construir</span><span aria-hidden="true">10</span></li>
+              <li class="avance__fase"><span class="sr-only">Fase 11, por construir</span><span aria-hidden="true">11</span></li>
+            </ol>
+            <ul class="avance__leyenda">
+              <li><span class="avance__muestra avance__muestra--hecha"></span><strong>3</strong> hechas en el código</li>
+              <li><span class="avance__muestra avance__muestra--demo"></span><strong>6</strong> que ya puedes probar aquí</li>
+              <li><span class="avance__muestra"></span><strong>3</strong> por construir</li>
+            </ul>
+            <p class="texto-pequeno texto-secundario">
+              La demostración usa las preguntas, los mensajes y las reglas reales del proyecto, con datos ficticios.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="recorrido" class="seccion seccion--alterna" aria-labelledby="recorrido-titulo">
+        <div class="contenedor">
+          <div class="encabezado-seccion">
+            <h2 id="recorrido-titulo">Recorre la demostración</h2>
+            <p class="texto-grande texto-secundario">
+              Cuatro vistas de la plataforma. Todo funciona en el navegador y no se guarda nada en ningún servidor.
+            </p>
+          </div>
+          <ul class="recorrido">
+            <li class="vista">
+              <img class="vista__imagen" src="assets/img/previa-inicio.webp" alt="" width="960" height="600" loading="lazy" />
+              <div class="vista__texto">
+                <h3><a class="vista__enlace" href="./">Sitio público</a></h3>
+                <p class="texto-secundario">La cara de la plataforma para la ciudadanía: qué es, cómo funciona, las 20 áreas, preguntas frecuentes y líneas de ayuda.</p>
+                <p class="vista__prueba">Prueba: mover el orbe 3D y explorar las áreas por dimensión.</p>
+              </div>
+            </li>
+            <li class="vista">
+              <img class="vista__imagen" src="assets/img/previa-cuestionario.webp" alt="" width="960" height="600" loading="lazy" />
+              <div class="vista__texto">
+                <h3><a class="vista__enlace" href="cuestionario.html">Cuestionario</a></h3>
+                <p class="texto-secundario">Para personas adultas o para niñas y niños con un adulto de confianza. Una pregunta a la vez, con pausa y revisión final.</p>
+                <p class="vista__prueba">Prueba: responder con las teclas 1 a 4 o escuchar la pregunta.</p>
+              </div>
+            </li>
+            <li class="vista">
+              <img class="vista__imagen" src="assets/img/previa-resultados.webp" alt="" width="960" height="600" loading="lazy" />
+              <div class="vista__texto">
+                <h3><a class="vista__enlace" href="resultados.html?ejemplo=1">Resultados</a></h3>
+                <p class="texto-secundario">Mensaje general, rueda de bienestar, fortalezas y áreas para cuidar, con recomendaciones y rutas de apoyo.</p>
+                <p class="vista__prueba">Prueba: los tres ejemplos, incluido el que muestra la ruta de apoyo inmediato.</p>
+              </div>
+            </li>
+            <li class="vista">
+              <img class="vista__imagen" src="assets/img/previa-panel.webp" alt="" width="960" height="600" loading="lazy" />
+              <div class="vista__texto">
+                <h3><a class="vista__enlace" href="panel.html">Panel profesional</a></h3>
+                <p class="texto-secundario">El espacio privado del equipo: tablero, registros, casos prioritarios, seguimiento y reportes, con 232 registros ficticios.</p>
+                <p class="vista__prueba">Prueba: abrir un registro, cambiar su estado y agregar una nota.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="que-incluye" class="seccion" aria-labelledby="incluye-titulo">
+        <div class="contenedor">
+          <div class="encabezado-seccion">
+            <h2 id="incluye-titulo">Qué incluye la plataforma</h2>
+            <p class="texto-grande texto-secundario">Dos espacios con el mismo cuidado: uno abierto para la ciudadanía y otro privado para el equipo de la Alcaldía.</p>
+          </div>
+          <div class="incluye">
+            <div class="incluye__grupo">
+              <h3>Para la ciudadanía</h3>
+              <ul class="funciones">
+                <li><span data-icono="house"></span><div><p class="funciones__nombre">Sitio informativo con un toque 3D <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">Qué es, cómo funciona, las 20 áreas, privacidad, respiración guiada, preguntas frecuentes y líneas de ayuda.</p></div></li>
+                <li><span data-icono="file-check"></span><div><p class="funciones__nombre">Registro y autorización <span class="insignia insignia--marca">Vista previa</span></p><p class="texto-secundario">Datos básicos, autorización de datos (Ley 1581 de 2012) sin casillas premarcadas y, para niñas y niños, la del acudiente.</p></div></li>
+                <li><span data-icono="clipboard-check"></span><div><p class="funciones__nombre">Cuestionario de personas adultas <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">20 preguntas con cuatro opciones, progreso, pausa, guardado y lectura en voz alta.</p></div></li>
+                <li><span data-icono="backpack"></span><div><p class="funciones__nombre">Cuestionario de niñas y niños <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">20 preguntas con Sí, A veces y No, para responder de 6 a 11 años con un adulto de confianza.</p></div></li>
+                <li><span data-icono="chart-column"></span><div><p class="funciones__nombre">Resultados por áreas <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">Mensaje general, rueda de bienestar, recomendaciones por área y versión para imprimir.</p></div></li>
+                <li><span data-icono="life-buoy"></span><div><p class="funciones__nombre">Ruta de apoyo inmediato <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">Si las respuestas lo indican, primero aparecen las líneas de ayuda y un mensaje de acompañamiento.</p></div></li>
+                <li><span data-icono="accessibility"></span><div><p class="funciones__nombre">Barra de accesibilidad <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">Tamaño del texto, alto contraste, menos movimiento y lectura fácil.</p></div></li>
+                <li><span data-icono="graduation-cap"></span><div><p class="funciones__nombre">Módulo de adolescentes <span class="insignia insignia--neutra">Desactivado</span></p><p class="texto-secundario">Preparado en la plataforma; se activa cuando haya cuestionario y mensajes validados.</p></div></li>
+              </ul>
+            </div>
+            <div class="incluye__grupo">
+              <h3>Para el equipo de la Alcaldía</h3>
+              <ul class="funciones">
+                <li><span data-icono="key-round"></span><div><p class="funciones__nombre">Ingreso seguro <span class="insignia insignia--neutra">Por construir</span></p><p class="texto-secundario">Cuentas por invitación, con roles y doble factor obligatorio.</p></div></li>
+                <li><span data-icono="layout-dashboard"></span><div><p class="funciones__nombre">Tablero de indicadores <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">Aplicaciones por semana, resultados por módulo y por lugar, y mapa de calor de las 20 áreas.</p></div></li>
+                <li><span data-icono="list"></span><div><p class="funciones__nombre">Registros y detalle <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">Búsqueda, filtros y la ficha de cada persona, con los datos de contacto ocultos hasta que se piden.</p></div></li>
+                <li><span data-icono="flag"></span><div><p class="funciones__nombre">Casos prioritarios <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">Bandeja de casos con prioridad sin gestionar y alerta a los 3 días.</p></div></li>
+                <li><span data-icono="square-kanban"></span><div><p class="funciones__nombre">Seguimiento <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">Estados del caso, asignación y notas que no se editan ni se borran.</p></div></li>
+                <li><span data-icono="file-down"></span><div><p class="funciones__nombre">Reportes <span class="insignia insignia--marca">En la demo</span></p><p class="texto-secundario">Reporte agregado sin datos personales en Excel, CSV o PDF. El nominal, solo con motivo.</p></div></li>
+                <li><span data-icono="sliders-horizontal"></span><div><p class="funciones__nombre">Configuración sin código <span class="insignia insignia--neutra">Por construir</span></p><p class="texto-secundario">Reglas con versión, líneas de ayuda, lugares, módulos activos y textos legales.</p></div></li>
+                <li><span data-icono="rotate-ccw-clock"></span><div><p class="funciones__nombre">Auditoría y derechos de los titulares <span class="insignia insignia--neutra">Por construir</span></p><p class="texto-secundario">Quién vio, exportó o cambió qué y cuándo, y la bandeja de solicitudes de hábeas data.</p></div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="fases" class="seccion seccion--alterna" aria-labelledby="fases-titulo">
+        <div class="contenedor">
+          <div class="encabezado-seccion">
+            <h2 id="fases-titulo">Cómo avanza: 12 fases</h2>
+            <p class="texto-grande texto-secundario">
+              Cada fase se entrega, se revisa y se aprueba antes de pasar a la siguiente. Las que dicen «En la demo» ya
+              se pueden ver aquí; su versión final se conecta a la base de datos en la Fase 4.
+            </p>
+          </div>
+          <ol class="fases">
+            <li class="fase fase--hecha"><span class="fase__numero" aria-hidden="true">0</span><div class="fase__texto"><h3><span class="sr-only">Fase 0: </span>Contexto maestro</h3><p class="texto-secundario">Alcance, públicos, reglas de trabajo y lenguaje respetuoso acordados antes de programar.</p></div><span class="insignia insignia--hecha">Hecha</span></li>
+            <li class="fase fase--hecha"><span class="fase__numero" aria-hidden="true">1</span><div class="fase__texto"><h3><span class="sr-only">Fase 1: </span>Fundaciones y sistema de diseño</h3><p class="texto-secundario">Paleta neutra «Piedra y Pizarra», tipografías, componentes, encabezado y pie institucional, y barra de accesibilidad.</p></div><span class="insignia insignia--hecha">Hecha</span></li>
+            <li class="fase fase--hecha"><span class="fase__numero" aria-hidden="true">2</span><div class="fase__texto"><h3><span class="sr-only">Fase 2: </span>Contenido del instrumento y motor de resultados</h3><p class="texto-secundario">Preguntas, mensajes y reglas convertidos en datos versionados, y el motor que calcula los resultados, con pruebas.</p></div><span class="insignia insignia--hecha">Hecha</span></li>
+            <li class="fase fase--demo"><span class="fase__numero" aria-hidden="true">3</span><div class="fase__texto"><h3><span class="sr-only">Fase 3: </span>Página de inicio institucional con 3D</h3><p class="texto-secundario">Portada con el orbe 3D, las 20 áreas, públicos, privacidad, respiración guiada y preguntas frecuentes. <a href="./">Ver el sitio público</a></p></div><span class="insignia insignia--marca">En la demo</span></li>
+            <li class="fase"><span class="fase__numero" aria-hidden="true">4</span><div class="fase__texto"><h3><span class="sr-only">Fase 4: </span>Base de datos, autenticación y seguridad</h3><p class="texto-secundario">Base de datos con permisos por rol, inicio de sesión, cálculo oficial de resultados en el servidor y registro de auditoría.</p></div><span class="insignia insignia--neutra">Por construir</span></li>
+            <li class="fase fase--demo"><span class="fase__numero" aria-hidden="true">5</span><div class="fase__texto"><h3><span class="sr-only">Fase 5: </span>Registro, consentimiento y selección de grupo</h3><p class="texto-secundario">Asistente por pasos que adapta los campos a la edad y obtiene las autorizaciones. En la demo se ve una vista previa del formulario.</p></div><span class="insignia insignia--marca">En la demo</span></li>
+            <li class="fase fase--demo"><span class="fase__numero" aria-hidden="true">6</span><div class="fase__texto"><h3><span class="sr-only">Fase 6: </span>Experiencia del cuestionario</h3><p class="texto-secundario">Una pregunta a la vez, progreso claro, pausa, atajos de teclado, lectura en voz alta y revisión antes de enviar. <a href="cuestionario.html">Probar el cuestionario</a></p></div><span class="insignia insignia--marca">En la demo</span></li>
+            <li class="fase fase--demo"><span class="fase__numero" aria-hidden="true">7</span><div class="fase__texto"><h3><span class="sr-only">Fase 7: </span>Resultados y ruta de atención especial</h3><p class="texto-secundario">Mensaje general, rueda de bienestar, tarjetas por área, apoyo inmediato cuando aplica y versión imprimible. <a href="resultados.html?ejemplo=1">Ver un resultado de ejemplo</a></p></div><span class="insignia insignia--marca">En la demo</span></li>
+            <li class="fase fase--demo"><span class="fase__numero" aria-hidden="true">8</span><div class="fase__texto"><h3><span class="sr-only">Fase 8: </span>Panel profesional: tablero, registros y detalle</h3><p class="texto-secundario">Tablero de indicadores, tabla de registros con búsqueda y filtros, ficha de cada caso y bandeja de prioritarios. <a href="panel.html">Abrir el panel</a></p></div><span class="insignia insignia--marca">En la demo</span></li>
+            <li class="fase fase--demo"><span class="fase__numero" aria-hidden="true">9</span><div class="fase__texto"><h3><span class="sr-only">Fase 9: </span>Seguimiento, reportes, configuración y auditoría</h3><p class="texto-secundario">Seguimiento de casos y reporte agregado ya se pueden probar; configuración, usuarios y auditoría llegan con la base de datos. <a href="panel.html#seguimiento">Ver el seguimiento</a></p></div><span class="insignia insignia--marca">En la demo</span></li>
+            <li class="fase"><span class="fase__numero" aria-hidden="true">10</span><div class="fase__texto"><h3><span class="sr-only">Fase 10: </span>Calidad: accesibilidad, rendimiento, seguridad y pruebas</h3><p class="texto-secundario">Revisión de accesibilidad, velocidad en equipos modestos, seguridad y pruebas de punta a punta, con un informe de calidad.</p></div><span class="insignia insignia--neutra">Por construir</span></li>
+            <li class="fase"><span class="fase__numero" aria-hidden="true">11</span><div class="fase__texto"><h3><span class="sr-only">Fase 11: </span>Despliegue, documentación y entrega</h3><p class="texto-secundario">Publicación en el dominio de la Alcaldía, copias de seguridad, monitoreo y manuales técnico, de administración y de contenido.</p></div><span class="insignia insignia--neutra">Por construir</span></li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="por-definir" class="seccion" aria-labelledby="definir-titulo">
+        <div class="contenedor">
+          <div class="encabezado-seccion">
+            <h2 id="definir-titulo">Lo que falta definir con la Alcaldía</h2>
+            <p class="texto-grande texto-secundario">
+              Ninguno de estos puntos detiene la construcción: la plataforma queda lista para ajustarlos sin reprogramar.
+              Están agrupados por quién los valida.
+            </p>
+          </div>
+          <div class="por-definir">
+            <section class="por-definir__grupo" aria-labelledby="pd-profesional">
+              <h3 id="pd-profesional"><span data-icono="hand-heart"></span>Equipo profesional</h3>
+              <ul>
+                <li>Reglas de puntuación (hoy provisionales, versión 0.1).</li>
+                <li>Áreas sensibles y criterios de prioridad.</li>
+                <li>Mensajes del módulo infantil e instrucciones del cuestionario de adultos.</li>
+                <li>Cuestionario y mensajes para adolescentes.</li>
+                <li>Trato de «tú» o «usted» en todos los textos.</li>
+                <li>Rangos de edad por grupo y pregunta de sexo en el módulo infantil.</li>
+                <li>Descripciones de las áreas y casos que las reglas no cubren.</li>
+              </ul>
+            </section>
+            <section class="por-definir__grupo" aria-labelledby="pd-salud">
+              <h3 id="pd-salud"><span data-icono="phone"></span>Secretaría de Salud</h3>
+              <ul>
+                <li>Líneas de ayuda y rutas de atención locales (hoy hay valores de ejemplo).</li>
+              </ul>
+            </section>
+            <section class="por-definir__grupo" aria-labelledby="pd-juridica">
+              <h3 id="pd-juridica"><span data-icono="scale"></span>Oficina jurídica</h3>
+              <ul>
+                <li>Textos legales y autorizaciones (hoy en borrador).</li>
+                <li>Tiempo de conservación de los datos.</li>
+              </ul>
+            </section>
+            <section class="por-definir__grupo" aria-labelledby="pd-responsable">
+              <h3 id="pd-responsable"><span data-icono="landmark"></span>Secretaría responsable</h3>
+              <ul>
+                <li>Nombre del municipio, correo y teléfono de contacto.</li>
+                <li>Estados y tiempos del seguimiento de casos.</li>
+                <li>Si se activa «Quiero que un profesional me contacte», según la capacidad de respuesta.</li>
+              </ul>
+            </section>
+            <section class="por-definir__grupo" aria-labelledby="pd-tic">
+              <h3 id="pd-tic"><span data-icono="database"></span>Oficina TIC</h3>
+              <ul>
+                <li>Alojamiento del sitio y región donde se guardan los datos.</li>
+                <li>Si aplican la barra y el pie de GOV.CO.</li>
+              </ul>
+            </section>
+            <section class="por-definir__grupo" aria-labelledby="pd-comunicaciones">
+              <h3 id="pd-comunicaciones"><span data-icono="messages-square"></span>Comunicaciones</h3>
+              <ul>
+                <li>Logo oficial de la Alcaldía y manual de marca, si existe.</li>
+                <li>Aprobación del logotipo provisional de Mente al Día.</li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section id="compromisos" class="seccion seccion--alterna" aria-labelledby="compromisos-titulo">
+        <div class="contenedor">
+          <div class="encabezado-seccion">
+            <h2 id="compromisos-titulo">Compromisos de la plataforma</h2>
+          </div>
+          <div class="compromisos">
+            <div>
+              <h3><span data-icono-grande="shield-check"></span>Privacidad y seguridad</h3>
+              <ul class="lista-chulos">
+                <li>Protección de datos desde el diseño, conforme a la Ley 1581 de 2012.</li>
+                <li>Se piden solo los datos necesarios, con autorización expresa.</li>
+                <li>Información cifrada al viajar y al guardarse.</li>
+                <li>Cada persona del equipo ve solo lo que su rol permite, con doble factor.</li>
+                <li>Ver datos de contacto, exportar o cambiar una regla queda en la auditoría.</li>
+                <li>Las personas pueden consultar, actualizar o pedir que se eliminen sus datos.</li>
+              </ul>
+            </div>
+            <div>
+              <h3><span data-icono-grande="accessibility"></span>Accesibilidad</h3>
+              <ul class="lista-chulos">
+                <li>Pensada para cumplir las pautas WCAG 2.1 nivel AA.</li>
+                <li>Primero el celular: funciona en equipos modestos y conexiones lentas.</li>
+                <li>Se puede usar solo con el teclado y con lectores de pantalla.</li>
+                <li>Texto más grande, alto contraste, menos movimiento y lectura fácil.</li>
+                <li>Los niveles nunca se indican solo con color: siempre llevan texto e ícono.</li>
+                <li>El 3D es discreto, se pausa con «menos movimiento» y tiene alternativa sin él.</li>
+              </ul>
+            </div>
+            <div>
+              <h3><span data-icono-grande="message-circle-heart"></span>Lenguaje y cuidado</h3>
+              <ul class="lista-chulos">
+                <li>Orientación, no diagnóstico: así se dice en cada resultado.</li>
+                <li>Lenguaje respetuoso, esperanzador y sin estigmas.</li>
+                <li>Las líneas de ayuda están a un clic desde cualquier página.</li>
+                <li>Las reglas que marcan prioridad las define el equipo profesional.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tecnologia" class="seccion" aria-labelledby="tecnologia-titulo">
+        <div class="contenedor tecnologia">
+          <div>
+            <h2 id="tecnologia-titulo">Con qué se construye</h2>
+            <dl class="tecnologia__lista">
+              <div><dt>Sitio y panel</dt><dd>React 19 con TypeScript, Vite y Tailwind CSS 4.</dd></div>
+              <div><dt>Componentes</dt><dd>Radix UI, accesibles por teclado y lector de pantalla.</dd></div>
+              <div><dt>3D</dt><dd>Three.js con React Three Fiber, solo en la portada y al terminar el cuestionario.</dd></div>
+              <div><dt>Datos y acceso</dt><dd>Supabase: base de datos PostgreSQL, inicio de sesión, permisos por fila y funciones en el servidor.</dd></div>
+              <div><dt>Pruebas</dt><dd>Vitest para el motor de resultados y Playwright con axe para recorridos y accesibilidad.</dd></div>
+            </dl>
+          </div>
+          <div id="sobre-la-demo" class="sobre-demo tarjeta">
+            <h2>Sobre esta demostración</h2>
+            <p>
+              Es una versión de muestra, sin base de datos, para que cualquier persona vea la plataforma desde su celular o
+              computador. Usa el mismo contenido y el mismo motor de resultados del código del proyecto.
+            </p>
+            <ul class="lista-puntos">
+              <li>Tus respuestas solo quedan en esta pestaña del navegador y se borran al cerrarla.</li>
+              <li>El panel usa 232 registros inventados: no hay nombres, correos ni teléfonos.</li>
+              <li>Los datos entre corchetes, como <span class="marcador">[MUNICIPIO]</span>, esperan la información oficial.</li>
+            </ul>
+            <div class="grupo-botones">
+              <button class="boton boton--primario" type="button" data-copiar-enlace><span data-icono="link"></span>Copiar el enlace</button>
+              <a class="boton boton--secundario" href="https://github.com/Michaelpob/mente-al-dia" rel="noopener">Ver el código</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="paginas-legales" class="seccion seccion--alterna" aria-labelledby="legales-titulo">
+        <div class="contenedor">
+          <div class="encabezado-seccion">
+            <h2 id="legales-titulo">Páginas legales</h2>
+            <p class="texto-grande texto-secundario">
+              La plataforma tendrá estas páginas. Sus textos están en borrador y los aprueba la Oficina jurídica antes del
+              lanzamiento, por eso no se publican en la demostración.
+            </p>
+          </div>
+          <ul class="legales">
+            <li><span data-icono="file-text"></span><div><p class="funciones__nombre">Política de tratamiento de datos personales</p><p class="texto-secundario">Qué datos se recogen, para qué, quién responde y cómo ejercer tus derechos.</p></div></li>
+            <li><span data-icono="file-check"></span><div><p class="funciones__nombre">Autorización de datos sensibles</p><p class="texto-secundario">La que se pide antes del cuestionario, y la del acudiente para niñas y niños.</p></div></li>
+            <li><span data-icono="file-text"></span><div><p class="funciones__nombre">Términos y condiciones</p><p class="texto-secundario">Alcance del servicio: orientación, no diagnóstico ni atención de emergencias.</p></div></li>
+            <li><span data-icono="accessibility"></span><div><p class="funciones__nombre">Declaración de accesibilidad</p><p class="texto-secundario">Nivel de cumplimiento, limitaciones conocidas y cómo reportar una barrera.</p></div></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <div id="chrome-inferior"></div>
+  </body>
+</html>

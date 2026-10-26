@@ -4,7 +4,18 @@ Plataforma web de orientación y bienestar emocional de la Alcaldía de [MUNICIP
 
 Es una página web responsiva (no es una app nativa ni una APK). Ofrece orientación y no reemplaza la atención profesional ni los servicios de emergencia.
 
-> Estado: **Fase 1 · Fundaciones y sistema de diseño.** Las demás pantallas se construyen por fases (ver `docs/`).
+> Estado: **Fases 0 a 2 terminadas** (fundaciones, sistema de diseño, contenido del instrumento y motor de resultados). Las demás pantallas se construyen por fases (ver `docs/`).
+
+## Demostración pública
+
+**https://michaelpob.github.io/mente-al-dia/**
+
+Una versión navegable de lo que tendrá la plataforma, para verla desde cualquier celular o computador: sitio público con el orbe 3D, cuestionario de adultos y de niñas y niños, resultados con la rueda de bienestar, panel profesional con 232 registros ficticios y la página «El proyecto» con las 12 fases y lo que falta validar.
+
+- Vive en `demo/`: HTML, CSS y JavaScript sin compilar, sin base de datos y sin servidor. Nada de lo que se responde sale del navegador.
+- Usa el mismo contenido y el mismo motor de resultados que la plataforma: `corepack pnpm demo:sincronizar` copia `src/content/v1`, `src/content/lineas-ayuda.ts`, el motor y `tokens.css` a `demo/assets/` (transpilados a JavaScript). Hay que ejecutarlo cada vez que cambien.
+- Se publica con GitHub Pages desde la rama `gh-pages`, que contiene solo el contenido de `demo/`. Para actualizarla: sincronizar, revisar y volver a publicar esa carpeta en `gh-pages`.
+- GitHub Pages sirve solo para la demostración: la plataforma real necesita un alojamiento con los encabezados de seguridad de la Fase 10 (ver F1-08 en `docs/PENDIENTES_VALIDACION.md`).
 
 ## Requisitos
 
@@ -24,6 +35,7 @@ Es una página web responsiva (no es una app nativa ni una APK). Ofrece orientac
 | `corepack pnpm lint`               | ESLint (incluye reglas de accesibilidad jsx-a11y), sin advertencias permitidas.                                 |
 | `corepack pnpm format`             | Formatea el código con Prettier.                                                                                |
 | `corepack pnpm contraste`          | Verifica el contraste AA de todos los pares de color de los tokens.                                             |
+| `corepack pnpm demo:sincronizar`   | Copia el contenido, el motor y los tokens a la demostración pública (`demo/`).                                  |
 | `corepack pnpm test:e2e`           | Pruebas de Playwright + axe. Compila la build de pruebas, levanta un servidor temporal y lo cierra al terminar. |
 
 ## Estructura
@@ -37,9 +49,10 @@ src/
   config/       datos institucionales del cliente (marcadores entre corchetes)
   lib/          utilidades y preferencias de accesibilidad
   hooks/  styles/  types/
+demo/          demostración pública estática (GitHub Pages)
 docs/           DECISIONES.md, PENDIENTES_VALIDACION.md
 e2e/            pruebas de Playwright
-scripts/        verificador de contraste
+scripts/        verificador de contraste, generador de contenido y sincronización de la demostración
 ```
 
 ## Sistema visual
