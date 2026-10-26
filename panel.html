@@ -2,80 +2,12 @@
 <html lang="es-CO">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Panel profesional · Mente al Día</title>
-    <meta
-      name="description"
-      content="Vista previa del panel profesional de Mente al Día con datos ficticios: tablero, registros, prioritarios y seguimiento."
-    />
-    <meta name="theme-color" content="#F7F5F1" />
     <meta name="robots" content="noindex" />
-    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="es_CO" />
-    <meta property="og:title" content="Panel profesional · Mente al Día" />
-    <meta
-      property="og:description"
-      content="Vista previa del panel profesional de Mente al Día con datos ficticios: tablero, registros, prioritarios y seguimiento."
-    />
-    <meta property="og:image" content="https://michaelpob.github.io/mente-al-dia/assets/img/compartir.jpg" />
-    <meta property="og:url" content="https://michaelpob.github.io/mente-al-dia/panel.html" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preload" href="assets/fuentes/manrope-variable.woff" as="font" type="font/woff" crossorigin />
-    <link rel="preload" href="assets/fuentes/public-sans-variable.woff" as="font" type="font/woff" crossorigin />
-    <link rel="stylesheet" href="assets/css/tokens.css" />
-    <link rel="stylesheet" href="assets/css/estilos.css" />
-    <link rel="stylesheet" href="assets/css/paginas.css" />
-    <script>
-      // Preferencias de accesibilidad antes de pintar (mismo formato que la plataforma).
-      (function () {
-        try {
-          var p = JSON.parse(localStorage.getItem('mente-al-dia:accesibilidad') || 'null');
-          if (!p) return;
-          var pasos = [0.9, 1, 1.1, 1.25, 1.4];
-          var i = Math.min(Math.max(Math.round(p.textScaleStep == null ? 1 : p.textScaleStep), 0), 4);
-          var r = document.documentElement;
-          r.style.setProperty('--escala-texto', pasos[i]);
-          if (pasos[i] > 1) r.setAttribute('data-texto', 'grande');
-          if (p.highContrast) r.setAttribute('data-contraste', 'alto');
-          if (p.reducedMotion) r.setAttribute('data-movimiento', 'reducido');
-          if (p.easyReading) r.setAttribute('data-lectura', 'facil');
-        } catch (e) {}
-      })();
-    </script>
-    <script type="module" src="assets/js/paginas/panel-acceso.js"></script>
+    <meta http-equiv="refresh" content="0; url=/mente-al-dia/panel/" />
+    <link rel="canonical" href="/mente-al-dia/panel/" />
+    <title>Mente al Día</title>
   </head>
-  <body class="pagina-panel">
-    <a class="saltar" href="#contenido">Saltar al contenido</a>
-    <div id="chrome-superior"></div>
-    <!-- Ingreso de administración: el panel solo se muestra después de ingresar (D-64). -->
-    <div data-ingreso-panel></div>
-    <div class="panel" data-panel hidden>
-      <div class="panel__lateral">
-        <div class="panel__marca" data-panel-marca></div>
-        <nav aria-label="Secciones del panel">
-          <ul class="panel__menu" data-panel-menu></ul>
-        </nav>
-        <div class="panel__usuario">
-          <p class="texto-pequeno"><strong>Administración</strong></p>
-          <p class="texto-pequeno texto-secundario" data-panel-correo></p>
-          <div class="panel__usuario-acciones">
-            <button class="boton boton--fantasma boton--sm" type="button" data-abrir="cajon-accesibilidad">
-              <span data-icono="accessibility"></span>Accesibilidad
-            </button>
-            <button class="boton boton--fantasma boton--sm" type="button" data-salir-panel><span data-icono="log-out"></span>Salir</button>
-          </div>
-        </div>
-      </div>
-      <main id="contenido-panel" class="panel__principal" tabindex="-1">
-        <div class="aviso aviso--demo panel__aviso" data-panel-aviso>
-          <div class="aviso__cuerpo">
-            <p class="aviso__titulo">Vista previa con datos ficticios</p>
-            <p>Los 232 registros se generaron para esta demostración con el motor de resultados real. Ninguno corresponde a una persona y no se muestran nombres ni datos de contacto.</p>
-          </div>
-        </div>
-        <div data-panel-vista></div>
-      </main>
-    </div>
+  <body>
+    <p>Esta página cambió de dirección: <a href="/mente-al-dia/panel/">ir a Mente al Día</a>.</p>
   </body>
 </html>

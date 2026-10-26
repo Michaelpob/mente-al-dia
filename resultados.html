@@ -2,60 +2,12 @@
 <html lang="es-CO">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Resultados · Mente al Día</title>
-    <meta
-      name="description"
-      content="Así se ven los resultados de Mente al Día: rueda de bienestar, mensajes por área y rutas de apoyo."
-    />
-    <meta name="theme-color" content="#F7F5F1" />
     <meta name="robots" content="noindex" />
-    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="es_CO" />
-    <meta property="og:title" content="Resultados · Mente al Día" />
-    <meta
-      property="og:description"
-      content="Así se ven los resultados de Mente al Día: rueda de bienestar, mensajes por área y rutas de apoyo."
-    />
-    <meta property="og:image" content="https://michaelpob.github.io/mente-al-dia/assets/img/compartir.jpg" />
-    <meta property="og:url" content="https://michaelpob.github.io/mente-al-dia/resultados.html" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preload" href="assets/fuentes/manrope-variable.woff" as="font" type="font/woff" crossorigin />
-    <link rel="preload" href="assets/fuentes/public-sans-variable.woff" as="font" type="font/woff" crossorigin />
-    <link rel="stylesheet" href="assets/css/tokens.css" />
-    <link rel="stylesheet" href="assets/css/estilos.css" />
-    <link rel="stylesheet" href="assets/css/paginas.css" />
-    <script>
-      // Preferencias de accesibilidad antes de pintar (mismo formato que la plataforma).
-      (function () {
-        try {
-          var p = JSON.parse(localStorage.getItem('mente-al-dia:accesibilidad') || 'null');
-          if (!p) return;
-          var pasos = [0.9, 1, 1.1, 1.25, 1.4];
-          var i = Math.min(Math.max(Math.round(p.textScaleStep == null ? 1 : p.textScaleStep), 0), 4);
-          var r = document.documentElement;
-          r.style.setProperty('--escala-texto', pasos[i]);
-          if (pasos[i] > 1) r.setAttribute('data-texto', 'grande');
-          if (p.highContrast) r.setAttribute('data-contraste', 'alto');
-          if (p.reducedMotion) r.setAttribute('data-movimiento', 'reducido');
-          if (p.easyReading) r.setAttribute('data-lectura', 'facil');
-        } catch (e) {}
-      })();
-    </script>
-    <script type="module" src="assets/js/paginas/resultados.js"></script>
+    <meta http-equiv="refresh" content="0; url=/mente-al-dia/resultados/" />
+    <link rel="canonical" href="/mente-al-dia/resultados/" />
+    <title>Mente al Día</title>
   </head>
-  <body class="pagina-resultados">
-    <a class="saltar" href="#contenido">Saltar al contenido</a>
-    <div id="chrome-superior" class="chrome-reserva"></div>
-    <main id="contenido" tabindex="-1">
-      <div id="vista-resultados">
-        <div class="contenedor seccion"><p class="texto-secundario">Cargando tus resultados…</p></div>
-      </div>
-    </main>
-    <div id="chrome-inferior"></div>
-    <noscript>
-      <p class="contenedor" style="padding-block: 1rem">Para ver los resultados necesitas activar JavaScript. Si necesitas apoyo inmediato, llama a la línea de emergencias 123.</p>
-    </noscript>
+  <body>
+    <p>Esta página cambió de dirección: <a href="/mente-al-dia/resultados/">ir a Mente al Día</a>.</p>
   </body>
 </html>
