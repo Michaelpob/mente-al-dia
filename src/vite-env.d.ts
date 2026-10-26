@@ -5,8 +5,10 @@ interface ImportMetaEnv {
   readonly VITE_GUIA_ESTILO?: 'true' | 'false';
   /** 'true' en la vista previa para Artifact: navegación en memoria y barra de páginas. */
   readonly VITE_VISTA_PREVIA?: 'true' | 'false';
+  /** Proyecto de Supabase (Fase 4). Sin estas dos variables el panel muestra su página provisional. */
   readonly VITE_SUPABASE_URL?: string;
-  readonly VITE_SUPABASE_ANON_KEY?: string;
+  /** Clave publicable (sb_publishable_…) o, en proyectos antiguos, la anon key. Nunca la service role. */
+  readonly VITE_SUPABASE_PUBLISHABLE_KEY?: string;
 }
 
 interface ImportMeta {

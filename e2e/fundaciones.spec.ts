@@ -98,6 +98,13 @@ test.describe('Rutas públicas', () => {
     await expect(page.locator('h1')).toHaveText('Panel profesional');
     expect(await violacionesGraves(page)).toEqual([]);
   });
+
+  test('/panel/ingresar avisa que falta conectar la base de datos', async ({ page }) => {
+    await page.goto('/panel/ingresar');
+    await expect(page.locator('h1')).toHaveText('Ingresar al panel');
+    await expect(page.getByText(/todavía no está conectado a la base de datos/)).toBeVisible();
+    expect(await violacionesGraves(page)).toEqual([]);
+  });
 });
 
 test.describe('Teclado', () => {

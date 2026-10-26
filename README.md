@@ -4,7 +4,7 @@ Plataforma web de orientación y bienestar emocional de la Alcaldía de [MUNICIP
 
 Es una página web responsiva (no es una app nativa ni una APK). Ofrece orientación y no reemplaza la atención profesional ni los servicios de emergencia.
 
-> Estado: **Fases 0 a 3 terminadas** (fundaciones, sistema de diseño, contenido del instrumento, motor de resultados y página de inicio con el orbe 3D). Las demás pantallas se construyen por fases (ver `docs/`).
+> Estado: **Fases 0 a 4 terminadas** (fundaciones, sistema de diseño, contenido del instrumento, motor de resultados, página de inicio con el orbe 3D, y base de datos con permisos por rol, ingreso con doble factor, cálculo oficial en el servidor y auditoría). Las demás pantallas se construyen por fases (ver `docs/`). La puesta en marcha de Supabase está en `docs/BASE_DE_DATOS.md`.
 
 ## Demostración pública
 
@@ -24,19 +24,22 @@ Una versión navegable de lo que tendrá la plataforma, para verla desde cualqui
 
 ## Scripts
 
-| Comando                            | Qué hace                                                                                                        |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `corepack pnpm install`            | Instala las dependencias.                                                                                       |
-| `corepack pnpm dev`                | Servidor de desarrollo (incluye `/guia-de-estilo`).                                                             |
-| `corepack pnpm build`              | Build de producción (sin guía de estilo).                                                                       |
-| `corepack pnpm build:pruebas`      | Build de pruebas: igual que producción, pero con `/guia-de-estilo`.                                             |
-| `corepack pnpm build:vista-previa` | Vista previa en un solo HTML (`dist-vista-previa/mente-al-dia.html`) para publicar como Artifact de claude.ai.  |
-| `corepack pnpm typecheck`          | Verificación de tipos de TypeScript (modo estricto).                                                            |
-| `corepack pnpm lint`               | ESLint (incluye reglas de accesibilidad jsx-a11y), sin advertencias permitidas.                                 |
-| `corepack pnpm format`             | Formatea el código con Prettier.                                                                                |
-| `corepack pnpm contraste`          | Verifica el contraste AA de todos los pares de color de los tokens.                                             |
-| `corepack pnpm demo:sincronizar`   | Copia el contenido, el motor y los tokens a la demostración pública (`demo/`).                                  |
-| `corepack pnpm test:e2e`           | Pruebas de Playwright + axe. Compila la build de pruebas, levanta un servidor temporal y lo cierra al terminar. |
+| Comando                               | Qué hace                                                                                                              |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `corepack pnpm install`               | Instala las dependencias.                                                                                             |
+| `corepack pnpm dev`                   | Servidor de desarrollo (incluye `/guia-de-estilo`).                                                                   |
+| `corepack pnpm build`                 | Build de producción (sin guía de estilo).                                                                             |
+| `corepack pnpm build:pruebas`         | Build de pruebas: igual que producción, pero con `/guia-de-estilo`.                                                   |
+| `corepack pnpm build:vista-previa`    | Vista previa en un solo HTML (`dist-vista-previa/mente-al-dia.html`) para publicar como Artifact de claude.ai.        |
+| `corepack pnpm typecheck`             | Verificación de tipos de TypeScript (modo estricto).                                                                  |
+| `corepack pnpm lint`                  | ESLint (incluye reglas de accesibilidad jsx-a11y), sin advertencias permitidas.                                       |
+| `corepack pnpm format`                | Formatea el código con Prettier.                                                                                      |
+| `corepack pnpm contraste`             | Verifica el contraste AA de todos los pares de color de los tokens.                                                   |
+| `corepack pnpm demo:sincronizar`      | Copia el contenido, el motor y los tokens a la demostración pública (`demo/`).                                        |
+| `corepack pnpm funciones:sincronizar` | Copia el motor y el contenido a las Edge Functions de Supabase (`supabase/functions/_compartido/generado`).           |
+| `corepack pnpm test:funciones`        | Comprueba esas copias, el tipado de las Edge Functions y sus pruebas (Deno).                                          |
+| `corepack pnpm test:bd`               | Migraciones y pruebas de permisos y auditoría en un PostgreSQL local (`BD_PRUEBAS_URL`, ver `docs/BASE_DE_DATOS.md`). |
+| `corepack pnpm test:e2e`              | Pruebas de Playwright + axe. Compila la build de pruebas, levanta un servidor temporal y lo cierra al terminar.       |
 
 ## Estructura
 
@@ -50,7 +53,8 @@ src/
   lib/          utilidades y preferencias de accesibilidad
   hooks/  styles/  types/
 demo/          demostración pública estática (GitHub Pages)
-docs/           DECISIONES.md, PENDIENTES_VALIDACION.md
+supabase/       migraciones, pruebas pgTAP y Edge Functions (Fase 4)
+docs/           DECISIONES.md, PENDIENTES_VALIDACION.md, BASE_DE_DATOS.md
 e2e/            pruebas de Playwright
 scripts/        verificador de contraste, generador de contenido y sincronización de la demostración
 ```

@@ -200,6 +200,68 @@ export const textos = {
     descripcion: 'Todas las páginas públicas de Mente al Día.',
   },
 
+  /** Ingreso al panel profesional (Fase 4): contraseña y doble factor obligatorio. */
+  accesoPanel: {
+    titulo: 'Ingresar al panel',
+    descripcion: 'Espacio privado para profesionales autorizados de la Alcaldía.',
+    correo: 'Correo institucional',
+    contrasena: 'Contraseña',
+    ingresar: 'Ingresar',
+    ingresando: 'Ingresando…',
+    olvide: '¿Olvidaste tu contraseña?',
+    recuperarTitulo: 'Recuperar la contraseña',
+    recuperarTexto: 'Te enviaremos un enlace a tu correo para que definas una contraseña nueva.',
+    enviarEnlace: 'Enviar enlace',
+    enlaceEnviado:
+      'Si el correo tiene una cuenta del panel, te llegará un enlace en unos minutos. Revisa también la carpeta de correo no deseado.',
+    volverIngreso: 'Volver al ingreso',
+    soloInvitacion: 'Las cuentas del panel se crean por invitación del superadministrador.',
+    verificarTitulo: 'Verificación en dos pasos',
+    verificarTexto: 'Escribe el código de 6 dígitos que muestra tu aplicación de autenticación.',
+    codigo: 'Código de verificación',
+    verificar: 'Verificar',
+    verificando: 'Verificando…',
+    inscribirTitulo: 'Activa la verificación en dos pasos',
+    inscribirTexto:
+      'El panel la exige para proteger los datos de las personas. Escanea el código QR con una aplicación de autenticación (por ejemplo, Google Authenticator o Microsoft Authenticator) y escribe el código que te muestre.',
+    qrAlternativo: 'Código QR para la aplicación de autenticación',
+    secreto: 'Si no puedes escanear, escribe esta clave en la aplicación:',
+    activar: 'Activar y entrar',
+    sinAccesoTitulo: 'Tu cuenta no tiene acceso al panel',
+    sinPerfil:
+      'Tu cuenta no tiene un rol asignado. Pide al superadministrador que revise tu invitación.',
+    inactivo:
+      'Tu cuenta está desactivada. Si crees que es un error, escríbele al superadministrador.',
+    cerrarSesion: 'Cerrar sesión',
+    sesionComo: (nombre: string, rol: string) => `Sesión iniciada como ${nombre} (${rol}).`,
+    roles: {
+      superadministrador: 'superadministrador',
+      profesional: 'profesional',
+      consulta: 'consulta',
+    },
+    definirTitulo: 'Define tu contraseña',
+    definirTexto:
+      'Usa al menos 12 caracteres, con mayúsculas, minúsculas y números. No la compartas con nadie.',
+    nuevaContrasena: 'Contraseña nueva',
+    confirmarContrasena: 'Repite la contraseña',
+    noCoinciden: 'Las contraseñas no coinciden.',
+    guardarContrasena: 'Guardar y continuar',
+    enlaceVencido:
+      'El enlace ya no es válido o venció. Pide una invitación nueva o recupera tu contraseña desde el ingreso.',
+    sinConfigurar:
+      'El panel todavía no está conectado a la base de datos. Cuando se configure el proyecto de Supabase, aquí aparecerá el ingreso.',
+    errores: {
+      credenciales: 'El correo o la contraseña no son correctos.',
+      codigo:
+        'El código no es correcto o ya venció. Escribe el que aparece ahora en la aplicación.',
+      contrasenaDebil:
+        'La contraseña debe tener al menos 12 caracteres, con mayúsculas, minúsculas y números.',
+      mismaContrasena: 'La contraseña nueva debe ser distinta de la anterior.',
+      demasiadosIntentos: 'Hubo demasiados intentos. Espera unos minutos e inténtalo de nuevo.',
+      general: 'No pudimos completar la acción. Revisa tu conexión e inténtalo de nuevo.',
+    },
+  },
+
   noEncontrada: {
     titulo: 'No encontramos esta página',
     texto:
