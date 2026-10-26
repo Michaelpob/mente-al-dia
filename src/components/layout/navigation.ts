@@ -5,7 +5,7 @@ export interface NavItem {
   label: string;
 }
 
-/** Menú principal del sitio público. Las anclas las completa la página de inicio (Fase 3). */
+/** Menú principal del sitio público. Las anclas son secciones de la página de inicio. */
 export const mainNavItems: readonly NavItem[] = [
   { to: '/', label: textos.nav.inicio },
   { to: '/#como-funciona', label: textos.nav.comoFunciona },

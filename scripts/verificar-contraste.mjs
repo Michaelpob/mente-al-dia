@@ -73,6 +73,13 @@ const pares = [
   ['foco', 'piedra-50', COMPONENTE],
   ['foco', 'blanco', COMPONENTE],
   ['foco', 'piedra-100', COMPONENTE],
+  // Inicio: botón claro sobre el cierre oscuro y los íconos de la rueda sobre su dimensión.
+  ['pizarra-800', 'blanco', TEXTO],
+  ...['emociones', 'cuerpo', 'vinculos', 'afrontamiento', 'proyecto'].map((d) => [
+    'grafito-900',
+    `dimension-${d}`,
+    COMPONENTE,
+  ]),
 ];
 
 // Combinaciones que NO cumplen y por eso están prohibidas en el diseño (se informan, no fallan).
