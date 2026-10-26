@@ -41,7 +41,7 @@ Todo lo que debe validar el equipo profesional, jurídico o técnico de la Alcal
 
 | N.º   | Tema                                 | Situación actual                                                                                                                                                               | Valida                         | Estado    |
 | ----- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ | --------- |
-| F3-01 | Textos de la página de inicio        | Borrador en `src/content/inicio.ts` (los mismos de la demostración): portada, qué es y qué no es, pasos, públicos, privacidad, respiración y preguntas frecuentes.             | Equipo profesional (tono)      | Borrador  |
+| F3-01 | Textos de la página de inicio        | Borrador en `src/content/inicio.ts` (los mismos de la demostración): portada, qué es y qué no es, pasos, públicos, privacidad y preguntas frecuentes.                          | Equipo profesional (tono)      | Borrador  |
 | F3-02 | Promesas de privacidad de la portada | «Información cifrada», «cada consulta queda registrada» y «Desde Mi cuenta puedes solicitarlo» dependen de la Fase 4 (base de datos y auditoría). Confirmar antes de publicar. | Oficina jurídica y oficina TIC | Pendiente |
 | F3-03 | Duración anunciada                   | «Unos 10 minutos». Medir con personas reales antes del lanzamiento.                                                                                                            | Equipo profesional             | Pendiente |
 

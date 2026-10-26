@@ -3,7 +3,6 @@ import { esc, inclinar, listaLineasHtml, montarChrome, movimientoReducido, pinta
 import { icono } from '../iconos.js';
 import { montarOrbe } from '../orbe.js';
 import { areas, dimensiones } from '../proyecto/areas.js';
-import { activarRespiracion, respiracionHtml } from '../respiracion.js';
 import { activarRueda, ruedaHtml, tonoDimension } from '../rueda.js';
 
 montarChrome({ pagina: 'inicio' });
@@ -97,8 +96,5 @@ elegir('todas');
 /* Tarjetas de públicos con inclinación 3D por CSS. */
 document.querySelectorAll('[data-inclinar]').forEach(inclinar);
 
-/* Respiración guiada y líneas de ayuda. */
-const respiracion = document.querySelector('[data-respiracion-contenedor]');
-respiracion.innerHTML = respiracionHtml();
-activarRespiracion(respiracion);
+/* Líneas de ayuda. */
 document.querySelector('[data-lineas]').innerHTML = listaLineasHtml();

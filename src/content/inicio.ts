@@ -1,5 +1,3 @@
-import { CICLOS_RESPIRACION } from '@/content/respiracion';
-
 /**
  * Contenido de la página de inicio (Fase 3).
  * ESTADO: BORRADOR. Son los textos de la demostración pública; los valida el equipo profesional
@@ -117,20 +115,6 @@ export const inicio = {
       },
     ],
     verPolitica: 'Leer la política de tratamiento de datos',
-  },
-
-  respiracion: {
-    etiqueta: 'Respiración guiada',
-    titulo: 'Tómate un minuto',
-    texto:
-      'Una pausa de respiración lenta puede ayudarte a bajar la tensión. Sigue el círculo: inhala en 4 segundos, sostén 2 y exhala en 6.',
-    empezar: 'Empezar',
-    pausar: 'Pausar',
-    inicial: `Son ${CICLOS_RESPIRACION} respiraciones, cerca de un minuto.`,
-    fase: (fase: string, ciclo: number) =>
-      `${fase}. Respiración ${ciclo} de ${CICLOS_RESPIRACION}.`,
-    terminada: 'Bien hecho. Cuidarte también es importante.',
-    pausada: 'Pausaste la respiración. Puedes empezar de nuevo cuando quieras.',
   },
 
   preguntas: {

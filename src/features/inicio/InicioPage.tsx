@@ -15,7 +15,6 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router';
-import { RespiracionGuiada } from '@/components/bienestar/respiracion-guiada';
 import { HelplineList } from '@/components/layout/helplines';
 import { PageMeta } from '@/components/layout/page';
 import {
@@ -323,22 +322,10 @@ function Privacidad() {
   );
 }
 
-function Pausa() {
-  return (
-    <section id="pausa" aria-label={inicio.respiracion.etiqueta} className="bg-piedra-100 seccion">
-      <div className="contenedor">
-        <Reveal>
-          <RespiracionGuiada />
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
 function PreguntasFrecuentes() {
   const p = inicio.preguntas;
   return (
-    <Seccion id="preguntas-frecuentes" titulo={p.titulo}>
+    <Seccion id="preguntas-frecuentes" titulo={p.titulo} alterna>
       <Accordion type="multiple" className="max-w-216">
         {p.lista.map((item, i) => (
           <AccordionItem key={item.pregunta} value={`pregunta-${i}`}>
@@ -398,14 +385,8 @@ export default function InicioPage() {
       </Seccion>
       <Publicos />
       <Privacidad />
-      <Pausa />
       <PreguntasFrecuentes />
-      <Seccion
-        id="lineas-de-ayuda"
-        titulo={inicio.lineas.titulo}
-        texto={inicio.lineas.texto}
-        alterna
-      >
+      <Seccion id="lineas-de-ayuda" titulo={inicio.lineas.titulo} texto={inicio.lineas.texto}>
         <HelplineList className="grid-cols-[repeat(auto-fit,minmax(min(13.5rem,100%),1fr))]" />
       </Seccion>
       <Cierre />

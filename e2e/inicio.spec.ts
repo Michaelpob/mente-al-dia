@@ -9,7 +9,6 @@ const SECCIONES = [
   'areas',
   'para-quien',
   'privacidad',
-  'pausa',
   'preguntas-frecuentes',
   'lineas-de-ayuda',
 ];
@@ -56,16 +55,11 @@ test('las preguntas frecuentes se abren y se cierran', async ({ page }) => {
   await expect(pregunta).toHaveAttribute('aria-expanded', 'false');
 });
 
-test('la respiración guiada empieza, anuncia la fase y se puede pausar', async ({ page }) => {
+test('no tiene el ejercicio de respiración guiada (se quitó del sitio)', async ({ page }) => {
   await page.goto('/');
-  const pausa = page.locator('#pausa');
-  await pausa.getByRole('button', { name: 'Empezar' }).click();
-  await expect(pausa.getByRole('status')).toHaveText('Inhala. Respiración 1 de 5.');
-  await expect(pausa.getByRole('status')).toHaveText('Sostén. Respiración 1 de 5.', {
-    timeout: 6000,
-  });
-  await pausa.getByRole('button', { name: 'Pausar' }).click();
-  await expect(pausa.getByRole('status')).toContainText('Pausaste la respiración');
+  await expect(page.locator('section#preguntas-frecuentes')).toHaveCount(1);
+  await expect(page.locator('section#pausa')).toHaveCount(0);
+  await expect(page.getByText('Tómate un minuto')).toHaveCount(0);
 });
 
 test('el orbe 3D se dibuja y, con «reducir movimiento», queda la imagen fija', async ({ page }) => {

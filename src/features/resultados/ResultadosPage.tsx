@@ -1,7 +1,6 @@
 import { ChevronDown, Compass, Phone, Printer, Users } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
-import { RespiracionGuiada } from '@/components/bienestar/respiracion-guiada';
 import { iconosAreas } from '@/components/bienestar/iconos-areas';
 import { LeyendaNiveles, RuedaNiveles } from '@/components/bienestar/rueda-niveles';
 import { HelplineList } from '@/components/layout/helplines';
@@ -182,11 +181,15 @@ export default function ResultadosPage() {
           </div>
         </section>
 
-        <section aria-label={t.pausa} className="bg-piedra-100 seccion print:hidden">
-          <div className="contenedor flex flex-col gap-14">
-            <RespiracionGuiada titulo={t.pausa} nivelTitulo="h2" />
+        <section
+          aria-labelledby="lineas-resultado-titulo"
+          className="bg-piedra-100 seccion print:hidden"
+        >
+          <div className="contenedor">
             <div id="lineas-resultado">
-              <h2 className="text-h2">{textos.lineasAyuda.titulo}</h2>
+              <h2 id="lineas-resultado-titulo" className="text-h2">
+                {textos.lineasAyuda.titulo}
+              </h2>
               <p className="mt-2 mb-6 text-grafito-600">{t.lineasTexto}</p>
               <HelplineList className="sm:grid-cols-2 lg:grid-cols-3" />
             </div>

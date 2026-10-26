@@ -228,7 +228,6 @@ export const participar = {
     },
     centroRueda: { titulo: 'Tus áreas', detalle: 'Elige una para ver su mensaje' },
     leyenda: 'Leyenda de niveles',
-    pausa: 'Una pausa para ti',
     lineasTexto: 'Si necesitas hablar con alguien, puedes comunicarte con estas líneas.',
     imprimir: 'Descargar o imprimir',
     ejemplo:
