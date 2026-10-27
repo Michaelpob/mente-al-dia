@@ -6,7 +6,7 @@ import { textos } from '@/content/textos-interfaz';
 const enlaces = [
   mainNavItems[0],
   { to: '/registro', label: textos.paginas.registro.titulo },
-  { to: '/ingresar', label: textos.paginas.ingresar.titulo },
+  { to: '/panel/ingresar', label: textos.accesoPanel.titulo },
   { to: '/lineas-de-ayuda', label: textos.lineasAyuda.titulo },
   ...footerLinks.filter((link) => link.to !== '/mapa-del-sitio'),
 ].filter((link) => link !== undefined);

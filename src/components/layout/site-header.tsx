@@ -50,7 +50,7 @@ function MobileMenu() {
         </nav>
         <DrawerClose asChild>
           <Button asChild variant="secundario" className="mt-6 w-full">
-            <Link to="/ingresar">{textos.nav.ingresar}</Link>
+            <Link to="/panel/ingresar">{textos.nav.ingresar}</Link>
           </Button>
         </DrawerClose>
       </DrawerContent>
@@ -125,7 +125,7 @@ export function SiteHeader() {
             size="sm"
             className="hidden sm:inline-flex sm:texto-grande:hidden"
           >
-            <Link to="/ingresar">{textos.nav.ingresar}</Link>
+            <Link to="/panel/ingresar">{textos.nav.ingresar}</Link>
           </Button>
           <MobileMenu />
         </div>

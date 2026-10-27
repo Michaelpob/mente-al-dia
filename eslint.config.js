@@ -29,6 +29,11 @@ export default defineConfig([
   {
     files: ['src/**/*.tsx'],
     extends: [jsxA11y.flatConfigs.recommended],
+    rules: {
+      // Una tabla ancha que se desplaza de lado va en una región con nombre y tabIndex={0}, para
+      // poder desplazarla con el teclado (WCAG 2.1.1; axe: scrollable-region-focusable).
+      'jsx-a11y/no-noninteractive-tabindex': ['error', { roles: ['tabpanel', 'region'] }],
+    },
   },
   {
     // En las pruebas, «!» afirma que un elemento existe; si no existe, la prueba falla igual.

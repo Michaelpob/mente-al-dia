@@ -6,12 +6,24 @@ import { PreviewBar } from '@/components/layout/preview-bar';
 import { MAIN_CONTENT_ID, SkipLink } from '@/components/layout/skip-link';
 import { textos } from '@/content/textos-interfaz';
 
-/** Layout sobrio del panel de administración: sin 3D ni animaciones decorativas. Se completa en la Fase 8. */
+/** Base del panel de administración: sobria, sin 3D ni animaciones decorativas (D-17). */
 export function PanelLayout() {
   return (
-    <div className="flex min-h-dvh flex-col bg-piedra-50">
+    <div className="min-h-dvh bg-piedra-50">
       <SkipLink />
       <PreviewBar />
+      <Suspense fallback={<PageLoading />}>
+        <Outlet />
+      </Suspense>
+      <ScrollRestoration />
+    </div>
+  );
+}
+
+/** Ingreso y definición de contraseña: encabezado simple, sin el menú del panel. */
+export function AccesoLayout() {
+  return (
+    <div className="flex min-h-dvh flex-col">
       <header className="border-b border-piedra-200 bg-blanco">
         <div className="contenedor flex min-h-16 items-center gap-4">
           <MenteAlDiaLogo />
@@ -24,7 +36,6 @@ export function PanelLayout() {
           <Outlet />
         </Suspense>
       </main>
-      <ScrollRestoration />
     </div>
   );
 }

@@ -29,13 +29,6 @@ const paginas = {
     fase: 5,
     indexable: false,
   },
-  ingresar: {
-    titulo: 'Ingresar',
-    descripcion:
-      'Aquí podrás ingresar con tu correo para continuar tu cuestionario o ver tus resultados.',
-    fase: 5,
-    indexable: false,
-  },
   cuestionario: {
     titulo: 'Cuestionario',
     descripcion: 'Aquí responderás las preguntas una por una, a tu ritmo.',
@@ -71,6 +64,36 @@ const paginas = {
     titulo: 'Panel de administración',
     descripcion: 'Espacio privado de la administración de la Alcaldía.',
     fase: 8,
+    indexable: false,
+  },
+  panelSeguimiento: {
+    titulo: 'Seguimiento',
+    descripcion: 'Estados de los casos, asignación a profesionales y notas de seguimiento.',
+    fase: 9,
+    indexable: false,
+  },
+  panelReportes: {
+    titulo: 'Reportes',
+    descripcion: 'Reportes agregados y nominales para descargar en Excel, CSV y PDF.',
+    fase: 9,
+    indexable: false,
+  },
+  panelConfiguracion: {
+    titulo: 'Configuración',
+    descripcion: 'Reglas de resultados con versión, líneas de ayuda y parámetros del sitio.',
+    fase: 9,
+    indexable: false,
+  },
+  panelUsuarios: {
+    titulo: 'Usuarios',
+    descripcion: 'Invitaciones y cuentas de la administración del panel.',
+    fase: 9,
+    indexable: false,
+  },
+  panelAuditoria: {
+    titulo: 'Auditoría',
+    descripcion: 'Registro de quién consultó o cambió qué, y cuándo.',
+    fase: 9,
     indexable: false,
   },
 } satisfies Record<string, PaginaInfo>;

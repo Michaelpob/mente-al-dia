@@ -1,17 +1,17 @@
 import { lazy } from 'react';
-import { createBrowserRouter, createMemoryRouter, type RouteObject } from 'react-router';
+import { createBrowserRouter, createMemoryRouter, Navigate, type RouteObject } from 'react-router';
 import { guiaEstiloHabilitada, vistaPrevia } from '@/config/entorno';
-import { PanelLayout } from './layouts/PanelLayout';
+import { AccesoLayout, PanelLayout } from './layouts/PanelLayout';
 import { PublicLayout } from './layouts/PublicLayout';
 import { RouteErrorPage } from './pages/RouteErrorPage';
 import { redirigirEnlaceDeAcceso } from '@/features/panel/acceso/enlaces';
 import { RequierePanel } from '@/features/panel/acceso/RequierePanel';
+import { EnConstruccion } from '@/features/panel/estructura/EnConstruccion';
 
 // Carga diferida por ruta: cada página es un archivo JS aparte.
 const InicioPage = lazy(() => import('@/features/inicio/InicioPage'));
 const Participacion = lazy(() => import('@/features/participar/Participacion'));
 const RegistroPage = lazy(() => import('@/features/registro/RegistroPage'));
-const IngresarPage = lazy(() => import('@/features/registro/IngresarPage'));
 const CuestionarioPage = lazy(() => import('@/features/cuestionario/CuestionarioPage'));
 const ResultadosPage = lazy(() => import('@/features/resultados/ResultadosPage'));
 const LineasAyudaPage = lazy(() => import('@/features/lineas-ayuda/LineasAyudaPage'));
@@ -19,7 +19,11 @@ const PrivacidadPage = lazy(() => import('@/features/informacion/PrivacidadPage'
 const TerminosPage = lazy(() => import('@/features/informacion/TerminosPage'));
 const AccesibilidadPage = lazy(() => import('@/features/informacion/AccesibilidadPage'));
 const MapaSitioPage = lazy(() => import('@/features/informacion/MapaSitioPage'));
-const PanelPage = lazy(() => import('@/features/panel/PanelPage'));
+const PanelShell = lazy(() => import('@/features/panel/estructura/PanelShell'));
+const TableroPage = lazy(() => import('@/features/panel/tablero/TableroPage'));
+const RegistrosPage = lazy(() => import('@/features/panel/registros/RegistrosPage'));
+const FichaPage = lazy(() => import('@/features/panel/registros/FichaPage'));
+const PrioritariosPage = lazy(() => import('@/features/panel/prioritarios/PrioritariosPage'));
 const PanelSesion = lazy(() => import('@/features/panel/acceso/PanelSesion'));
 const IngresoPanelPage = lazy(() => import('@/features/panel/acceso/IngresoPanelPage'));
 const DefinirContrasenaPage = lazy(() => import('@/features/panel/acceso/DefinirContrasenaPage'));
@@ -37,7 +41,8 @@ const publicRoutes: RouteObject[] = [
       { path: 'resultados', element: <ResultadosPage /> },
     ],
   },
-  { path: 'ingresar', element: <IngresarPage /> },
+  // «Ingresar» es el ingreso de administración (D-73); la dirección antigua lleva allí.
+  { path: 'ingresar', element: <Navigate to="/panel/ingresar" replace /> },
   { path: 'lineas-de-ayuda', element: <LineasAyudaPage /> },
   { path: 'privacidad', element: <PrivacidadPage /> },
   { path: 'terminos', element: <TerminosPage /> },
@@ -62,15 +67,31 @@ const routes: RouteObject[] = [
         element: <PanelSesion />,
         children: [
           {
-            index: true,
+            // Fase 8: el panel completo, solo con la sesión lista (perfil activo y doble factor).
             element: (
               <RequierePanel>
-                <PanelPage />
+                <PanelShell />
               </RequierePanel>
             ),
+            children: [
+              { index: true, element: <TableroPage /> },
+              { path: 'registros', element: <RegistrosPage /> },
+              { path: 'registros/:id', element: <FichaPage /> },
+              { path: 'prioritarios', element: <PrioritariosPage /> },
+              { path: 'seguimiento', element: <EnConstruccion pagina="panelSeguimiento" /> },
+              { path: 'reportes', element: <EnConstruccion pagina="panelReportes" /> },
+              { path: 'configuracion', element: <EnConstruccion pagina="panelConfiguracion" /> },
+              { path: 'usuarios', element: <EnConstruccion pagina="panelUsuarios" /> },
+              { path: 'auditoria', element: <EnConstruccion pagina="panelAuditoria" /> },
+            ],
           },
-          { path: 'ingresar', element: <IngresoPanelPage /> },
-          { path: 'definir-contrasena', element: <DefinirContrasenaPage /> },
+          {
+            element: <AccesoLayout />,
+            children: [
+              { path: 'ingresar', element: <IngresoPanelPage /> },
+              { path: 'definir-contrasena', element: <DefinirContrasenaPage /> },
+            ],
+          },
         ],
       },
     ],

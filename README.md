@@ -14,7 +14,7 @@ Es la plataforma real (la app de `src/`), la misma para todo el que entre: sitio
 
 - Se publica con GitHub Pages desde la rama `gh-pages`. Para actualizarla: `corepack pnpm pages:preparar` (compila con la base `/mente-al-dia/`, copia `index.html` en cada ruta y crea redirecciones desde las direcciones antiguas) y se publica el contenido de `dist-pages/` en `gh-pages`.
 - **Está conectada a Supabase** (proyecto `mente-al-dia`, valores en `.env.production`, D-67): el registro y el resultado se guardan en el servidor y el panel pide el correo y la contraseña del administrador, con doble factor (ver `docs/BASE_DE_DATOS.md`).
-- El panel es solo para el administrador (D-65).
+- El panel es solo para el administrador (D-65). Tiene tablero con indicadores y gráficas, registros con búsqueda y filtros, ficha de cada persona (el contacto completo y la impresión quedan en la auditoría) y prioritarios; seguimiento, reportes, configuración, usuarios y auditoría llegan en la Fase 9 (D-68 a D-71).
 - GitHub Pages no permite configurar todos los encabezados de seguridad de la Fase 10 (ver F1-08 en `docs/PENDIENTES_VALIDACION.md`).
 
 ## Requisitos

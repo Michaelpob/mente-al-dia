@@ -11,7 +11,8 @@ Mente al Día usa **Supabase**: PostgreSQL con permisos por fila (RLS), inicio d
 | Invitaciones                  | `supabase/functions/invitar-usuario/`                     | El superadministrador (con doble factor) invita por correo y elige el rol.                                                                                    |
 | Motor en el servidor          | `supabase/functions/_compartido/generado/`                | Copia exacta de `src/lib/motor-resultados` y `src/content/v1`, generada con `corepack pnpm funciones:sincronizar`. No se edita a mano.                        |
 | Ingreso al panel              | `src/features/panel/acceso/`                              | `/panel/ingresar` (contraseña + verificación en dos pasos), `/panel/definir-contrasena` (invitaciones y recuperación) y la protección de las rutas del panel. |
-| Pruebas de la base de datos   | `supabase/tests/`                                         | 68 comprobaciones pgTAP de permisos y auditoría.                                                                                                              |
+| Consultas del panel (Fase 8)  | `supabase/migrations/20261027120000_panel_fase8.sql`      | Tablero, registros (búsqueda, filtros y páginas en el servidor), ficha con historial, prioritarios y registro de impresión. Contacto enmascarado (D-68).      |
+| Pruebas de la base de datos   | `supabase/tests/`                                         | Comprobaciones pgTAP de permisos, auditoría, reportes, envíos y consultas del panel (`04_panel`, 40).                                                         |
 | Pruebas de las funciones      | `supabase/functions/*/manejador.test.ts`                  | 18 pruebas con Deno.                                                                                                                                          |
 
 ## Roles
@@ -73,12 +74,12 @@ El proyecto en la nube ya existe: `mente-al-dia` (ref `lpcfrtlfiljgwxarpslf`, S�
 
 ## Pruebas
 
-| Comando                        | Qué prueba                                                                                                                     |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `corepack pnpm test:bd`        | Migración + 68 comprobaciones de permisos y auditoría en un PostgreSQL local con pgTAP. Necesita `BD_PRUEBAS_URL` (ver abajo). |
-| `npx supabase@2.119.0 test db` | Las mismas pruebas en el entorno local completo de Supabase (necesita Docker).                                                 |
-| `corepack pnpm test:funciones` | Que las copias del motor estén al día, el tipado de las funciones y sus 18 pruebas (Deno se instala con las dependencias).     |
-| `corepack pnpm test`           | Incluye que las reglas iniciales de la migración sean idénticas a `src/content/v1/reglas.ts`.                                  |
+| Comando                        | Qué prueba                                                                                                                    |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `corepack pnpm test:bd`        | Migraciones + comprobaciones de permisos y auditoría en un PostgreSQL local con pgTAP. Necesita `BD_PRUEBAS_URL` (ver abajo). |
+| `npx supabase@2.119.0 test db` | Las mismas pruebas en el entorno local completo de Supabase (necesita Docker).                                                |
+| `corepack pnpm test:funciones` | Que las copias del motor estén al día, el tipado de las funciones y sus 18 pruebas (Deno se instala con las dependencias).    |
+| `corepack pnpm test`           | Incluye que las reglas iniciales de la migración sean idénticas a `src/content/v1/reglas.ts`.                                 |
 
 `test:bd` no necesita Docker: carga una simulación mínima de Supabase (`scripts/bd/simulacion-supabase.sql`) en cualquier PostgreSQL 15 o superior con pgTAP, por ejemplo:
 
@@ -87,6 +88,8 @@ BD_PRUEBAS_URL=postgres://postgres@localhost:5432/postgres corepack pnpm test:bd
 ```
 
 La base `mente_al_dia_pruebas` se borra y se vuelve a crear en cada ejecución.
+
+Sin PostgreSQL local, una migración nueva y sus pruebas se pueden correr en el proyecto enlazado sin dejar rastro (D-72): `node scripts/bd/probar-en-proyecto.mjs supabase/migrations/<nueva>.sql supabase/tests/<prueba>.sql`. Todo va en un bloque que termina con un error a propósito y se deshace; solo vuelve la salida TAP. Para medir con volumen, se agrega `scripts/bd/datos-ficticios.sql` (10.000 aplicaciones inventadas, solo desarrollo) en la misma llamada.
 
 ## Al cambiar el motor o el contenido
 

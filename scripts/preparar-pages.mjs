@@ -14,7 +14,10 @@ const BASE = '/mente-al-dia/';
 const raiz = fileURLToPath(new URL('..', import.meta.url));
 const salida = fileURLToPath(new URL('../dist-pages/', import.meta.url));
 
-/** Rutas de src/app/router.tsx (sin la guía de estilo, que no existe en producción). */
+/**
+ * Rutas de src/app/router.tsx (sin la guía de estilo, que no existe en producción). La ficha
+ * (/panel/registros/:id) no tiene carpeta: la sirve 404.html, que también carga la plataforma.
+ */
 const RUTAS = [
   'registro',
   'cuestionario',
@@ -26,6 +29,13 @@ const RUTAS = [
   'accesibilidad',
   'mapa-del-sitio',
   'panel',
+  'panel/registros',
+  'panel/prioritarios',
+  'panel/seguimiento',
+  'panel/reportes',
+  'panel/configuracion',
+  'panel/usuarios',
+  'panel/auditoria',
   'panel/ingresar',
   'panel/definir-contrasena',
 ];

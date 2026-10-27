@@ -6,7 +6,6 @@ import { expect, test, type Page } from '@playwright/test';
 const RUTAS_PUBLICAS = [
   '/',
   '/registro',
-  '/ingresar',
   '/cuestionario',
   '/resultados',
   '/lineas-de-ayuda',
@@ -18,7 +17,7 @@ const RUTAS_PUBLICAS = [
   '/esta-ruta-no-existe',
 ];
 
-const SIN_INDEXAR = ['/registro', '/ingresar', '/cuestionario', '/resultados', '/guia-de-estilo'];
+const SIN_INDEXAR = ['/registro', '/cuestionario', '/resultados', '/guia-de-estilo'];
 
 const ETIQUETAS_WCAG = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 
@@ -104,6 +103,22 @@ test.describe('Rutas públicas', () => {
     expect(await violacionesGraves(page)).toEqual([]);
   });
 
+  test('«Ingresar» del encabezado y la dirección /ingresar llevan al ingreso de administración', async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto('/ingresar');
+    await expect(page).toHaveURL(/\/panel\/ingresar$/);
+    await expect(page.locator('h1')).toHaveText('Ingreso de administración');
+    test.skip(
+      isMobile,
+      'En el teléfono, «Ingresar» está en el menú (prueba «el menú se abre con teclado»).',
+    );
+    await page.goto('/');
+    await page.getByRole('banner').getByRole('link', { name: 'Ingresar' }).click();
+    await expect(page).toHaveURL(/\/panel\/ingresar$/);
+  });
+
   test('/panel/ingresar pide correo institucional y contraseña', async ({ page }) => {
     await page.goto('/panel/ingresar');
     await expect(page.getByLabel('Correo institucional')).toBeVisible();
@@ -180,7 +195,8 @@ test.describe('Teclado', () => {
     await expect(menu).toBeVisible();
     expect(await violacionesGraves(page)).toEqual([]);
     await menu.getByRole('link', { name: 'Ingresar' }).click();
-    await expect(page).toHaveURL(/\/ingresar$/);
+    // «Ingresar» lleva al ingreso de administración (D-73).
+    await expect(page).toHaveURL(/\/panel\/ingresar$/);
     await expect(menu).toBeHidden();
   });
 });

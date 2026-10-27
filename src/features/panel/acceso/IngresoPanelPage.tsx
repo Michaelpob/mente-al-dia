@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from 'react-router';
 import { PageLoading, PageMeta } from '@/components/layout/page';
 import { Callout } from '@/components/ui/feedback';
+import { panel } from '@/content/panel';
 import { textos } from '@/content/textos-interfaz';
 import {
   FormularioIngreso,
@@ -16,7 +17,8 @@ const t = textos.accesoPanel;
 /** /panel/ingresar: contraseña y, siempre, verificación en dos pasos. */
 export default function IngresoPanelPage() {
   const { estado } = useSesion();
-  const desde = (useLocation().state as { desde?: string } | null)?.desde ?? '/panel';
+  const estadoRuta = useLocation().state as { desde?: string; inactividad?: boolean } | null;
+  const desde = estadoRuta?.desde ?? '/panel';
 
   return (
     <>
@@ -32,7 +34,16 @@ export default function IngresoPanelPage() {
           case 'cargando':
             return <PageLoading />;
           case 'sin_sesion':
-            return <FormularioIngreso />;
+            return (
+              <>
+                {estadoRuta?.inactividad ? (
+                  <div className="contenedor pt-8">
+                    <Callout className="mx-auto max-w-md">{panel.inactividad.cerrada}</Callout>
+                  </div>
+                ) : null}
+                <FormularioIngreso />
+              </>
+            );
           case 'sin_acceso':
             return <SinAcceso motivo={estado.motivo} />;
           case 'inscribir_doble_factor':
