@@ -308,7 +308,7 @@ export function GraficaModulos({ datos }: { datos: Tablero['porModulo'] }) {
                 ];
               }}
             />
-            <Legend wrapperStyle={{ fontSize: 13, color: tinta.secundaria }} />
+            <Legend itemSorter={null} wrapperStyle={{ fontSize: 13, color: tinta.secundaria }} />
             {RESULTADOS.map((r) => (
               <Bar
                 key={r}

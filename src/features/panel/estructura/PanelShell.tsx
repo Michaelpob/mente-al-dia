@@ -85,7 +85,7 @@ export default function PanelShell() {
       <aside
         className={cn(
           'sticky top-0 hidden h-dvh shrink-0 flex-col overflow-y-auto border-r border-piedra-200 bg-blanco lg:flex print:hidden',
-          contraido ? 'w-[4.5rem]' : 'w-64',
+          contraido ? 'w-[4.5rem]' : 'w-72',
         )}
       >
         <div
