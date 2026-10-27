@@ -4,6 +4,7 @@ import { guiaEstiloHabilitada, vistaPrevia } from '@/config/entorno';
 import { PanelLayout } from './layouts/PanelLayout';
 import { PublicLayout } from './layouts/PublicLayout';
 import { RouteErrorPage } from './pages/RouteErrorPage';
+import { redirigirEnlaceDeAcceso } from '@/features/panel/acceso/enlaces';
 import { RequierePanel } from '@/features/panel/acceso/RequierePanel';
 
 // Carga diferida por ruta: cada página es un archivo JS aparte.
@@ -76,8 +77,19 @@ const routes: RouteObject[] = [
   },
 ];
 
+function crearRouterNavegador() {
+  // Un enlace de invitación o de recuperación que llegó a otra página pasa a definir la contraseña
+  // antes de que el enrutador lea la dirección (D-67).
+  const { pathname, hash } = window.location;
+  const destino = redirigirEnlaceDeAcceso(pathname, hash, import.meta.env.BASE_URL);
+  if (destino) window.history.replaceState(null, '', destino);
+  // Con `vite build --base /carpeta/` el sitio vive en una subcarpeta (GitHub Pages).
+  return createBrowserRouter(routes, {
+    basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/',
+  });
+}
+
 // En la vista previa (Artifact de claude.ai) la dirección no se puede cambiar: se navega en memoria.
 export const router = vistaPrevia
   ? createMemoryRouter(routes, { initialEntries: ['/guia-de-estilo'] })
-  : // Con `vite build --base /carpeta/` el sitio vive en una subcarpeta (vista previa en GitHub Pages).
-    createBrowserRouter(routes, { basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/' });
+  : crearRouterNavegador();

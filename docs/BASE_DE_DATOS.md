@@ -39,40 +39,37 @@ Ninguno de los tres entra sin **doble factor**: las políticas exigen que la ses
 
 ## Poner en marcha el proyecto
 
-Lo que tiene que hacer una persona con acceso a Supabase (una sola vez):
+El proyecto en la nube ya existe: `mente-al-dia` (ref `lpcfrtlfiljgwxarpslf`, São Paulo, `sa-east-1`), conectado a la plataforma publicada (D-67). La región definitiva queda pendiente de la Oficina TIC (pendiente 16). Para repetir la puesta en marcha en otro proyecto, o actualizar este:
 
-1. **Crear el proyecto** en [supabase.com](https://supabase.com) con una cuenta de la Alcaldía. La región queda pendiente de la Oficina TIC (pendiente 16); mientras tanto se sugiere la más cercana a Colombia (São Paulo, `sa-east-1`).
-2. **Instalar la CLI** y enlazar el repositorio:
+1. **Enlazar el repositorio** con la CLI (en PowerShell, `npx.cmd` en lugar de `npx`):
    ```sh
    npx supabase@2.119.0 login
-   npx supabase@2.119.0 link --project-ref <ref-del-proyecto>
+   npx supabase@2.119.0 link --project-ref lpcfrtlfiljgwxarpslf
    ```
-3. **Aplicar las migraciones**: `npx supabase@2.119.0 db push`.
-4. **Configurar Auth** en el panel de Supabase (Authentication):
-   - _Sign In / Providers_: desactivar «Allow new users to sign up» (las cuentas son por invitación) y dejar activo Email.
-   - _Multi-Factor_: activar TOTP (inscripción y verificación).
-   - _URL Configuration_: Site URL = dirección pública del sitio; en Redirect URLs agregar `<sitio>/panel/definir-contrasena`.
-   - _Passwords_: mínimo 12 caracteres, con minúsculas, mayúsculas y números.
-   - _Emails_: para producción, configurar un SMTP propio de la Alcaldía (el de Supabase tiene un límite muy bajo de correos por hora).
-5. **Publicar las funciones** y sus variables:
+2. **Aplicar las migraciones**: `npx supabase@2.119.0 db push`. Si el proyecto se creó sin «exponer tablas nuevas automáticamente», `service_role` no recibe permisos por defecto: la migración `20261027100000` le da la lectura que necesitan las funciones.
+3. **Configurar Auth y la API** desde `supabase/config.toml`: `npx supabase@2.119.0 config diff` muestra los cambios y `config push` los aplica. `[remotes.produccion]` cambia las direcciones (Site URL y Redirect URLs) por las del sitio publicado; para otro proyecto se agrega otro bloque `[remotes.…]` con su ref. Queda así:
+   - Nadie puede crear su propia cuenta (`[auth] enable_signup = false`), pero el proveedor Email está activo (`[auth.email] enable_signup = true`); con `false` nadie podría ingresar.
+   - Contraseñas de 12 caracteres o más, con minúsculas, mayúsculas y números. Doble factor TOTP activo.
+   - _Emails_: para producción, configurar un SMTP propio de la Alcaldía. El de Supabase solo envía a los miembros de la organización en Supabase, con un límite muy bajo de correos por hora.
+4. **Publicar las funciones** y sus variables:
    ```sh
-   npx supabase@2.119.0 secrets set ORIGENES_PERMITIDOS=https://<sitio> SITIO_URL=https://<sitio>
-   npx supabase@2.119.0 functions deploy enviar-cuestionario --no-verify-jwt
-   npx supabase@2.119.0 functions deploy invitar-usuario --no-verify-jwt
+   npx supabase@2.119.0 secrets set ORIGENES_PERMITIDOS=https://michaelpob.github.io SITIO_URL=https://michaelpob.github.io/mente-al-dia
+   npx supabase@2.119.0 functions deploy enviar-cuestionario --no-verify-jwt --use-api
+   npx supabase@2.119.0 functions deploy invitar-usuario --no-verify-jwt --use-api
    ```
-   `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` las pone Supabase automáticamente. La service role key **nunca** va en el sitio ni en el repositorio.
-6. **Crear el primer superadministrador.** En _Authentication → Users_, «Invite user» con su correo. Luego, en el _SQL Editor_:
+   `--use-api` empaqueta en Supabase, sin Docker. `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` las pone Supabase automáticamente. La service role key **nunca** va en el sitio ni en el repositorio.
+5. **Crear el primer superadministrador.** En _Authentication → Users_, «Invite user» con su correo. Luego, con `npx supabase@2.119.0 db query --linked "…"` o en el _SQL Editor_:
    ```sql
    insert into public.perfiles (id, nombre, rol)
    select id, 'Nombre Apellido', 'superadministrador' from auth.users where email = 'correo@alcaldia.gov.co';
    ```
-   Al abrir la invitación define su contraseña y activa la verificación en dos pasos. Las demás cuentas las invita desde el panel (Fase 9) o con la función `invitar-usuario`.
-7. **Conectar el sitio.** En `.env.local` (y en el alojamiento):
+   La invitación del panel de Supabase lleva a la dirección del sitio, y la plataforma la pasa a `/panel/definir-contrasena`. Allí la persona define su contraseña y activa la verificación en dos pasos. Las demás cuentas las invita desde el panel (Fase 9) o con la función `invitar-usuario`.
+6. **Conectar el sitio.** `.env.production` (en el repositorio, D-67) tiene los dos valores públicos de _Project Settings → API Keys_:
    ```sh
-   VITE_SUPABASE_URL=https://<ref-del-proyecto>.supabase.co
+   VITE_SUPABASE_URL=https://lpcfrtlfiljgwxarpslf.supabase.co
    VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
    ```
-   Se toman de _Project Settings → API Keys_. Sin estas variables el panel muestra su página provisional.
+   `pnpm build` y `pnpm pages:preparar` los usan. En desarrollo van en `.env.local`; sin ellos, el panel muestra su página provisional.
 
 ## Pruebas
 

@@ -1,12 +1,10 @@
 import { isAuthError, type SupabaseClient } from '@supabase/supabase-js';
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { supabase } from '@/lib/supabase/cliente';
+import { direccionDefinirContrasena } from './enlaces';
 import { qrComoImagen } from './qr';
 import { resolverEstado, type EstadoSesion, type PerfilPanel } from './estado-sesion';
 import { SesionContext, type SesionContextValue } from './sesion-context';
-
-/** Ruta a la que llevan los enlaces de invitación y de recuperación de contraseña. */
-export const RUTA_DEFINIR_CONTRASENA = '/panel/definir-contrasena';
 
 async function leerEstado(cliente: SupabaseClient): Promise<EstadoSesion> {
   const { data: sesion } = await cliente.auth.getSession();
@@ -46,7 +44,7 @@ const acciones: Omit<SesionContextValue, 'estado'> = {
 
   async enviarRecuperacion(correo) {
     const { error } = await exigirCliente().auth.resetPasswordForEmail(correo, {
-      redirectTo: `${window.location.origin}${RUTA_DEFINIR_CONTRASENA}`,
+      redirectTo: direccionDefinirContrasena(window.location.origin, import.meta.env.BASE_URL),
     });
     if (error) throw error;
   },

@@ -13,7 +13,7 @@ Es una página web responsiva (no es una app nativa ni una APK). Ofrece orientac
 Es la plataforma real (la app de `src/`), la misma para todo el que entre: sitio público con el orbe 3D, registro, cuestionario de adultos y de niñas y niños, resultados y panel de administración. No hay una demostración aparte (D-66).
 
 - Se publica con GitHub Pages desde la rama `gh-pages`. Para actualizarla: `corepack pnpm pages:preparar` (compila con la base `/mente-al-dia/`, copia `index.html` en cada ruta y crea redirecciones desde las direcciones antiguas) y se publica el contenido de `dist-pages/` en `gh-pages`.
-- **Mientras no esté conectada a Supabase** (`VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`), el resultado se calcula en el navegador y no se guarda (D-62), y el panel muestra su página provisional. Al conectarla, el registro se guarda en el servidor y el panel pide el correo y la contraseña del administrador, con doble factor (ver `docs/BASE_DE_DATOS.md`).
+- **Está conectada a Supabase** (proyecto `mente-al-dia`, valores en `.env.production`, D-67): el registro y el resultado se guardan en el servidor y el panel pide el correo y la contraseña del administrador, con doble factor (ver `docs/BASE_DE_DATOS.md`).
 - El panel es solo para el administrador (D-65).
 - GitHub Pages no permite configurar todos los encabezados de seguridad de la Fase 10 (ver F1-08 en `docs/PENDIENTES_VALIDACION.md`).
 

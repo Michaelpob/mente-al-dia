@@ -8,8 +8,10 @@ dist-pages
 !.env.example
 !.env.pruebas
 !.env.vista-previa
+!.env.production
 playwright-report
 test-results
 *.tsbuildinfo
 .DS_Store
 Thumbs.db
+supabase/.temp/
