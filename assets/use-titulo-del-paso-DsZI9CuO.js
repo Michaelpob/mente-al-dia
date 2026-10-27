@@ -1,0 +1,1 @@
+import{r as e}from"./index-DwDzg4hB.js";function o(r){const t=e.useRef(null),u=e.useRef(r);return e.useEffect(()=>{u.current!==r&&(u.current=r,window.scrollTo({top:0}),t.current?.focus({preventScroll:!0}))},[r]),t}export{o as u};
