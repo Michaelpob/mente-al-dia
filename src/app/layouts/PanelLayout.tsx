@@ -6,7 +6,7 @@ import { PreviewBar } from '@/components/layout/preview-bar';
 import { MAIN_CONTENT_ID, SkipLink } from '@/components/layout/skip-link';
 import { textos } from '@/content/textos-interfaz';
 
-/** Layout sobrio del panel profesional: sin 3D ni animaciones decorativas. Se completa en la Fase 8. */
+/** Layout sobrio del panel de administración: sin 3D ni animaciones decorativas. Se completa en la Fase 8. */
 export function PanelLayout() {
   return (
     <div className="flex min-h-dvh flex-col bg-piedra-50">

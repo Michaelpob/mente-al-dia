@@ -68,7 +68,7 @@ const paginas = {
     indexable: true,
   },
   panel: {
-    titulo: 'Panel profesional',
+    titulo: 'Panel de administración',
     descripcion: 'Espacio privado de la administración de la Alcaldía.',
     fase: 8,
     indexable: false,
