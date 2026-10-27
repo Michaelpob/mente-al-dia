@@ -1,1 +1,0 @@
-import{c}from"./index-CmFKpvI-.js";const e=[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["circle",{cx:"12",cy:"12",r:"1",key:"41hilf"}]],r=c("circle-dot",e);const i=[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"M8 12h8",key:"1wcyev"}]],l=c("circle-minus",i);export{l as C,r as a};
