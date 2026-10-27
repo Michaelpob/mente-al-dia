@@ -38,11 +38,15 @@ export function AccesoLayout() {
           >
             <MenteAlDiaLogo wordmarkClassName="hidden xs:inline texto-grande:hidden sm:texto-grande:inline" />
           </Link>
-          <span aria-hidden className="hidden h-6 w-px bg-piedra-200 sm:block" />
-          <span className="hidden font-semibold text-grafito-600 sm:inline">
+          {/* Con el texto agrandado, el nombre del panel solo cabe junto a «Volver al inicio» en pantallas anchas. */}
+          <span
+            aria-hidden
+            className="hidden h-6 w-px bg-piedra-200 sm:block texto-grande:hidden lg:texto-grande:block"
+          />
+          <span className="hidden font-semibold text-grafito-600 sm:inline texto-grande:hidden lg:texto-grande:inline">
             {textos.paginas.panel.titulo}
           </span>
-          <Button asChild variant="fantasma" size="sm" className="ml-auto whitespace-nowrap">
+          <Button asChild variant="fantasma" size="sm" className="ml-auto">
             <Link to="/">
               <ArrowLeft aria-hidden />
               {textos.accesoPanel.volverInicio}
