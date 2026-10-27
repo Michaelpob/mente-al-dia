@@ -5,7 +5,7 @@ import { Callout } from '@/components/ui/feedback';
 import { fieldControlClasses } from '@/components/ui/field-styles';
 import { panel } from '@/content/panel';
 import { cn } from '@/lib/utils/cn';
-import { esFaltaDePermiso } from './datos/consultas';
+import { esFaltaDePermiso } from './datos/errores';
 import type { ResultadoGeneral } from './datos/tipos';
 
 /** Piezas comunes de las páginas del panel. */

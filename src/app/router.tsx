@@ -6,7 +6,6 @@ import { PublicLayout } from './layouts/PublicLayout';
 import { RouteErrorPage } from './pages/RouteErrorPage';
 import { redirigirEnlaceDeAcceso } from '@/features/panel/acceso/enlaces';
 import { RequierePanel } from '@/features/panel/acceso/RequierePanel';
-import { EnConstruccion } from '@/features/panel/estructura/EnConstruccion';
 
 // Carga diferida por ruta: cada página es un archivo JS aparte.
 const InicioPage = lazy(() => import('@/features/inicio/InicioPage'));
@@ -20,6 +19,9 @@ const TerminosPage = lazy(() => import('@/features/informacion/TerminosPage'));
 const AccesibilidadPage = lazy(() => import('@/features/informacion/AccesibilidadPage'));
 const MapaSitioPage = lazy(() => import('@/features/informacion/MapaSitioPage'));
 const PanelShell = lazy(() => import('@/features/panel/estructura/PanelShell'));
+const EnConstruccion = lazy(() =>
+  import('@/features/panel/estructura/EnConstruccion').then((m) => ({ default: m.EnConstruccion })),
+);
 const TableroPage = lazy(() => import('@/features/panel/tablero/TableroPage'));
 const RegistrosPage = lazy(() => import('@/features/panel/registros/RegistrosPage'));
 const FichaPage = lazy(() => import('@/features/panel/registros/FichaPage'));

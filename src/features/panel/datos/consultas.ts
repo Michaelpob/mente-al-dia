@@ -69,8 +69,3 @@ export function verDatosContacto(id: string): Promise<DatosContacto> {
 export async function registrarImpresion(id: string): Promise<void> {
   await rpc('panel_registrar_impresion', { p_aplicacion: id });
 }
-
-/** El error que devuelve la base cuando la sesión no tiene permiso (por ejemplo, perdió el rol). */
-export function esFaltaDePermiso(error: unknown): boolean {
-  return (error as { code?: string } | null)?.code === '42501';
-}
