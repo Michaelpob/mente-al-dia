@@ -3,7 +3,12 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import { supabase } from '@/lib/supabase/cliente';
 import { direccionDefinirContrasena } from './enlaces';
 import { qrComoImagen } from './qr';
-import { resolverEstado, type EstadoSesion, type PerfilPanel } from './estado-sesion';
+import {
+  resolverEstado,
+  type CierreSesion,
+  type EstadoSesion,
+  type PerfilPanel,
+} from './estado-sesion';
 import { SesionContext, type SesionContextValue } from './sesion-context';
 
 async function leerEstado(cliente: SupabaseClient): Promise<EstadoSesion> {
@@ -33,7 +38,7 @@ function exigirCliente(): SupabaseClient {
 }
 
 /** Acciones de la sesión. Son funciones fijas: no cambian entre renders (el QR no se regenera). */
-const acciones: Omit<SesionContextValue, 'estado'> = {
+const acciones: Omit<SesionContextValue, 'estado' | 'cerrarSesion'> = {
   async ingresar(correo, contrasena) {
     const { error } = await exigirCliente().auth.signInWithPassword({
       email: correo,
@@ -76,10 +81,6 @@ const acciones: Omit<SesionContextValue, 'estado'> = {
     const { error } = await exigirCliente().auth.mfa.challengeAndVerify({ factorId, code: codigo });
     if (error) throw error;
   },
-
-  async cerrarSesion() {
-    await exigirCliente().auth.signOut();
-  },
 };
 
 /** Sesión del panel: contraseña + doble factor (TOTP) y perfil con rol. */
@@ -91,7 +92,11 @@ export function SesionProvider({ children }: { children: ReactNode }) {
   const actualizar = useCallback(async () => {
     const cliente = exigirCliente();
     try {
-      setEstado(await leerEstado(cliente));
+      const nuevo = await leerEstado(cliente);
+      // Una sesión ya cerrada conserva cómo se cerró, porque de eso depende adónde se va (D-74).
+      setEstado((previo) =>
+        nuevo.tipo === 'sin_sesion' && previo.tipo === 'sin_sesion' ? previo : nuevo,
+      );
     } catch (error) {
       // Un token vencido o revocado cierra la sesión guardada; un fallo de red solo vuelve al ingreso.
       if (isAuthError(error) || /^PGRST30/.test((error as { code?: string }).code ?? '')) {
@@ -110,7 +115,17 @@ export function SesionProvider({ children }: { children: ReactNode }) {
     return () => data.subscription.unsubscribe();
   }, [actualizar]);
 
-  const value = useMemo<SesionContextValue>(() => ({ estado, ...acciones }), [estado]);
+  // Supabase borra la sesión de este navegador aunque falle la llamada de cierre, así que el
+  // cierre se marca siempre. RequierePanel e IngresoPanelPage deciden con él adónde ir.
+  const cerrarSesion = useCallback(async (cierre: CierreSesion = 'manual') => {
+    await exigirCliente().auth.signOut();
+    setEstado({ tipo: 'sin_sesion', cierre });
+  }, []);
+
+  const value = useMemo<SesionContextValue>(
+    () => ({ estado, ...acciones, cerrarSesion }),
+    [estado, cerrarSesion],
+  );
 
   return <SesionContext.Provider value={value}>{children}</SesionContext.Provider>;
 }

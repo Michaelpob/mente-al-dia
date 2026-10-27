@@ -258,6 +258,7 @@ export const textos = {
     soloAdministracion:
       'El panel es solo para el administrador. Tu cuenta tiene otro rol, así que no puede verlo.',
     cerrarSesion: 'Cerrar sesión',
+    volverInicio: 'Volver al inicio',
     sesionComo: (nombre: string, rol: string) => `Sesión iniciada como ${nombre} (${rol}).`,
     roles: {
       superadministrador: 'superadministrador',

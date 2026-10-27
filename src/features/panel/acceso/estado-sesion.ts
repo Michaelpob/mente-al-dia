@@ -17,13 +17,20 @@ export interface PerfilPanel {
 export type EstadoSesion =
   | { tipo: 'sin_configurar' }
   | { tipo: 'cargando' }
-  | { tipo: 'sin_sesion' }
+  | { tipo: 'sin_sesion'; cierre?: CierreSesion }
   | { tipo: 'sin_acceso'; motivo: MotivoSinAcceso }
   | { tipo: 'inscribir_doble_factor' }
   | { tipo: 'verificar_doble_factor'; factorId: string }
   | { tipo: 'lista'; perfil: PerfilPanel };
 
 export type MotivoSinAcceso = 'sin_perfil' | 'inactivo' | 'sin_permiso';
+
+/**
+ * Cómo se cerró la sesión, cuando la cerró el panel: con «Cerrar sesión» se vuelve a la página
+ * principal; por inactividad, al ingreso con el aviso (D-74). Sin valor (nunca hubo sesión, venció
+ * o se cerró en otra pestaña), el panel lleva al ingreso.
+ */
+export type CierreSesion = 'manual' | 'inactividad';
 
 /** Único rol que puede ver el panel (D-65). */
 export const ROL_PANEL: RolPanel = 'superadministrador';

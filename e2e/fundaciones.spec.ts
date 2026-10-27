@@ -125,6 +125,18 @@ test.describe('Rutas públicas', () => {
     await expect(page.getByRole('textbox', { name: 'Contraseña' })).toBeVisible();
     expect(await violacionesGraves(page)).toEqual([]);
   });
+
+  test('desde el ingreso se vuelve a la página principal con el logo o «Volver al inicio»', async ({
+    page,
+  }) => {
+    await page.goto('/panel/ingresar');
+    const encabezado = page.getByRole('banner');
+    await expect(
+      encabezado.getByRole('link', { name: 'Mente al Día, ir al inicio' }),
+    ).toHaveAttribute('href', '/');
+    await encabezado.getByRole('link', { name: 'Volver al inicio' }).click();
+    await expect(page.locator('h1')).toHaveText('Cuidar tu mente también es cuidarte');
+  });
 });
 
 test.describe('Teclado', () => {

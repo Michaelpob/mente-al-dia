@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Menu, PanelLeftClose, PanelLeftOpen, Search, ShieldCheck } from 'lucide-react';
 import { Suspense, useCallback, useState, type FormEvent } from 'react';
-import { Link, Outlet, useLocation, useNavigate } from 'react-router';
+import { Link, Outlet, useNavigate } from 'react-router';
 import { MenteAlDiaIsotipo, MenteAlDiaLogo } from '@/components/brand/logos';
 import { PageLoading } from '@/components/layout/page';
 import { MAIN_CONTENT_ID } from '@/components/layout/skip-link';
@@ -35,7 +35,6 @@ function leerMenuContraido(): boolean {
 export default function PanelShell() {
   const { estado, cerrarSesion } = useSesion();
   const navigate = useNavigate();
-  const { pathname, search } = useLocation();
   const [contraido, setContraido] = useState(leerMenuContraido);
   const [menuMovil, setMenuMovil] = useState(false);
   const [busqueda, setBusqueda] = useState('');
@@ -46,13 +45,9 @@ export default function PanelShell() {
     queryFn: obtenerPrioritarios,
   });
 
-  const salirPorInactividad = useCallback(async () => {
-    await cerrarSesion();
-    navigate('/panel/ingresar', {
-      replace: true,
-      state: { inactividad: true, desde: pathname + search },
-    });
-  }, [cerrarSesion, navigate, pathname, search]);
+  // Por inactividad se va al ingreso, que explica el cierre y al volver a entrar regresa a esta
+  // misma página (D-69); RequierePanel hace la redirección.
+  const salirPorInactividad = useCallback(() => void cerrarSesion('inactividad'), [cerrarSesion]);
   const inactividad = useInactividad(salirPorInactividad);
 
   const alternarMenu = () => {

@@ -17,8 +17,7 @@ const t = textos.accesoPanel;
 /** /panel/ingresar: contraseña y, siempre, verificación en dos pasos. */
 export default function IngresoPanelPage() {
   const { estado } = useSesion();
-  const estadoRuta = useLocation().state as { desde?: string; inactividad?: boolean } | null;
-  const desde = estadoRuta?.desde ?? '/panel';
+  const desde = (useLocation().state as { desde?: string } | null)?.desde ?? '/panel';
 
   return (
     <>
@@ -34,9 +33,11 @@ export default function IngresoPanelPage() {
           case 'cargando':
             return <PageLoading />;
           case 'sin_sesion':
+            // «Cerrar sesión» en un paso del ingreso también vuelve a la página principal (D-74).
+            if (estado.cierre === 'manual') return <Navigate to="/" replace />;
             return (
               <>
-                {estadoRuta?.inactividad ? (
+                {estado.cierre === 'inactividad' ? (
                   <div className="contenedor pt-8">
                     <Callout className="mx-auto max-w-md">{panel.inactividad.cerrada}</Callout>
                   </div>

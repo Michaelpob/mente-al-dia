@@ -130,8 +130,11 @@ interface Llamadas {
 
 const base64url = (o: unknown) => Buffer.from(JSON.stringify(o)).toString('base64url');
 
-/** Sesión de superadministración con doble factor ya verificado, y las consultas simuladas. */
-async function iniciarSesion(page: Page): Promise<Llamadas> {
+/**
+ * Sesión de superadministración y las consultas simuladas. Por defecto, con el doble factor ya
+ * verificado (aal2); con aal1 la sesión espera el código de la app de autenticación.
+ */
+async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promise<Llamadas> {
   const ahora = Math.floor(Date.now() / 1000);
   const usuario = {
     id: ADMIN,
@@ -157,10 +160,10 @@ async function iniciarSesion(page: Page): Promise<Llamadas> {
     base64url({
       sub: ADMIN,
       role: 'authenticated',
-      aal: 'aal2',
+      aal: nivel,
       amr: [
         { method: 'password', timestamp: ahora },
-        { method: 'totp', timestamp: ahora },
+        ...(nivel === 'aal2' ? [{ method: 'totp', timestamp: ahora }] : []),
       ],
       session_id: 'sesion-prueba',
       iat: ahora,
@@ -405,5 +408,38 @@ test('la sesión se cierra tras 15 minutos sin actividad, con aviso en el últim
   await expect(
     page.getByText('Cerramos tu sesión por inactividad. Ingresa de nuevo para continuar.'),
   ).toBeVisible();
+  expect(llamadas.salida).toBe(1);
+});
+
+test('«Cerrar sesión» vuelve a la página principal y «atrás» no reabre el panel', async ({
+  page,
+}) => {
+  const llamadas = await iniciarSesion(page);
+  await page.goto('/panel');
+  await page.getByRole('searchbox', { name: 'Buscar una persona' }).fill('Ana');
+  await page.getByRole('searchbox', { name: 'Buscar una persona' }).press('Enter');
+  await expect(page.getByRole('heading', { level: 1, name: 'Registros' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Cerrar sesión', exact: true }).click();
+  await expect(page.locator('h1')).toHaveText('Cuidar tu mente también es cuidarte');
+  expect(new URL(page.url()).pathname).toBe('/');
+  expect(llamadas.salida).toBe(1);
+
+  // Sin sesión, «atrás» muestra el ingreso, nunca los datos del panel.
+  await page.goBack();
+  await expect(page).toHaveURL(/\/panel\/ingresar$/);
+  await expect(page.locator('h1')).toHaveText('Ingreso de administración');
+});
+
+test('«Cerrar sesión» en la verificación en dos pasos también vuelve a la página principal', async ({
+  page,
+}) => {
+  const llamadas = await iniciarSesion(page, 'aal1');
+  await page.goto('/panel/ingresar');
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Verificación en dos pasos' }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Cerrar sesión', exact: true }).click();
+  await expect(page.locator('h1')).toHaveText('Cuidar tu mente también es cuidarte');
   expect(llamadas.salida).toBe(1);
 });
