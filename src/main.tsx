@@ -1,6 +1,6 @@
-import '@fontsource/manrope/latin-600.css';
-import '@fontsource/manrope/latin-700.css';
-import '@fontsource/manrope/latin-800.css';
+import '@fontsource/sora/latin-600.css';
+import '@fontsource/sora/latin-700.css';
+import '@fontsource/sora/latin-800.css';
 import '@fontsource/public-sans/latin-400.css';
 import '@fontsource/public-sans/latin-500.css';
 import '@fontsource/public-sans/latin-600.css';

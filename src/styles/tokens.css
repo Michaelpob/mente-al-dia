@@ -1,68 +1,96 @@
 /*
- * Tokens del sistema visual «Piedra y Pizarra».
+ * Tokens del sistema visual «Noche serena» (D-75).
  * Esta es la ÚNICA fuente de colores, tipografías, radios, sombras y tiempos.
- * Si la Alcaldía entrega un manual de marca, se reemplazan los valores de «Marca» aquí,
- * sin tocar los componentes. Después de cambiar un color, ejecuta `pnpm contraste`.
+ *
+ * Cada color se eligió por lo que comunica (psicología del color), porque la plataforma acompaña
+ * el bienestar emocional:
+ * - Azul profundo de noche (fondo): calma y seguridad; nunca negro, que pesa y se siente vacío.
+ * - Lavanda (color principal): introspección y serenidad; es el color asociado a la psicología.
+ * - Turquesa y menta: equilibrio, claridad y esperanza.
+ * - Coral: calidez y vínculo humano.
+ * - Ámbar del amanecer: optimismo y propósito (después de la noche llega el día).
+ * - Texto en luz suave, no blanco puro: menos deslumbramiento sobre el fondo oscuro.
+ * Los colores intensos solo aparecen en detalles pequeños; las superficies grandes son serenas.
+ *
+ * Los nombres vienen del primer sistema («Piedra y Pizarra») y se conservan por su función:
+ * piedra = fondos y bordes, blanco = superficies (y el texto sobre el color principal),
+ * grafito = textos, pizarra = color principal, salvia = acento de calma, arena = acento cálido.
+ * El tema es oscuro: cada par de texto y fondo invierte su luz, así que el contraste se mantiene.
+ * Al imprimir vuelve el tema claro (al final del archivo).
+ * Después de cambiar un color, ejecuta `pnpm contraste`.
  */
 :root {
-  /* Neutros */
-  --piedra-50: #f7f5f1; /* fondo general */
-  --piedra-100: #efebe4; /* secciones alternas */
-  --piedra-200: #e2dcd2; /* bordes suaves y divisores */
-  --piedra-300: #cfc7ba; /* divisores marcados (decorativos) */
-  --blanco: #ffffff; /* superficies y tarjetas */
-  --grafito-900: #1e2a32; /* texto principal */
-  --grafito-600: #4e5b65; /* texto secundario */
-  --grafito-500: #5a6670; /* texto de apoyo y placeholders */
-  --borde-campo: #858e96; /* borde de campos (3:1 sobre blanco y piedra-50; NO sobre piedra-100) */
+  color-scheme: dark;
+
+  /* Neutros: la noche */
+  --piedra-50: #0b1030; /* fondo general (azul de noche profunda) */
+  --piedra-100: #10163d; /* secciones alternas */
+  --piedra-200: #2a3470; /* bordes suaves y divisores */
+  --piedra-300: #3e4a92; /* divisores marcados (decorativos) */
+  --blanco: #141b47; /* superficies y tarjetas; también el texto sobre el color principal */
+  --grafito-900: #eef1ff; /* texto principal (luz suave) */
+  --grafito-600: #b9c1e8; /* texto secundario */
+  --grafito-500: #a3acd9; /* texto de apoyo y placeholders */
+  --borde-campo: #6f7bbd; /* borde de campos (3:1 sobre todos los fondos) */
 
   /* Marca */
-  --pizarra-800: #243a47; /* hover y estados activos */
-  --pizarra-700: #2f4858; /* color principal: botones, enlaces, títulos */
-  --pizarra-100: #e3eaee; /* fondos informativos */
-  --salvia-600: #4e6e5d; /* acento de calma */
-  --salvia-100: #e5ede8;
-  --arena-400: #c9b79c; /* acento cálido decorativo (no usar para texto) */
-  --arena-100: #f3ede3;
+  --pizarra-800: #cbc2fb; /* hover y estados activos (más luz) */
+  --pizarra-700: #b0a4f7; /* color principal, lavanda: botones, enlaces y acentos */
+  --pizarra-100: #241f63; /* fondos informativos */
+  --salvia-600: #5eead4; /* acento de calma: menta */
+  --salvia-100: #0b2f3a;
+  --arena-400: #ff9f8a; /* acento cálido decorativo: coral (no usar para texto) */
+  --arena-100: #2b1834; /* fondos cálidos (apoyo inmediato) */
 
-  /* Dimensiones del bienestar: tonos decorativos de la rueda (íconos grafito encima, nunca texto) */
-  --dimension-emociones: #bccbd4;
-  --dimension-cuerpo: #dcd2c2;
-  --dimension-vinculos: #c6d7cc;
-  --dimension-afrontamiento: #d4ccbf;
-  --dimension-proyecto: #d6dde2;
+  /* Luces: solo decoración (brillos, retícula, orbe y degradados), nunca texto pequeño */
+  --luz-lavanda: #8b7cf6; /* la mente: introspección */
+  --luz-turquesa: #3fd8d4; /* la calma: equilibrio y claridad */
+  --luz-coral: #ff9a85; /* la calidez: vínculo */
+  --luz-amanecer: #ffc078; /* la esperanza: el día que llega */
+  --reticula: rgb(176 164 247 / 0.08);
+  --brillo-texto: 0 0 16px rgb(139 124 246 / 0.5), 0 0 42px rgb(63 216 212 / 0.16);
 
-  /* Rueda de resultados: relleno decorativo por nivel, con patrón además del color
-     (íconos grafito encima, nunca texto) */
-  --rueda-adecuado: #86a992;
-  --rueda-fortalecer: #d8b76e;
-  --rueda-atencion: #cc8c78;
-  --rueda-sin-dato: #c9ced2;
+  /* Dimensiones del bienestar: cada una con el color de lo que cuida (íconos claros encima,
+     nunca texto). Se distinguen también con daltonismo (ΔE 10,9; guía de visualización). */
+  --dimension-emociones: #6f5bd9; /* lavanda: el mundo interior */
+  --dimension-cuerpo: #13928a; /* verde azulado: vitalidad y crecimiento */
+  --dimension-vinculos: #c9653f; /* coral: calidez y conexión */
+  --dimension-afrontamiento: #2e6cd3; /* azul: estabilidad ante lo difícil */
+  --dimension-proyecto: #9c7d1d; /* ámbar: esperanza y propósito */
+
+  /* Rueda de resultados y gráficas: relleno por nivel, con patrón además del color
+     (íconos claros encima, nunca texto). No es un semáforo: turquesa (equilibrio), ámbar
+     (algo por cuidar) y rosa (cuidado, sin alarma). Se distinguen también con daltonismo
+     rojo-verde (ΔE 8,2 en deuteranopía; validado con la guía de visualización). */
+  --rueda-adecuado: #1592b5;
+  --rueda-fortalecer: #a67c0e;
+  --rueda-atencion: #cf4a6a;
+  --rueda-sin-dato: #646fa3;
 
   /* Niveles: siempre con ícono + texto, nunca solo color */
-  --nivel-adecuado: #3f6b52;
-  --nivel-adecuado-fondo: #e4efe8;
-  --nivel-fortalecer: #7a5a12;
-  --nivel-fortalecer-fondo: #f6edd6;
-  --nivel-atencion: #9a4532;
-  --nivel-atencion-fondo: #f5e3dd;
-  --nivel-sin-dato: #5f6b75;
-  --nivel-sin-dato-fondo: #eceff1;
+  --nivel-adecuado: #67e8f9;
+  --nivel-adecuado-fondo: #0a3341;
+  --nivel-fortalecer: #fcd34d;
+  --nivel-fortalecer-fondo: #3a2c06;
+  --nivel-atencion: #fda4af;
+  --nivel-atencion-fondo: #4a1626;
+  --nivel-sin-dato: #cbd2ee;
+  --nivel-sin-dato-fondo: #232b55;
 
-  /* Foco */
-  --foco: #2f4858;
+  /* Foco: turquesa, visible sobre todos los fondos */
+  --foco: #3fd8d4;
   --grosor-foco: 3px;
 
-  /* Velo de diálogos y paneles laterales (grafito-900 al 45 %) */
-  --velo: rgb(30 42 50 / 0.45);
+  /* Velo de diálogos y paneles laterales */
+  --velo: rgb(4 6 22 / 0.72);
 
-  /* Tipografía */
-  --fuente-titulos: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  /* Tipografía: formas redondas y abiertas (Sora) para títulos; Public Sans para leer */
+  --fuente-titulos: 'Sora', 'Segoe UI', system-ui, sans-serif;
   --fuente-cuerpo: 'Public Sans', 'Segoe UI', system-ui, sans-serif;
   --fuente-lectura-facil: 'Atkinson Hyperlegible', 'Verdana', sans-serif;
   --escala-texto: 1; /* la cambia la barra de accesibilidad (A-, A, A+) */
 
-  /* Espaciado y formas */
+  /* Espaciado y formas: esquinas redondeadas, que se perciben más seguras que las agudas */
   --espacio-seccion: clamp(64px, 10vw, 128px);
   --radio-sm: 8px;
   --radio-md: 12px;
@@ -70,12 +98,13 @@
   --radio-xl: 28px;
   --radio-pill: 9999px;
 
-  /* Sombras suaves en capas, color grafito en baja opacidad */
-  --sombra-1: 0 1px 2px rgb(30 42 50 / 0.06), 0 1px 3px rgb(30 42 50 / 0.06);
-  --sombra-2: 0 2px 4px rgb(30 42 50 / 0.05), 0 6px 16px rgb(30 42 50 / 0.08);
-  --sombra-3: 0 4px 8px rgb(30 42 50 / 0.05), 0 16px 40px rgb(30 42 50 / 0.12);
+  /* Sombras: en la noche dan profundidad; el brillo lavanda marca lo que se puede usar */
+  --sombra-1: 0 1px 2px rgb(2 4 16 / 0.45), 0 2px 8px rgb(2 4 16 / 0.3);
+  --sombra-2: 0 4px 14px rgb(2 4 16 / 0.45), 0 0 0 1px rgb(176 164 247 / 0.1);
+  --sombra-3: 0 18px 44px rgb(2 4 16 / 0.6), 0 0 36px rgb(139 124 246 / 0.16);
+  --sombra-brillo: 0 0 0 1px rgb(203 194 251 / 0.6), 0 0 24px rgb(139 124 246 / 0.45);
 
-  /* Movimiento */
+  /* Movimiento: lento y sin sobresaltos */
   --duracion-micro: 150ms;
   --duracion-base: 250ms;
   --duracion-seccion: 450ms;
@@ -88,8 +117,8 @@
   --escala-presion: 0.98;
   --desplazamiento-panel: 100%;
 
-  /* Textura de grano (máximo 3 %) */
-  --opacidad-grano: 0.03;
+  /* Textura de grano (máximo 4 %) */
+  --opacidad-grano: 0.04;
 }
 
 /* Reducir movimiento: sin desplazamientos ni parallax, solo fundidos cortos. */
@@ -113,36 +142,101 @@
   --duracion-escena: 150ms;
 }
 
-/* Alto contraste (barra de accesibilidad): texto casi negro sobre blanco, bordes marcados. */
+/*
+ * Alto contraste (barra de accesibilidad): blanco sobre negro, amarillo para lo que se usa
+ * y bordes marcados, sin brillos. piedra-200 es gris #767676: 4.6:1 como borde sobre negro y
+ * 4.5:1 con texto blanco encima.
+ */
 :root[data-contraste='alto'] {
-  --piedra-50: #ffffff;
-  --piedra-100: #f4f4f4;
-  --piedra-200: #1e2a32;
-  --piedra-300: #1e2a32;
-  --grafito-900: #0f1820;
-  --grafito-600: #0f1820;
-  --grafito-500: #0f1820;
-  --borde-campo: #0f1820;
-  --pizarra-800: #0b1820;
-  --pizarra-700: #142734;
-  --pizarra-100: #ffffff;
-  --salvia-600: #24402f;
-  --salvia-100: #ffffff;
-  --arena-100: #ffffff;
-  --nivel-adecuado: #1f4330;
-  --nivel-fortalecer: #4f3a08;
-  --nivel-atencion: #6e2a1b;
-  --nivel-sin-dato: #313b44;
-  --foco: #0f1820;
+  --piedra-50: #000000;
+  --piedra-100: #000000;
+  --piedra-200: #767676;
+  --piedra-300: #ffffff;
+  --blanco: #000000;
+  --grafito-900: #ffffff;
+  --grafito-600: #ffffff;
+  --grafito-500: #ffffff;
+  --borde-campo: #ffffff;
+  --pizarra-800: #fff4a3;
+  --pizarra-700: #ffe14d;
+  --pizarra-100: #000000;
+  --salvia-600: #7dffd8;
+  --salvia-100: #000000;
+  --arena-100: #000000;
+  --nivel-adecuado: #7dffb5;
+  --nivel-adecuado-fondo: #000000;
+  --nivel-fortalecer: #ffe14d;
+  --nivel-fortalecer-fondo: #000000;
+  --nivel-atencion: #ffb3bd;
+  --nivel-atencion-fondo: #000000;
+  --nivel-sin-dato: #ffffff;
+  --nivel-sin-dato-fondo: #000000;
+  --foco: #ffe14d;
   --grosor-foco: 4px;
+  --velo: rgb(0 0 0 / 0.85);
+  --reticula: transparent;
+  --brillo-texto: none;
   --opacidad-grano: 0;
   --sombra-1: none;
   --sombra-2: none;
   --sombra-3: none;
+  --sombra-brillo: none;
 }
 
 /* Fuente de lectura fácil (barra de accesibilidad). */
 :root[data-lectura='facil'] {
   --fuente-titulos: var(--fuente-lectura-facil);
   --fuente-cuerpo: var(--fuente-lectura-facil);
+}
+
+/*
+ * Impresión (por ejemplo, la ficha del panel): tinta oscura sobre papel blanco, con los colores
+ * del tema claro original. Va al final para ganar también al alto contraste.
+ */
+@media print {
+  :root,
+  :root[data-contraste='alto'] {
+    color-scheme: light;
+    --piedra-50: #f7f5f1;
+    --piedra-100: #efebe4;
+    --piedra-200: #e2dcd2;
+    --piedra-300: #cfc7ba;
+    --blanco: #ffffff;
+    --grafito-900: #1e2a32;
+    --grafito-600: #4e5b65;
+    --grafito-500: #5a6670;
+    --borde-campo: #858e96;
+    --pizarra-800: #243a47;
+    --pizarra-700: #2f4858;
+    --pizarra-100: #e3eaee;
+    --salvia-600: #4e6e5d;
+    --salvia-100: #e5ede8;
+    --arena-400: #c9b79c;
+    --arena-100: #f3ede3;
+    --nivel-adecuado: #3f6b52;
+    --nivel-adecuado-fondo: #e4efe8;
+    --nivel-fortalecer: #7a5a12;
+    --nivel-fortalecer-fondo: #f6edd6;
+    --nivel-atencion: #9a4532;
+    --nivel-atencion-fondo: #f5e3dd;
+    --nivel-sin-dato: #5f6b75;
+    --nivel-sin-dato-fondo: #eceff1;
+    --dimension-emociones: #bccbd4;
+    --dimension-cuerpo: #dcd2c2;
+    --dimension-vinculos: #c6d7cc;
+    --dimension-afrontamiento: #d4ccbf;
+    --dimension-proyecto: #d6dde2;
+    --rueda-adecuado: #86a992;
+    --rueda-fortalecer: #d8b76e;
+    --rueda-atencion: #cc8c78;
+    --rueda-sin-dato: #c9ced2;
+    --foco: #2f4858;
+    --reticula: transparent;
+    --brillo-texto: none;
+    --opacidad-grano: 0;
+    --sombra-1: none;
+    --sombra-2: none;
+    --sombra-3: none;
+    --sombra-brillo: none;
+  }
 }

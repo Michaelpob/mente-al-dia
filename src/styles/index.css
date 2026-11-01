@@ -39,6 +39,10 @@
   --color-nivel-sin-dato-fondo: var(--nivel-sin-dato-fondo);
   --color-foco: var(--foco);
   --color-velo: var(--velo);
+  --color-luz-lavanda: var(--luz-lavanda);
+  --color-luz-turquesa: var(--luz-turquesa);
+  --color-luz-coral: var(--luz-coral);
+  --color-luz-amanecer: var(--luz-amanecer);
 
   --font-*: initial;
   --font-titulo: var(--fuente-titulos);
@@ -56,6 +60,7 @@
   --shadow-1: var(--sombra-1);
   --shadow-2: var(--sombra-2);
   --shadow-3: var(--sombra-3);
+  --shadow-brillo: var(--sombra-brillo);
 
   --ease-*: initial;
   --ease-estandar: var(--curva-estandar);
@@ -111,7 +116,20 @@
   --animate-acordeon-cerrar: acordeon-cerrar var(--duracion-micro) var(--curva-estandar);
   --animate-toast-entrar: dialogo-entrar var(--duracion-base) var(--curva-estandar);
   --animate-toast-salir: desaparecer var(--duracion-micro) var(--curva-estandar);
+  /* Luces del inicio: derivan despacio (solo con movimiento permitido). */
+  --animate-deriva: deriva 22s ease-in-out infinite alternate;
 
+  @keyframes deriva {
+    from {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(-6%, 4%, 0) scale(1.08);
+    }
+    to {
+      transform: translate3d(5%, -3%, 0) scale(0.95);
+    }
+  }
   @keyframes girar {
     to {
       transform: rotate(360deg);
@@ -217,6 +235,48 @@
   padding-block: var(--espacio-seccion);
 }
 
+/* Retícula de la noche: líneas finas que se desvanecen hacia los bordes (decorativa). */
+@utility reticula {
+  background-image:
+    linear-gradient(var(--reticula) 1px, transparent 1px),
+    linear-gradient(90deg, var(--reticula) 1px, transparent 1px);
+  background-size: 56px 56px;
+  background-position: center top;
+  mask-image: radial-gradient(ellipse 75% 70% at 65% 40%, black 15%, transparent 72%);
+}
+
+/* Estrellas: puntos de luz fijos y escasos (decorativos), casi todos de luz suave. */
+@utility estrellas {
+  background-image:
+    radial-gradient(1.5px 1.5px at 8% 22%, rgb(238 241 255 / 0.7), transparent),
+    radial-gradient(1px 1px at 18% 64%, rgb(238 241 255 / 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 31% 12%, rgb(63 216 212 / 0.7), transparent),
+    radial-gradient(1px 1px at 44% 78%, rgb(238 241 255 / 0.45), transparent),
+    radial-gradient(1px 1px at 53% 30%, rgb(238 241 255 / 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 67% 8%, rgb(255 154 133 / 0.6), transparent),
+    radial-gradient(1px 1px at 74% 88%, rgb(238 241 255 / 0.5), transparent),
+    radial-gradient(1.5px 1.5px at 86% 26%, rgb(238 241 255 / 0.7), transparent),
+    radial-gradient(1px 1px at 93% 58%, rgb(176 164 247 / 0.7), transparent),
+    radial-gradient(1px 1px at 61% 52%, rgb(238 241 255 / 0.35), transparent);
+}
+
+/* Brillo suave: el título principal se ilumina en lavanda sin perder la letra clara. */
+@utility brillo-suave {
+  text-shadow: var(--brillo-texto);
+}
+
+/* Línea de luz: un trazo de 1 px de la calma (turquesa) a la mente (lavanda) y la calidez (coral). */
+@utility linea-luz {
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    var(--luz-turquesa) 20%,
+    var(--luz-lavanda) 50%,
+    var(--luz-coral) 80%,
+    transparent
+  );
+}
+
 @utility textura-grano {
   position: relative;
   isolation: isolate;
@@ -257,12 +317,13 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Títulos en luz: el violeta queda para lo que se puede usar (enlaces y botones). */
   h1,
   h2,
   h3,
   h4 {
     font-family: var(--fuente-titulos);
-    color: var(--pizarra-700);
+    color: var(--grafito-900);
     text-wrap: balance;
   }
 

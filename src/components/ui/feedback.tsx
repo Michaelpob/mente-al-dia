@@ -92,7 +92,17 @@ export function Callout({
   );
 }
 
-/** Etiqueta pequeña en mayúsculas sobre un título. */
+/** Etiqueta pequeña sobre un título, sin mayúsculas sostenidas (se leen como un grito). */
 export function Eyebrow({ className, ...props }: ComponentProps<'p'>) {
-  return <p className={cn('text-etiqueta text-salvia-600 uppercase', className)} {...props} />;
+  return (
+    <p
+      className={cn(
+        // Una luz de calma encendida antes del texto, como un indicador (tema «Noche serena»).
+        'flex items-center gap-2.5 text-pequeno font-semibold text-salvia-600',
+        'before:size-2 before:shrink-0 before:rounded-pill before:bg-salvia-600 before:shadow-[0_0_10px_var(--luz-turquesa)] contraste-alto:before:shadow-none',
+        className,
+      )}
+      {...props}
+    />
+  );
 }

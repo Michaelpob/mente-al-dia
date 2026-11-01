@@ -107,7 +107,7 @@ export function SiteHeader() {
                 <Link
                   to={item.to}
                   aria-current={isCurrent(item) ? 'page' : undefined}
-                  className="flex min-h-11 items-center rounded-pill px-2 font-semibold text-grafito-600 no-underline transition-colors duration-(--duracion-micro) hover:bg-pizarra-100 hover:text-pizarra-800 aria-[current=page]:text-pizarra-700 aria-[current=page]:underline aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
+                  className="flex min-h-11 items-center rounded-pill px-1.5 font-semibold text-grafito-600 no-underline transition-colors duration-(--duracion-micro) hover:bg-pizarra-100 hover:text-pizarra-800 aria-[current=page]:text-pizarra-700 aria-[current=page]:underline aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8"
                 >
                   {item.label}
                 </Link>
@@ -130,6 +130,14 @@ export function SiteHeader() {
           <MobileMenu />
         </div>
       </div>
+      {/* Línea de luz al pie del encabezado (decorativa), encima del borde al desplazarse. */}
+      <span
+        aria-hidden
+        className={cn(
+          'pointer-events-none absolute inset-x-0 -bottom-px h-px linea-luz transition-opacity duration-(--duracion-base) contraste-alto:hidden',
+          scrolled ? 'opacity-80' : 'opacity-40',
+        )}
+      />
     </header>
   );
 }

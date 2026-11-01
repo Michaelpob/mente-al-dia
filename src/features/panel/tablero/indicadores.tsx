@@ -17,10 +17,10 @@ const RESULTADOS: readonly ResultadoGeneral[] = [
   'insuficiente',
 ];
 const TOKEN_RESULTADO: Record<ResultadoGeneral, [string, string]> = {
-  favorable: ['rueda-adecuado', '#86a992'],
-  por_fortalecer: ['rueda-fortalecer', '#d8b76e'],
-  desafios: ['rueda-atencion', '#cc8c78'],
-  insuficiente: ['rueda-sin-dato', '#c9ced2'],
+  favorable: ['rueda-adecuado', '#1592b5'],
+  por_fortalecer: ['rueda-fortalecer', '#a67c0e'],
+  desafios: ['rueda-atencion', '#cf4a6a'],
+  insuficiente: ['rueda-sin-dato', '#646fa3'],
 };
 
 /** Cuenta hasta el valor una sola vez (o lo muestra directo si se pidió reducir el movimiento). */

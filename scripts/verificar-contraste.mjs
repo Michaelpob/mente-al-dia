@@ -1,5 +1,5 @@
 // Verifica el contraste WCAG 2.1 de los pares de color que usa el sitio.
-// Lee los tokens de src/styles/tokens.css (tema normal y alto contraste).
+// Lee los tokens de src/styles/tokens.css: tema normal (Noche serena), alto contraste e impresión.
 // Uso: pnpm contraste   → sale con código 1 si algún par no cumple.
 import { readFileSync } from 'node:fs';
 
@@ -16,7 +16,11 @@ function readBlock(selectorPattern) {
 }
 
 const normal = readBlock(/^:root\s*\{([\s\S]*?)^\}/m);
-const alto = { ...normal, ...readBlock(/:root\[data-contraste='alto'\]\s*\{([\s\S]*?)\}/) };
+const alto = { ...normal, ...readBlock(/^:root\[data-contraste='alto'\]\s*\{([\s\S]*?)\}/m) };
+const impresion = {
+  ...normal,
+  ...readBlock(/@media print\s*\{\s*:root,\s*:root\[data-contraste='alto'\]\s*\{([\s\S]*?)\}/),
+};
 
 function luminance(hex) {
   const [r, g, b] = [1, 3, 5].map((i) => {
@@ -34,17 +38,11 @@ function ratio(a, b) {
 const TEXTO = 4.5; // texto normal (AA)
 const COMPONENTE = 3; // bordes de campos, foco e íconos (AA, 1.4.11)
 
-const fondosClaros = [
-  'piedra-50',
-  'piedra-100',
-  'blanco',
-  'pizarra-100',
-  'salvia-100',
-  'arena-100',
-];
+// Fondos donde va texto (oscuros en el tema normal, claros al imprimir).
+const fondos = ['piedra-50', 'piedra-100', 'blanco', 'pizarra-100', 'salvia-100', 'arena-100'];
 const pares = [
   ...['grafito-900', 'grafito-600', 'pizarra-700'].flatMap((texto) =>
-    fondosClaros.map((fondo) => [texto, fondo, TEXTO]),
+    fondos.map((fondo) => [texto, fondo, TEXTO]),
   ),
   ['grafito-500', 'piedra-50', TEXTO],
   ['grafito-500', 'piedra-100', TEXTO],
@@ -73,7 +71,7 @@ const pares = [
   ['foco', 'piedra-50', COMPONENTE],
   ['foco', 'blanco', COMPONENTE],
   ['foco', 'piedra-100', COMPONENTE],
-  // Inicio: botón claro sobre el cierre oscuro y los íconos de la rueda sobre su dimensión.
+  // Inicio: el texto del botón del cierre y los íconos de la rueda sobre su dimensión.
   ['pizarra-800', 'blanco', TEXTO],
   ...['emociones', 'cuerpo', 'vinculos', 'afrontamiento', 'proyecto'].map((d) => [
     'grafito-900',
@@ -89,14 +87,16 @@ const pares = [
 ];
 
 // Combinaciones que NO cumplen y por eso están prohibidas en el diseño (se informan, no fallan).
+// Al imprimir, el borde de los campos no llega a 3:1 sobre piedra-100.
 const restricciones = [
-  ['borde-campo', 'piedra-100', COMPONENTE, 'los campos van sobre blanco o piedra-50'],
+  ['borde-campo', 'piedra-100', COMPONENTE, 'los campos van sobre blanco o piedra-50', impresion],
 ];
 
 let fallas = 0;
 for (const [nombre, tema] of [
-  ['Tema normal', normal],
+  ['Tema normal (Noche serena)', normal],
   ['Alto contraste', alto],
+  ['Impresión', impresion],
 ]) {
   console.log(`\n${nombre}`);
   for (const [texto, fondo, minimo] of pares) {
@@ -110,8 +110,8 @@ for (const [nombre, tema] of [
 }
 
 console.log('\nCombinaciones prohibidas (no se usan en el sitio)');
-for (const [texto, fondo, minimo, motivo] of restricciones) {
-  const valor = ratio(normal[texto], normal[fondo]);
+for (const [texto, fondo, minimo, motivo, tema] of restricciones) {
+  const valor = ratio(tema[texto], tema[fondo]);
   console.log(`NO USAR ${valor.toFixed(2)}:1 (mín. ${minimo}) ${texto} sobre ${fondo}: ${motivo}`);
 }
 

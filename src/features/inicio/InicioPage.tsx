@@ -107,17 +107,60 @@ function EscenaHero() {
   );
 }
 
+/** Luz difusa: un círculo de color que se apaga hacia el borde. */
+function luz(token: string, intensidad: number) {
+  return {
+    backgroundImage: `radial-gradient(closest-side, color-mix(in srgb, var(--${token}) ${intensidad}%, transparent), transparent)`,
+  };
+}
+
+/** Amanecer: un resplandor ámbar y coral en el horizonte, la esperanza del día que llega. */
+const amanecer = {
+  backgroundImage:
+    'radial-gradient(closest-side, color-mix(in srgb, var(--luz-amanecer) 30%, transparent), color-mix(in srgb, var(--luz-coral) 14%, transparent) 55%, transparent)',
+};
+
+/**
+ * Noche del inicio (D-75): retícula, estrellas, la luz lavanda de la mente detrás del orbe, la
+ * turquesa de la calma y un amanecer abajo; derivan despacio. Se desvanece hacia abajo para no
+ * cortarse en el borde de la sección. Es decorativa; con alto contraste o al imprimir no se muestra.
+ */
+function FondoNoche() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 -z-10 mask-b-from-80% mask-b-to-100% print:hidden contraste-alto:hidden"
+    >
+      <div className="absolute inset-0 reticula" />
+      <div className="absolute inset-0 estrellas" />
+      <div
+        className="absolute -top-[18%] -right-[12%] size-[min(48rem,110vw)] movimiento:animate-deriva"
+        style={luz('luz-lavanda', 32)}
+      />
+      <div
+        className="absolute top-[28%] right-[24%] size-[min(30rem,75vw)] movimiento:animate-deriva movimiento:[animation-delay:-8s]"
+        style={luz('luz-turquesa', 16)}
+      />
+      <div
+        className="absolute -bottom-[14%] left-1/2 h-[min(26rem,70vw)] w-[min(96rem,220vw)] -translate-x-1/2 movimiento:animate-deriva movimiento:[animation-delay:-15s]"
+        style={amanecer}
+      />
+    </div>
+  );
+}
+
 function Hero() {
   const h = inicio.hero;
   return (
     <section
       aria-labelledby="hero-titulo"
-      className="relative overflow-hidden bg-[radial-gradient(55%_60%_at_78%_45%,var(--salvia-100),transparent_72%)] pt-[clamp(2rem,6vw,5rem)] pb-[clamp(1rem,3vw,2.5rem)] contraste-alto:bg-none"
+      className="relative isolate overflow-hidden pt-[clamp(2rem,6vw,5rem)] pb-[clamp(1rem,3vw,2.5rem)]"
     >
+      <FondoNoche />
       <div className="contenedor grid items-center gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
         <div className="flex flex-col gap-5">
           <Eyebrow>{textos.sitio.alcaldia}</Eyebrow>
-          <h1 id="hero-titulo" className="max-w-[14ch] text-display">
+          <h1 id="hero-titulo" className="max-w-[14ch] text-display brillo-suave">
             {h.titulo}
           </h1>
           <p className="max-w-136 text-cuerpo-grande text-grafito-600">{h.intro}</p>
@@ -340,18 +383,28 @@ function PreguntasFrecuentes() {
   );
 }
 
+/** Cierre: la misma noche del inicio, con una línea de luz arriba y el amanecer detrás del botón. */
 function Cierre() {
   return (
-    <section aria-labelledby="cierre-titulo" className="textura-grano bg-pizarra-800 seccion">
+    <section
+      aria-labelledby="cierre-titulo"
+      className="relative isolate overflow-hidden bg-piedra-100 seccion"
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 print:hidden contraste-alto:hidden"
+      >
+        <div className="absolute inset-x-0 top-0 h-px linea-luz" />
+        <div
+          className="absolute top-1/2 right-[-10%] h-[min(30rem,80vw)] w-[min(52rem,130vw)] -translate-y-1/2"
+          style={amanecer}
+        />
+      </div>
       <div className="contenedor flex flex-col items-start gap-7 md:flex-row md:items-center md:justify-between">
-        <h2 id="cierre-titulo" className="max-w-[20ch] text-h2 text-blanco">
+        <h2 id="cierre-titulo" className="max-w-[20ch] text-h2 brillo-suave">
           {inicio.cierre.titulo}
         </h2>
-        <Button
-          asChild
-          size="lg"
-          className="bg-blanco text-pizarra-800 hover:bg-salvia-100 focus-visible:outline-blanco"
-        >
+        <Button asChild size="lg">
           <Link to={RUTA_REGISTRO}>{inicio.hero.comenzar}</Link>
         </Button>
       </div>

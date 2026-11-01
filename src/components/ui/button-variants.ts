@@ -12,7 +12,8 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         primario:
-          'bg-pizarra-700 text-blanco shadow-1 hover:bg-pizarra-800 disabled:bg-piedra-200 disabled:text-grafito-600 disabled:shadow-none aria-disabled:bg-piedra-200 aria-disabled:text-grafito-600',
+          // Al pasar el puntero o enfocarlo, se ilumina con un brillo lavanda (D-75).
+          'bg-pizarra-700 text-blanco shadow-1 hover:bg-pizarra-800 focus-visible:shadow-brillo disabled:bg-piedra-200 disabled:text-grafito-600 disabled:shadow-none aria-disabled:bg-piedra-200 aria-disabled:text-grafito-600 puntero-fino:hover:shadow-brillo',
         secundario:
           'border-2 border-pizarra-700 bg-transparent text-pizarra-700 hover:bg-pizarra-100 hover:text-pizarra-800 disabled:border-borde-campo disabled:text-grafito-600',
         fantasma:

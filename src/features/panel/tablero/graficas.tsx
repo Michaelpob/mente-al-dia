@@ -40,10 +40,10 @@ const NIVELES_MAPA: readonly Nivel[] = ['adecuado', 'por_fortalecer', 'requiere_
 /** Rellenos de nivel del sitio público (D-57): los mismos colores en el panel. */
 function coloresNivel() {
   return {
-    adecuado: colorToken('rueda-adecuado', '#86a992'),
-    por_fortalecer: colorToken('rueda-fortalecer', '#d8b76e'),
-    requiere_atencion: colorToken('rueda-atencion', '#cc8c78'),
-    sin_dato: colorToken('rueda-sin-dato', '#c9ced2'),
+    adecuado: colorToken('rueda-adecuado', '#1592b5'),
+    por_fortalecer: colorToken('rueda-fortalecer', '#a67c0e'),
+    requiere_atencion: colorToken('rueda-atencion', '#cf4a6a'),
+    sin_dato: colorToken('rueda-sin-dato', '#646fa3'),
   } satisfies Record<Nivel, string>;
 }
 const NIVEL_DE_RESULTADO: Record<ResultadoGeneral, Nivel> = {
@@ -55,11 +55,11 @@ const NIVEL_DE_RESULTADO: Record<ResultadoGeneral, Nivel> = {
 
 function useTinta() {
   return {
-    principal: colorToken('pizarra-700', '#2f4858'),
-    secundaria: colorToken('grafito-600', '#4e5b65'),
-    rejilla: colorToken('piedra-200', '#e2dcd2'),
-    superficie: colorToken('blanco', '#ffffff'),
-    acento: colorToken('salvia-600', '#4e6e5d'),
+    principal: colorToken('pizarra-700', '#b0a4f7'),
+    secundaria: colorToken('grafito-600', '#b9c1e8'),
+    rejilla: colorToken('piedra-200', '#2a3470'),
+    superficie: colorToken('blanco', '#141b47'),
+    acento: colorToken('salvia-600', '#5eead4'),
   };
 }
 

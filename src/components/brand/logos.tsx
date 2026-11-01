@@ -33,7 +33,8 @@ export function MenteAlDiaLogo({ className, wordmarkClassName }: MenteAlDiaLogoP
       <MenteAlDiaIsotipo />
       <span
         className={cn(
-          'font-titulo text-cuerpo-grande leading-none font-extrabold whitespace-nowrap text-pizarra-700',
+          // Sora gruesa se lee mejor un poco apretada (y así cabe el menú completo a 1280 px).
+          'font-titulo text-cuerpo-grande leading-none font-extrabold tracking-tight whitespace-nowrap text-pizarra-700',
           wordmarkClassName,
         )}
       >

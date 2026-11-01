@@ -5,7 +5,7 @@
 export const guia = {
   titulo: 'Guía de estilo',
   intro:
-    'Sistema visual «Piedra y Pizarra»: sobrio e institucional como una entidad pública; cálido y sereno como un espacio de cuidado. Esta página es interna y sirve para aprobar la identidad visual.',
+    'Sistema visual «Noche serena»: una noche de azul profundo con luces suaves, futurista y dinámica, donde cada color se eligió por lo que comunica (psicología del color): lavanda para la introspección, turquesa para la calma, coral para la calidez y el ámbar del amanecer para la esperanza. Esta página es interna y sirve para aprobar la identidad visual.',
   nota: 'Página interna: no se indexa y no aparece en la versión de producción.',
   indice: 'Secciones de la guía',
 
@@ -29,12 +29,18 @@ export const guia = {
       {
         nombre: 'Neutros',
         tokens: [
-          { token: 'piedra-50', uso: 'Fondo general' },
+          {
+            token: 'piedra-50',
+            uso: 'Fondo general: azul de noche (calma y seguridad, nunca negro)',
+          },
           { token: 'piedra-100', uso: 'Secciones alternas' },
           { token: 'piedra-200', uso: 'Bordes suaves y divisores' },
           { token: 'piedra-300', uso: 'Divisores marcados (decorativo)' },
-          { token: 'blanco', uso: 'Superficies y tarjetas' },
-          { token: 'grafito-900', uso: 'Texto principal' },
+          { token: 'blanco', uso: 'Superficies y tarjetas; texto sobre el color principal' },
+          {
+            token: 'grafito-900',
+            uso: 'Texto principal y títulos (luz suave, menos deslumbrante)',
+          },
           { token: 'grafito-600', uso: 'Texto secundario' },
           { token: 'grafito-500', uso: 'Texto de apoyo y placeholders' },
           { token: 'borde-campo', uso: 'Borde de campos de formulario (3:1)' },
@@ -44,12 +50,34 @@ export const guia = {
         nombre: 'Marca',
         tokens: [
           { token: 'pizarra-800', uso: 'Hover y estados activos' },
-          { token: 'pizarra-700', uso: 'Color principal: botones, enlaces y títulos' },
+          {
+            token: 'pizarra-700',
+            uso: 'Color principal, lavanda (introspección): botones y enlaces',
+          },
           { token: 'pizarra-100', uso: 'Fondos informativos' },
-          { token: 'salvia-600', uso: 'Acento de calma' },
+          { token: 'salvia-600', uso: 'Acento de calma, menta (equilibrio y esperanza)' },
           { token: 'salvia-100', uso: 'Fondos serenos' },
-          { token: 'arena-400', uso: 'Acento cálido decorativo (no usar para texto)' },
+          { token: 'arena-400', uso: 'Acento cálido, coral (calidez); decorativo, no para texto' },
           { token: 'arena-100', uso: 'Fondos cálidos (apoyo inmediato)' },
+        ],
+      },
+      {
+        nombre: 'Luces (solo decoración)',
+        tokens: [
+          { token: 'luz-lavanda', uso: 'La mente: brillos, borde del orbe y luz del inicio' },
+          { token: 'luz-turquesa', uso: 'La calma: foco, anillo del orbe y estrellas' },
+          { token: 'luz-coral', uso: 'La calidez: anillo del orbe y degradados' },
+          { token: 'luz-amanecer', uso: 'La esperanza: el amanecer del inicio y del cierre' },
+        ],
+      },
+      {
+        nombre: 'Dimensiones del bienestar (rueda de áreas)',
+        tokens: [
+          { token: 'dimension-emociones', uso: 'Emociones y mente: lavanda, el mundo interior' },
+          { token: 'dimension-cuerpo', uso: 'Cuerpo y energía: verde azulado, vitalidad' },
+          { token: 'dimension-vinculos', uso: 'Vínculos y apoyo: coral, calidez y conexión' },
+          { token: 'dimension-afrontamiento', uso: 'Afrontamiento: azul, estabilidad' },
+          { token: 'dimension-proyecto', uso: 'Proyecto de vida y entorno: ámbar, esperanza' },
         ],
       },
     ],
@@ -59,7 +87,7 @@ export const guia = {
 
   tipografia: {
     familias: [
-      { nombre: 'Manrope', uso: 'Títulos (600–800)', clase: 'font-titulo' },
+      { nombre: 'Sora', uso: 'Títulos (600–800)', clase: 'font-titulo' },
       { nombre: 'Public Sans', uso: 'Texto e interfaz (400–600)', clase: 'font-cuerpo' },
     ],
     lecturaFacil:

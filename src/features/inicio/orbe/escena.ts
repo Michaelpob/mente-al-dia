@@ -13,8 +13,11 @@ export interface OpcionesEscena {
 const EXTENSION = 2.2;
 /** Tope de densidad de píxeles: más allá no se nota y gasta batería. */
 const DPR_MAXIMO = 1.75;
-/** Segundos de cada respiración de la esfera. */
-const RITMO = 6;
+/**
+ * Segundos de cada respiración de la esfera: 10 s son 6 respiraciones por minuto, el ritmo de los
+ * ejercicios de respiración pausada que se usan para calmarse (D-75).
+ */
+const RITMO = 10;
 
 function compilar(gl: WebGLRenderingContext, tipo: number, fuente: string): WebGLShader {
   const shader = gl.createShader(tipo);
