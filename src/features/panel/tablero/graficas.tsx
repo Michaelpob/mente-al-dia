@@ -175,17 +175,28 @@ function TablaSimple({
 
 // ---------------------------------------------------------------------------------- semanas
 
-export function GraficaSemanas({ datos }: { datos: Tablero['porSemana'] }) {
+/** Una cifra por semana. Por defecto, las aplicaciones; con «textos», otra serie (cuentas nuevas). */
+export function GraficaSemanas({
+  datos,
+  textos = t.semanas,
+}: {
+  datos: Tablero['porSemana'];
+  textos?: {
+    titulo: string;
+    descripcion: string;
+    columnas: { semana: string; aplicaciones: string };
+  };
+}) {
   const tinta = useTinta();
   const total = datos.reduce((s, d) => s + d.aplicaciones, 0);
   return (
     <TarjetaGrafica
-      titulo={t.semanas.titulo}
-      descripcion={t.semanas.descripcion}
+      titulo={textos.titulo}
+      descripcion={textos.descripcion}
       sinDatos={total === 0}
       tabla={
         <TablaSimple
-          encabezados={[t.semanas.columnas.semana, t.semanas.columnas.aplicaciones]}
+          encabezados={[textos.columnas.semana, textos.columnas.aplicaciones]}
           filas={datos.map((d) => [formatearDiaConAno(d.semana), formatearNumero(d.aplicaciones)])}
         />
       }
@@ -193,7 +204,7 @@ export function GraficaSemanas({ datos }: { datos: Tablero['porSemana'] }) {
       <div
         className="h-64"
         role="img"
-        aria-label={`${t.semanas.titulo}: ${formatearNumero(total)} en ${datos.length} semanas`}
+        aria-label={`${textos.titulo}: ${formatearNumero(total)} en ${datos.length} semanas`}
       >
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
@@ -217,12 +228,9 @@ export function GraficaSemanas({ datos }: { datos: Tablero['porSemana'] }) {
             />
             <Tooltip
               labelFormatter={(semana) =>
-                `${t.semanas.columnas.semana} ${formatearDiaConAno(String(semana))}`
+                `${textos.columnas.semana} ${formatearDiaConAno(String(semana))}`
               }
-              formatter={(valor) => [
-                formatearNumero(Number(valor)),
-                t.semanas.columnas.aplicaciones,
-              ]}
+              formatter={(valor) => [formatearNumero(Number(valor)), textos.columnas.aplicaciones]}
             />
             <Line
               type="monotone"

@@ -4,6 +4,7 @@ import { AlcaldiaLogo, MenteAlDiaLogo } from '@/components/brand/logos';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { textos } from '@/content/textos-interfaz';
+import { BotonCuenta } from '@/features/cuenta/BotonCuenta';
 import { useScrolled } from '@/hooks/use-scrolled';
 import { cn } from '@/lib/utils/cn';
 import { AccessibilityButton } from './accessibility-panel';
@@ -49,9 +50,7 @@ function MobileMenu() {
           </ul>
         </nav>
         <DrawerClose asChild>
-          <Button asChild variant="secundario" className="mt-6 w-full">
-            <Link to="/panel/ingresar">{textos.nav.ingresar}</Link>
-          </Button>
+          <BotonCuenta ancho size="md" className="mt-6 w-full" />
         </DrawerClose>
       </DrawerContent>
     </Drawer>
@@ -119,14 +118,7 @@ export function SiteHeader() {
         <div className="ml-auto flex items-center gap-2 xl:ml-2 xl:texto-grande:ml-auto">
           <HelplinesButton />
           <AccessibilityButton />
-          <Button
-            asChild
-            variant="secundario"
-            size="sm"
-            className="hidden sm:inline-flex sm:texto-grande:hidden"
-          >
-            <Link to="/panel/ingresar">{textos.nav.ingresar}</Link>
-          </Button>
+          <BotonCuenta className="hidden sm:inline-flex sm:texto-grande:hidden" />
           <MobileMenu />
         </div>
       </div>

@@ -149,3 +149,42 @@ export interface DatosContacto {
     lugarResidencia?: string;
   } | null;
 }
+
+/** panel_cuentas_resumen (D-77): cuentas públicas, actividad y progreso. */
+export interface ResumenCuentas {
+  total: number;
+  nuevas30: number;
+  activas7: number;
+  activas30: number;
+  enCurso: number;
+  completados: number;
+  conProgreso: number;
+  porSemana: { semana: string; cuentas: number }[];
+}
+
+/** Avance de una actividad, sin el contenido guardado. */
+export interface ActividadCuenta {
+  actividad: string;
+  avance: number;
+  completado: boolean;
+  actualizadoEn: string;
+}
+
+export interface FilaCuenta {
+  id: string;
+  nombre: string;
+  usuario: string;
+  /** Enmascarado: «an***@correo.co». */
+  correo: string | null;
+  creadoEn: string;
+  ultimoIngreso: string | null;
+  ultimaActividad: string | null;
+  actividades: ActividadCuenta[];
+}
+
+export interface PaginaCuentas {
+  total: number;
+  pagina: number;
+  tamano: number;
+  filas: FilaCuenta[];
+}

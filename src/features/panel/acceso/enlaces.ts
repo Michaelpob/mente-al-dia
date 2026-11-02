@@ -6,6 +6,9 @@
 /** Ruta a la que llevan los enlaces de invitación y de recuperación de contraseña. */
 export const RUTA_DEFINIR_CONTRASENA = '/panel/definir-contrasena';
 
+/** Destino de los enlaces de recuperación que se piden desde una cuenta pública (D-77). */
+export const RUTA_NUEVA_CONTRASENA_CUENTA = '/cuenta/nueva-contrasena';
+
 /**
  * Dirección completa de /panel/definir-contrasena, con la carpeta del sitio (en GitHub Pages,
  * /mente-al-dia). Tiene que estar en las Redirect URLs de Auth (supabase/config.toml).
@@ -30,7 +33,10 @@ export function redirigirEnlaceDeAcceso(
     ['invite', 'recovery'].includes(datos.get('type') ?? '') || datos.has('error_code');
   if (!esEnlace) return null;
 
-  const destino = `${base.replace(/\/$/, '')}${RUTA_DEFINIR_CONTRASENA}`;
-  if (ruta.replace(/\/$/, '') === destino) return null;
+  const carpeta = base.replace(/\/$/, '');
+  const destino = `${carpeta}${RUTA_DEFINIR_CONTRASENA}`;
+  // Los enlaces que ya llegan a una página que los recibe (la del panel o la de las cuentas) se quedan.
+  const recibidas = [destino, `${carpeta}${RUTA_NUEVA_CONTRASENA_CUENTA}`];
+  if (recibidas.includes(ruta.replace(/\/$/, ''))) return null;
   return `${destino}${fragmento}`;
 }

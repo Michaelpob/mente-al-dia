@@ -4,8 +4,10 @@ import type {
   Ficha,
   FiltrosRegistros,
   FiltrosTablero,
+  PaginaCuentas,
   PaginaRegistros,
   Prioritario,
+  ResumenCuentas,
   Tablero,
 } from './tipos';
 
@@ -68,4 +70,17 @@ export function verDatosContacto(id: string): Promise<DatosContacto> {
 
 export async function registrarImpresion(id: string): Promise<void> {
   await rpc('panel_registrar_impresion', { p_aplicacion: id });
+}
+
+/** Cuentas públicas (D-77): totales, actividad y cuentas nuevas por semana. */
+export function obtenerResumenCuentas(): Promise<ResumenCuentas> {
+  return rpc('panel_cuentas_resumen');
+}
+
+export function obtenerCuentas(busqueda: string, pagina: number): Promise<PaginaCuentas> {
+  return rpc('panel_cuentas', {
+    p_busqueda: busqueda.trim() || null,
+    p_pagina: pagina,
+    p_tamano: 25,
+  });
 }

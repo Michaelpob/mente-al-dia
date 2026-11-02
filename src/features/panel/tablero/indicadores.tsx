@@ -45,7 +45,7 @@ function useConteo(valor: number): number {
   return mostrado;
 }
 
-function Indicador({
+export function Indicador({
   titulo,
   valor,
   children,

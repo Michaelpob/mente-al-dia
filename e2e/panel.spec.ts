@@ -121,6 +121,44 @@ const CONTACTO = {
   acudiente: null,
 };
 
+const RESUMEN_CUENTAS = {
+  total: 3,
+  nuevas30: 2,
+  activas7: 1,
+  activas30: 2,
+  enCurso: 1,
+  completados: 4,
+  conProgreso: 2,
+  porSemana: [
+    { semana: '2026-10-19', cuentas: 1 },
+    { semana: '2026-10-26', cuentas: 2 },
+  ],
+};
+
+const CUENTA = {
+  id: '00000000-0000-0000-0000-0000000000c1',
+  nombre: 'Ana Cuenta',
+  usuario: 'ana.cuenta',
+  correo: 'an***@correo.co',
+  creadoEn: '2026-10-30T15:00:00Z',
+  ultimoIngreso: '2026-11-01T15:00:00Z',
+  ultimaActividad: '2026-11-01T15:30:00Z',
+  actividades: [
+    {
+      actividad: 'cuestionario',
+      avance: 40,
+      completado: false,
+      actualizadoEn: '2026-11-01T15:30:00Z',
+    },
+    {
+      actividad: 'resultado:MD-0007',
+      avance: 100,
+      completado: true,
+      actualizadoEn: '2026-10-30T16:00:00Z',
+    },
+  ],
+};
+
 interface Llamadas {
   registros: Record<string, unknown>[];
   contacto: number;
@@ -230,6 +268,10 @@ async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promi
       case '/rest/v1/rpc/panel_registrar_impresion':
         llamadas.impresion += 1;
         return route.fulfill({ status: 204, headers: CORS });
+      case '/rest/v1/rpc/panel_cuentas_resumen':
+        return json(RESUMEN_CUENTAS);
+      case '/rest/v1/rpc/panel_cuentas':
+        return json({ total: 1, pagina: 1, tamano: 25, filas: [CUENTA] });
       default:
         return route.fulfill({ status: 404, headers: CORS, body: '{}' });
     }
@@ -350,6 +392,21 @@ test('prioritarios muestra los casos pendientes con los días sin gestión', asy
   await page.goto('/panel/prioritarios');
   await expect(page.getByRole('heading', { level: 1, name: 'Prioritarios' })).toBeVisible();
   await expect(page.getByRole('row', { name: /Ana Prueba/ })).toContainText('9 días');
+  expect(await violacionesGraves(page)).toEqual([]);
+});
+
+test('cuentas muestra quién se registró, su actividad y su avance, sin sus respuestas', async ({
+  page,
+}) => {
+  await iniciarSesion(page);
+  await page.goto('/panel/cuentas');
+  await expect(page.getByRole('heading', { level: 1, name: 'Cuentas' })).toBeVisible();
+  await expect(page.getByText('2 nuevas en los últimos 30 días')).toBeVisible();
+  const fila = page.getByRole('row', { name: /Ana Cuenta/ });
+  await expect(fila).toContainText('@ana.cuenta');
+  await expect(fila).toContainText('an***@correo.co');
+  await expect(fila).toContainText('Cuestionario en curso: 40 %');
+  await expect(fila).toContainText('1 cuestionario terminado');
   expect(await violacionesGraves(page)).toEqual([]);
 });
 

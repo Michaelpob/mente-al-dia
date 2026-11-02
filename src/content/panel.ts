@@ -21,7 +21,47 @@ export const panel = {
     configuracion: 'Configuración',
     usuarios: 'Usuarios',
     auditoria: 'Auditoría',
+    cuentas: 'Cuentas',
     pendientes: (n: number) => `${n} ${n === 1 ? 'pendiente' : 'pendientes'}`,
+  },
+
+  /** Cuentas públicas (D-77): quién se registró, su actividad y su avance, nunca sus respuestas. */
+  cuentas: {
+    titulo: 'Cuentas',
+    descripcion:
+      'Personas que crearon una cuenta para guardar su progreso. Aquí se ve su actividad y su avance, no sus respuestas.',
+    indicadores: {
+      total: 'Cuentas registradas',
+      nuevas: (n: number) => `${n} ${n === 1 ? 'nueva' : 'nuevas'} en los últimos 30 días`,
+      activas7: 'Activas en 7 días',
+      activas30: (n: number) => `${n} activas en 30 días`,
+      activasNota: 'Ingresaron o avanzaron en un cuestionario.',
+      enCurso: 'Cuestionarios en curso',
+      conProgreso: (n: number) => `${n} ${n === 1 ? 'cuenta' : 'cuentas'} con progreso guardado`,
+      completados: 'Cuestionarios terminados',
+      completadosNota: 'Terminados por personas con cuenta.',
+    },
+    semanas: {
+      titulo: 'Cuentas nuevas por semana',
+      descripcion: 'Últimas 12 semanas, de lunes a domingo, en hora de Colombia.',
+      columnas: { semana: 'Semana del', aplicaciones: 'Cuentas nuevas' },
+    },
+    lista: 'Lista de cuentas',
+    buscar: 'Buscar por nombre o usuario',
+    buscarPlaceholder: 'Nombre o usuario',
+    columnas: {
+      nombre: 'Nombre',
+      registro: 'Registro',
+      ultimoIngreso: 'Último ingreso',
+      progreso: 'Progreso',
+    },
+    nunca: 'Todavía no ingresa',
+    sinProgreso: 'Sin progreso guardado',
+    enCurso: (avance: number) => `Cuestionario en curso: ${avance} %`,
+    terminados: (n: number) =>
+      `${n} ${n === 1 ? 'cuestionario terminado' : 'cuestionarios terminados'}`,
+    vacio: 'Todavía no hay cuentas registradas.',
+    sinCoincidencias: 'Ninguna cuenta coincide con la búsqueda.',
   },
 
   busqueda: {

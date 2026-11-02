@@ -18,6 +18,11 @@ const PrivacidadPage = lazy(() => import('@/features/informacion/PrivacidadPage'
 const TerminosPage = lazy(() => import('@/features/informacion/TerminosPage'));
 const AccesibilidadPage = lazy(() => import('@/features/informacion/AccesibilidadPage'));
 const MapaSitioPage = lazy(() => import('@/features/informacion/MapaSitioPage'));
+const MiCuentaPage = lazy(() => import('@/features/cuenta/MiCuentaPage'));
+const IngresarCuentaPage = lazy(() => import('@/features/cuenta/IngresarCuentaPage'));
+const CrearCuentaPage = lazy(() => import('@/features/cuenta/CrearCuentaPage'));
+const NuevaContrasenaPage = lazy(() => import('@/features/cuenta/NuevaContrasenaPage'));
+const CuentasPage = lazy(() => import('@/features/panel/cuentas/CuentasPage'));
 const PanelShell = lazy(() => import('@/features/panel/estructura/PanelShell'));
 const EnConstruccion = lazy(() =>
   import('@/features/panel/estructura/EnConstruccion').then((m) => ({ default: m.EnConstruccion })),
@@ -43,8 +48,12 @@ const publicRoutes: RouteObject[] = [
       { path: 'resultados', element: <ResultadosPage /> },
     ],
   },
-  // «Ingresar» es el ingreso de administración (D-73); la dirección antigua lleva allí.
-  { path: 'ingresar', element: <Navigate to="/panel/ingresar" replace /> },
+  // «Ingresar» es el ingreso de todas las personas (D-78); el equipo sigue de ahí a su panel.
+  { path: 'ingresar', element: <Navigate to="/cuenta/ingresar" replace /> },
+  { path: 'cuenta', element: <MiCuentaPage /> },
+  { path: 'cuenta/ingresar', element: <IngresarCuentaPage /> },
+  { path: 'cuenta/crear', element: <CrearCuentaPage /> },
+  { path: 'cuenta/nueva-contrasena', element: <NuevaContrasenaPage /> },
   { path: 'lineas-de-ayuda', element: <LineasAyudaPage /> },
   { path: 'privacidad', element: <PrivacidadPage /> },
   { path: 'terminos', element: <TerminosPage /> },
@@ -80,6 +89,7 @@ const routes: RouteObject[] = [
               { path: 'registros', element: <RegistrosPage /> },
               { path: 'registros/:id', element: <FichaPage /> },
               { path: 'prioritarios', element: <PrioritariosPage /> },
+              { path: 'cuentas', element: <CuentasPage /> },
               { path: 'seguimiento', element: <EnConstruccion pagina="panelSeguimiento" /> },
               { path: 'reportes', element: <EnConstruccion pagina="panelReportes" /> },
               { path: 'configuracion', element: <EnConstruccion pagina="panelConfiguracion" /> },

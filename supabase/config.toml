@@ -23,22 +23,27 @@ enabled = false
 [auth]
 enabled = true
 site_url = "http://localhost:5173"
-additional_redirect_urls = ["http://localhost:5173/panel/definir-contrasena"]
+additional_redirect_urls = [
+  "http://localhost:5173/panel/definir-contrasena",
+  "http://localhost:5173/cuenta/nueva-contrasena",
+]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
 refresh_token_reuse_interval = 10
-# Las cuentas del panel se crean solo por invitación (función «invitar-usuario»).
-enable_signup = false
+# Cualquier persona puede crear su cuenta pública (D-77). Eso no da acceso al panel: el equipo
+# sigue entrando por invitación (función «invitar-usuario») y los roles viven en public.perfiles.
+enable_signup = true
 enable_anonymous_sign_ins = false
 minimum_password_length = 12
 password_requirements = "lower_upper_letters_digits"
 
 [auth.email]
 # Activa el proveedor Email (ingreso con correo y contraseña). Con false nadie podría ingresar.
-# Las cuentas nuevas ya las bloquea [auth] enable_signup = false.
 enable_signup = true
 double_confirm_changes = true
-enable_confirmations = true
+# Sin un SMTP propio, el correo de Supabase solo llega a quienes son miembros de la organización:
+# con confirmación obligatoria nadie más podría entrar. Al conectar un SMTP se puede volver a true.
+enable_confirmations = false
 secure_password_change = true
 max_frequency = "1m0s"
 
@@ -78,4 +83,7 @@ project_id = "lpcfrtlfiljgwxarpslf"
 
 [remotes.produccion.auth]
 site_url = "https://michaelpob.github.io/mente-al-dia/"
-additional_redirect_urls = ["https://michaelpob.github.io/mente-al-dia/panel/definir-contrasena"]
+additional_redirect_urls = [
+  "https://michaelpob.github.io/mente-al-dia/panel/definir-contrasena",
+  "https://michaelpob.github.io/mente-al-dia/cuenta/nueva-contrasena",
+]

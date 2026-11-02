@@ -46,6 +46,15 @@ describe('redirigirEnlaceDeAcceso', () => {
     }
   });
 
+  it('deja la recuperación de una cuenta pública en su propia página (D-77)', () => {
+    for (const ruta of [
+      '/mente-al-dia/cuenta/nueva-contrasena',
+      '/mente-al-dia/cuenta/nueva-contrasena/',
+    ]) {
+      expect(redirigirEnlaceDeAcceso(ruta, `${SESION}&type=recovery`, '/mente-al-dia/')).toBeNull();
+    }
+  });
+
   it('ignora los fragmentos que no son de acceso', () => {
     expect(redirigirEnlaceDeAcceso('/mente-al-dia/', '', '/mente-al-dia/')).toBeNull();
     expect(redirigirEnlaceDeAcceso('/mente-al-dia/', '#contenido', '/mente-al-dia/')).toBeNull();

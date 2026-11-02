@@ -38,6 +38,17 @@ Ninguno de los tres entra sin **doble factor**: las políticas exigen que la ses
 - **Reportes en hora de Colombia.** Los días y las semanas de `reporte_agregado` y `reporte_nominal` se cuentan en hora de Colombia (`America/Bogota`), no en UTC.
 - **Grupos pequeños ocultos.** `reporte_agregado` no muestra grupos de menos de `reporte_minimo_grupo` personas (mínimo y valor inicial: 5): se suman en una fila por semana con `grupos_pequenos = true`, sin módulo, lugar ni resultado, y si esa suma tampoco llega al mínimo su total es `null`. El periodo pedido se amplía a semanas completas (de lunes a domingo), para que no se pueda restar un reporte de otro y aislar a una persona.
 
+## Cuentas públicas (D-77)
+
+Cualquier persona mayor de edad puede crear su cuenta desde «Crear una cuenta» para guardar su progreso. No es un rol del panel: los roles siguen en `perfiles` y solo se asignan por invitación.
+
+- **Contraseñas solo en Supabase Auth.** Las tablas guardan el nombre, el usuario y el correo, nunca la contraseña.
+- **`cuentas`.** El perfil se crea con la cuenta (disparador `crear_cuenta_publica` sobre `auth.users`, solo si el alta viene de «Crear una cuenta»). La base vuelve a exigir la mayoría de edad y la autorización de datos y guarda la versión de los textos legales aceptados. El usuario es único y va en minúsculas. Cada cuenta lee solo su perfil y solo puede cambiar su nombre.
+- **`progreso`.** Una fila por cuenta y actividad: `cuestionario` (el cuestionario en curso, después de la autorización) y `resultado:<código>` (cada cuestionario terminado). Cada cuenta lee, crea, cambia y borra solo lo suyo; `guardar_progreso` escribe siempre a nombre de la sesión. La tabla admite otras actividades con el mismo formato.
+- **Panel.** `panel_cuentas_resumen` y `panel_cuentas` (equipo con doble factor) muestran las cuentas registradas, su último ingreso, su actividad y su avance, con el correo enmascarado; nunca el contenido guardado del progreso.
+- **Auth.** `enable_signup = true` permite crear cuentas. Sin un SMTP propio, el correo de Supabase solo llega a los miembros de la organización: por eso la confirmación por correo está apagada y la recuperación de contraseña de las cuentas públicas no llega hasta conectar un SMTP (pendiente F12-01).
+- **`usuario_disponible`.** Responde solo sí o no a si un usuario está libre; se puede usar sin sesión.
+
 ## Poner en marcha el proyecto
 
 El proyecto en la nube ya existe: `mente-al-dia` (ref `lpcfrtlfiljgwxarpslf`, São Paulo, `sa-east-1`), conectado a la plataforma publicada (D-67). La región definitiva queda pendiente de la Oficina TIC (pendiente 16). Para repetir la puesta en marcha en otro proyecto, o actualizar este:

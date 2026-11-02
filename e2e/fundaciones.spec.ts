@@ -103,20 +103,37 @@ test.describe('Rutas públicas', () => {
     expect(await violacionesGraves(page)).toEqual([]);
   });
 
-  test('«Ingresar» del encabezado y la dirección /ingresar llevan al ingreso de administración', async ({
+  test('«Ingresar» del encabezado y la dirección /ingresar llevan al ingreso de todas las personas', async ({
     page,
     isMobile,
   }) => {
     await page.goto('/ingresar');
-    await expect(page).toHaveURL(/\/panel\/ingresar$/);
-    await expect(page.locator('h1')).toHaveText('Ingreso de administración');
+    await expect(page).toHaveURL(/\/cuenta\/ingresar$/);
+    await expect(page.locator('h1')).toHaveText('Ingresar');
+    expect(await violacionesGraves(page)).toEqual([]);
     test.skip(
       isMobile,
       'En el teléfono, «Ingresar» está en el menú (prueba «el menú se abre con teclado»).',
     );
     await page.goto('/');
     await page.getByRole('banner').getByRole('link', { name: 'Ingresar' }).click();
-    await expect(page).toHaveURL(/\/panel\/ingresar$/);
+    await expect(page).toHaveURL(/\/cuenta\/ingresar$/);
+  });
+
+  test('crear una cuenta pide todos los datos antes de enviar', async ({ page }) => {
+    await page.goto('/cuenta/crear');
+    await expect(page.locator('h1')).toHaveText('Crear una cuenta');
+    expect(await violacionesGraves(page)).toEqual([]);
+    await page.getByRole('button', { name: 'Crear mi cuenta' }).click();
+    await expect(page.getByRole('alert').first()).toContainText('Revisa los campos marcados.');
+    await expect(page.getByLabel('Nombre completo')).toBeFocused();
+    await expect(page.getByLabel('Nombre completo')).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  test('«Mi cuenta» sin sesión lleva a ingresar', async ({ page }) => {
+    await page.goto('/cuenta');
+    await expect(page).toHaveURL(/\/cuenta\/ingresar$/);
+    await expect(page.locator('h1')).toHaveText('Ingresar');
   });
 
   test('/panel/ingresar pide correo institucional y contraseña', async ({ page }) => {
@@ -207,8 +224,8 @@ test.describe('Teclado', () => {
     await expect(menu).toBeVisible();
     expect(await violacionesGraves(page)).toEqual([]);
     await menu.getByRole('link', { name: 'Ingresar' }).click();
-    // «Ingresar» lleva al ingreso de administración (D-73).
-    await expect(page).toHaveURL(/\/panel\/ingresar$/);
+    // «Ingresar» lleva al ingreso de todas las personas; el equipo sigue de ahí a su panel (D-78).
+    await expect(page).toHaveURL(/\/cuenta\/ingresar$/);
     await expect(menu).toBeHidden();
   });
 });
