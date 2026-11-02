@@ -47,6 +47,23 @@ enable_confirmations = false
 secure_password_change = true
 max_frequency = "1m0s"
 
+# Correos en español (D-79). Las rutas son desde la raíz del proyecto.
+[auth.email.template.recovery]
+subject = "Crea una contraseña nueva para Mente al Día"
+content_path = "./supabase/templates/recuperacion.html"
+
+[auth.email.template.confirmation]
+subject = "Confirma tu cuenta de Mente al Día"
+content_path = "./supabase/templates/confirmacion.html"
+
+[auth.email.template.invite]
+subject = "Te invitaron al panel de Mente al Día"
+content_path = "./supabase/templates/invitacion.html"
+
+[auth.email.template.email_change]
+subject = "Confirma tu nuevo correo en Mente al Día"
+content_path = "./supabase/templates/cambio-correo.html"
+
 # Doble factor obligatorio para el panel: lo exigen las políticas de la base de datos (aal2).
 [auth.mfa]
 max_enrolled_factors = 10
@@ -56,7 +73,8 @@ enroll_enabled = true
 verify_enabled = true
 
 [auth.rate_limit]
-email_sent = 4
+# Correos por hora con el SMTP propio (D-79): Gmail admite unos 500 al día.
+email_sent = 60
 sign_in_sign_ups = 30
 token_verifications = 30
 
@@ -87,3 +105,15 @@ additional_redirect_urls = [
   "https://michaelpob.github.io/mente-al-dia/panel/definir-contrasena",
   "https://michaelpob.github.io/mente-al-dia/cuenta/nueva-contrasena",
 ]
+
+# Correo propio (D-79, pendiente F12-01): Gmail con una contraseña de aplicación. El correo y la
+# contraseña NO van en este archivo: se ponen en la terminal antes de `config push`
+# ($env:SUPABASE_AUTH_SMTP_USER y $env:SUPABASE_AUTH_SMTP_PASS en PowerShell).
+[remotes.produccion.auth.email.smtp]
+enabled = true
+host = "smtp.gmail.com"
+port = 587
+user = "env(SUPABASE_AUTH_SMTP_USER)"
+pass = "env(SUPABASE_AUTH_SMTP_PASS)"
+admin_email = "env(SUPABASE_AUTH_SMTP_USER)"
+sender_name = "Mente al Día"
