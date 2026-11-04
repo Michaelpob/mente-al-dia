@@ -205,6 +205,20 @@ export const panel = {
       descripcion: 'Los diez lugares de residencia con más aplicaciones en el periodo.',
       columnas: { lugar: 'Lugar', aplicaciones: 'Aplicaciones' },
     },
+    /** Visitas al sitio por tipo de dispositivo (D-80). */
+    dispositivos: {
+      titulo: 'Visitas por tipo de dispositivo',
+      descripcion:
+        'Todas las personas que entraron al sitio en el periodo y desde qué pantalla: móvil, tableta o computador. Solo depende del periodo.',
+      tipos: { movil: 'Móvil', tableta: 'Tableta', escritorio: 'Computador' },
+      visitas: (n: number) => (n === 1 ? 'visita' : 'visitas'),
+      detalle: (n: string, visitas: string, pct: string) => `${n} ${visitas} (${pct})`,
+      resumen: (total: string, partes: string) => `${total} en total: ${partes}`,
+      columnas: { dispositivo: 'Dispositivo', visitas: 'Visitas', porcentaje: 'Porcentaje' },
+      total: 'Total',
+      sinDatos: 'Todavía no hay visitas en este periodo.',
+      nota: 'Cada visita es una persona que abrió el sitio (una vez por sesión del navegador). No se guarda quién es.',
+    },
   },
 
   registros: {

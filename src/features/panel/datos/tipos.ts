@@ -1,3 +1,4 @@
+import type { TipoDispositivo } from '@/features/visitas/dispositivo';
 import type { AreaId, Modulo, Nivel, ValorRespuesta } from '@/types/dominio';
 
 /** Tipos de lo que devuelven las consultas del panel (migración 20261027120000, D-68). */
@@ -25,6 +26,14 @@ export interface Tablero {
   mapaCalor: { area: AreaId; nivel: Nivel; n: number }[];
   lugares: { lugar: string; n: number }[];
   opcionesLugar: string[];
+}
+
+/** panel_visitas (D-80): visitas al sitio del periodo, por tipo de dispositivo. */
+export interface Visitas {
+  total: number;
+  /** El periodo de los mismos días que termina justo antes de este. */
+  anterior: number;
+  porDispositivo: Record<TipoDispositivo, number>;
 }
 
 export const ORDENES = [

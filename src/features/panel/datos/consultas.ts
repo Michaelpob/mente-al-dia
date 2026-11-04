@@ -9,6 +9,7 @@ import type {
   Prioritario,
   ResumenCuentas,
   Tablero,
+  Visitas,
 } from './tipos';
 
 /**
@@ -29,6 +30,11 @@ export function obtenerTablero(f: FiltrosTablero): Promise<Tablero> {
     p_modulo: f.modulo,
     p_lugar: f.lugar,
   });
+}
+
+/** Visitas al sitio del periodo por tipo de dispositivo (D-80). Módulo y lugar no aplican. */
+export function obtenerVisitas(desde: string, hasta: string): Promise<Visitas> {
+  return rpc('panel_visitas', { p_desde: desde, p_hasta: hasta });
 }
 
 /** Los lugares registrados, para los filtros. Un periodo de un día basta: la lista no depende de él. */

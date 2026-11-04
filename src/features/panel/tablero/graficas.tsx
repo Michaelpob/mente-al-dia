@@ -1,4 +1,4 @@
-import { Table2, ChartColumn } from 'lucide-react';
+import { Table2, ChartColumn, Monitor, Smartphone, Tablet, type LucideIcon } from 'lucide-react';
 import { useId, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import {
@@ -9,6 +9,8 @@ import {
   Legend,
   Line,
   LineChart,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -17,6 +19,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { panel } from '@/content/panel';
 import { areas } from '@/content/v1/areas';
+import { TIPOS_DISPOSITIVO, type TipoDispositivo } from '@/features/visitas/dispositivo';
 import type { Modulo, Nivel } from '@/types/dominio';
 import { colorToken } from '../colores';
 import { escribirFiltrosRegistros, REGISTROS_POR_DEFECTO } from '../datos/filtros';
@@ -26,7 +29,7 @@ import {
   formatearNumero,
   formatearPorcentaje,
 } from '../datos/formato';
-import type { FiltrosTablero, ResultadoGeneral, Tablero } from '../datos/tipos';
+import type { FiltrosTablero, ResultadoGeneral, Tablero, Visitas } from '../datos/tipos';
 
 const t = panel.tablero;
 const RESULTADOS: readonly ResultadoGeneral[] = [
@@ -70,6 +73,7 @@ export function TarjetaGrafica({
   tabla,
   children,
   sinDatos = false,
+  mensajeSinDatos = panel.graficas.sinDatos,
   conAlternativa = true,
 }: {
   titulo: string;
@@ -77,6 +81,7 @@ export function TarjetaGrafica({
   tabla?: ReactNode;
   children: ReactNode;
   sinDatos?: boolean;
+  mensajeSinDatos?: string;
   conAlternativa?: boolean;
 }) {
   const [verTabla, setVerTabla] = useState(false);
@@ -112,7 +117,7 @@ export function TarjetaGrafica({
       </div>
       {sinDatos ? (
         <p className="rounded-md bg-piedra-50 px-4 py-8 text-center text-grafito-600">
-          {panel.graficas.sinDatos}
+          {mensajeSinDatos}
         </p>
       ) : verTabla ? (
         <div
@@ -461,6 +466,124 @@ export function GraficaLugares({ datos }: { datos: Tablero['lugares'] }) {
           </BarChart>
         </ResponsiveContainer>
       </div>
+    </TarjetaGrafica>
+  );
+}
+
+// ---------------------------------------------------------------------------------- dispositivos
+
+const ICONO_DISPOSITIVO: Record<TipoDispositivo, LucideIcon> = {
+  movil: Smartphone,
+  tableta: Tablet,
+  escritorio: Monitor,
+};
+
+/** Colores de las dimensiones (D-76): ya tienen su versión de alto contraste y de impresión. */
+function coloresDispositivo() {
+  return {
+    movil: colorToken('dimension-cuerpo', '#13928a'),
+    tableta: colorToken('dimension-afrontamiento', '#2e6cd3'),
+    escritorio: colorToken('dimension-vinculos', '#c9653f'),
+  } satisfies Record<TipoDispositivo, string>;
+}
+
+/** Visitas al sitio del periodo (D-80): el total en el centro y cada tipo de pantalla. */
+export function GraficaDispositivos({ datos }: { datos: Visitas }) {
+  const tinta = useTinta();
+  const colores = coloresDispositivo();
+  const d = t.dispositivos;
+  const total = datos.total;
+  const filas = TIPOS_DISPOSITIVO.map((tipo) => ({
+    tipo,
+    nombre: d.tipos[tipo],
+    n: datos.porDispositivo[tipo] ?? 0,
+    fill: colores[tipo],
+  }));
+  const pct = (n: number) => formatearPorcentaje(total ? n / total : 0);
+  const detalle = (n: number) => d.detalle(formatearNumero(n), d.visitas(n), pct(n));
+  const resumen = d.resumen(
+    `${formatearNumero(total)} ${d.visitas(total)}`,
+    filas.map((f) => `${f.nombre}, ${detalle(f.n)}`).join('; '),
+  );
+
+  return (
+    <TarjetaGrafica
+      titulo={d.titulo}
+      descripcion={d.descripcion}
+      sinDatos={total === 0}
+      mensajeSinDatos={d.sinDatos}
+      tabla={
+        <TablaSimple
+          encabezados={[d.columnas.dispositivo, d.columnas.visitas, d.columnas.porcentaje]}
+          filas={[
+            ...filas.map((f) => [f.nombre, formatearNumero(f.n), pct(f.n)]),
+            [d.total, formatearNumero(total), formatearPorcentaje(1)],
+          ]}
+        />
+      }
+    >
+      <div className="grid items-center gap-6 md:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
+        <div
+          className="relative mx-auto aspect-square w-full max-w-72"
+          role="img"
+          aria-label={`${d.titulo}: ${resumen}`}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart accessibilityLayer={false}>
+              <Pie
+                data={filas.filter((f) => f.n > 0)}
+                dataKey="n"
+                nameKey="nombre"
+                innerRadius="62%"
+                outerRadius="94%"
+                startAngle={90}
+                endAngle={-270}
+                stroke={tinta.superficie}
+                strokeWidth={3}
+              />
+              <Tooltip
+                separator=": "
+                formatter={(valor, nombre) => [detalle(Number(valor)), String(nombre)]}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"
+          >
+            <span className="text-h2 font-bold text-grafito-900 tabular-nums">
+              {formatearNumero(total)}
+            </span>
+            <span className="text-pequeno text-grafito-600">{d.visitas(total)}</span>
+          </div>
+        </div>
+        <ul className="flex min-w-0 flex-col gap-3">
+          {filas.map((f) => {
+            const Icono = ICONO_DISPOSITIVO[f.tipo];
+            return (
+              <li
+                key={f.tipo}
+                className="flex items-center gap-3 rounded-lg border border-piedra-200 px-4 py-3"
+              >
+                <span
+                  aria-hidden
+                  className="size-3 shrink-0 rounded-full"
+                  style={{ background: f.fill }}
+                />
+                <Icono aria-hidden className="size-5 shrink-0 text-grafito-600" />
+                <span className="min-w-0 flex-1 font-semibold text-grafito-900">{f.nombre}</span>
+                <span className="font-semibold text-grafito-900 tabular-nums">
+                  {formatearNumero(f.n)}
+                </span>
+                <span className="w-12 shrink-0 text-right text-grafito-600 tabular-nums">
+                  {pct(f.n)}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+      <p className="text-pequeno text-grafito-600">{d.nota}</p>
     </TarjetaGrafica>
   );
 }

@@ -5,7 +5,7 @@ import { PageMeta } from '@/components/layout/page';
 import { Skeleton } from '@/components/ui/feedback';
 import { panel } from '@/content/panel';
 import { CampoFecha, CampoSelect, EncabezadoPanel, ErrorCarga, PaginaPanel } from '../compartido';
-import { obtenerTablero } from '../datos/consultas';
+import { obtenerTablero, obtenerVisitas } from '../datos/consultas';
 import {
   PERIODOS,
   escribirFiltrosTablero,
@@ -15,7 +15,13 @@ import {
   sumarDias,
 } from '../datos/filtros';
 import type { FiltrosTablero } from '../datos/tipos';
-import { GraficaLugares, GraficaModulos, GraficaSemanas, MapaCalor } from './graficas';
+import {
+  GraficaDispositivos,
+  GraficaLugares,
+  GraficaModulos,
+  GraficaSemanas,
+  MapaCalor,
+} from './graficas';
 import { Indicadores } from './indicadores';
 
 const t = panel.tablero;
@@ -33,6 +39,12 @@ export default function TableroPage() {
   const consulta = useQuery({
     queryKey: ['panel', 'tablero', filtros],
     queryFn: () => obtenerTablero(filtros),
+    placeholderData: keepPreviousData,
+  });
+  // Las visitas al sitio (D-80) solo dependen del periodo: no tienen módulo ni lugar.
+  const visitas = useQuery({
+    queryKey: ['panel', 'visitas', filtros.desde, filtros.hasta],
+    queryFn: () => obtenerVisitas(filtros.desde, filtros.hasta),
     placeholderData: keepPreviousData,
   });
 
@@ -120,6 +132,13 @@ export default function TableroPage() {
           }
         >
           <Indicadores tablero={consulta.data} consultaPrioritarios="/panel/prioritarios" />
+          {visitas.data ? (
+            <GraficaDispositivos datos={visitas.data} />
+          ) : visitas.isError ? (
+            <ErrorCarga error={visitas.error} alReintentar={() => void visitas.refetch()} />
+          ) : (
+            <Skeleton aria-busy="true" className="h-80 rounded-xl" />
+          )}
           <div className="grid gap-6 xl:grid-cols-2">
             <GraficaSemanas datos={consulta.data.porSemana} />
             <GraficaModulos datos={consulta.data.porModulo} />

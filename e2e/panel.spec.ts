@@ -44,6 +44,12 @@ const TABLERO = {
   opcionesLugar: ['Centro', 'Norte'],
 };
 
+const VISITAS = {
+  total: 13,
+  anterior: 9,
+  porDispositivo: { movil: 6, tableta: 4, escritorio: 3 },
+};
+
 const FILA = {
   id: 'a0000000-0000-0000-0000-000000000001',
   codigo: 'MD-0001',
@@ -255,6 +261,8 @@ async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promi
         });
       case '/rest/v1/rpc/panel_tablero':
         return json(TABLERO);
+      case '/rest/v1/rpc/panel_visitas':
+        return json(VISITAS);
       case '/rest/v1/rpc/panel_registros':
         llamadas.registros.push(peticion.postDataJSON() as Record<string, unknown>);
         return json({ total: 1, pagina: 1, tamano: 25, filas: [FILA] });
@@ -309,6 +317,30 @@ test('el tablero muestra indicadores, gráficas con su tabla y el aviso de que n
     'aria-pressed',
     'true',
   );
+
+  expect(await violacionesGraves(page)).toEqual([]);
+});
+
+test('el tablero muestra las visitas al sitio por móvil, tableta y computador', async ({
+  page,
+}) => {
+  await iniciarSesion(page);
+  await page.goto('/panel');
+  const visitas = page.getByRole('region', { name: 'Visitas por tipo de dispositivo' });
+  await expect(
+    visitas.getByRole('img', {
+      name: /13 visitas en total: Móvil, 6 visitas \(46\s?%\); Tableta, 4 visitas \(31\s?%\); Computador, 3 visitas \(23\s?%\)/,
+    }),
+  ).toBeVisible();
+  await expect(visitas.getByRole('listitem')).toHaveText([
+    /Móvil\s*6\s*46\s?%/,
+    /Tableta\s*4\s*31\s?%/,
+    /Computador\s*3\s*23\s?%/,
+  ]);
+
+  await visitas.getByRole('button', { name: 'Ver como tabla' }).click();
+  await expect(visitas.getByRole('row')).toHaveCount(5);
+  await expect(visitas.getByRole('row', { name: /Total/ })).toContainText('13');
 
   expect(await violacionesGraves(page)).toEqual([]);
 });
