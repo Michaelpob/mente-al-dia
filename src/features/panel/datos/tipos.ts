@@ -197,3 +197,70 @@ export interface PaginaCuentas {
   tamano: number;
   filas: FilaCuenta[];
 }
+
+// ---------------------------------------------------------------------------------- censo (D-83)
+
+/** Periodo, módulo y lugar del censo. Sin fechas, cuenta todo el historial. */
+export interface FiltrosCenso {
+  desde: string | null;
+  hasta: string | null;
+  modulo: Modulo | null;
+  lugar: string | null;
+}
+
+export const ORDENES_CENSO = ['falencias', 'fortalezas', 'fecha', 'nombre'] as const;
+export type OrdenCenso = (typeof ORDENES_CENSO)[number];
+
+/** La lista del censo: los filtros del resumen más búsqueda, área y nivel, orden y página. */
+export interface FiltrosPersonasCenso extends FiltrosCenso {
+  q: string;
+  area: AreaId | null;
+  nivel: Nivel | null;
+  orden: OrdenCenso;
+  pagina: number;
+  tamano: number;
+}
+
+/** panel_censo: cada persona cuenta una vez, con su cuestionario más reciente del periodo. */
+export interface Censo {
+  personas: number;
+  cuestionarios: number;
+  conPrioridad: number;
+  conFalencias: number;
+  porModulo: Partial<Record<Modulo, number>>;
+  resultados: Partial<Record<ResultadoGeneral, number>>;
+  porEdad: { edad: number; n: number }[];
+  /** Solo niñas, niños y adolescentes; null es «prefirió no responder». */
+  porSexo: { sexo: string | null; n: number }[];
+  porGrado: { grado: string; n: number }[];
+  lugares: { lugar: string; n: number }[];
+  areas: { area: AreaId; nivel: Nivel; n: number }[];
+}
+
+/** panel_censo_personas: una fila por persona, sin contacto. */
+export interface PersonaCenso {
+  id: string;
+  codigo: string;
+  creadoEn: string;
+  nombre: string;
+  modulo: Modulo;
+  edad: number | null;
+  sexo: string | null;
+  grado: string | null;
+  lugar: string | null;
+  resultadoGeneral: ResultadoGeneral;
+  prioridad: boolean;
+  niveles: Partial<Record<AreaId, Nivel>>;
+  cuestionarios: number;
+  fortalezas: number;
+  porFortalecer: number;
+  falencias: number;
+  sinDato: number;
+}
+
+export interface PaginaCenso {
+  total: number;
+  pagina: number;
+  tamano: number;
+  filas: PersonaCenso[];
+}

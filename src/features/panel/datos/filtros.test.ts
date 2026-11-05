@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
+  CENSO_POR_DEFECTO,
   REGISTROS_POR_DEFECTO,
+  escribirFiltrosCenso,
   escribirFiltrosRegistros,
   escribirFiltrosTablero,
   hayFiltros,
   hoyEnColombia,
+  leerFiltrosCenso,
   leerFiltrosRegistros,
   leerFiltrosTablero,
+  periodoCensoDe,
   periodoDe,
   sumarDias,
   tableroPorDefecto,
@@ -135,5 +139,50 @@ describe('filtros de los registros', () => {
   it('distingue cuándo hay filtros además de la búsqueda', () => {
     expect(hayFiltros({ ...REGISTROS_POR_DEFECTO, q: 'ana' })).toBe(false);
     expect(hayFiltros({ ...REGISTROS_POR_DEFECTO, prioridad: false })).toBe(true);
+  });
+});
+
+describe('filtros del censo', () => {
+  it('sin parámetros cuenta todo el historial, con más falencias primero', () => {
+    expect(leerFiltrosCenso(p(''))).toEqual(CENSO_POR_DEFECTO);
+    expect(escribirFiltrosCenso(CENSO_POR_DEFECTO).toString()).toBe('');
+  });
+
+  it('ida y vuelta por la dirección', () => {
+    const f = {
+      ...CENSO_POR_DEFECTO,
+      desde: '2026-01-01',
+      hasta: '2026-10-27',
+      modulo: 'adolescente' as const,
+      lugar: 'Centro',
+      q: 'ana',
+      area: 'sueno_descanso' as const,
+      nivel: 'requiere_atencion' as const,
+      orden: 'nombre' as const,
+      pagina: 2,
+      tamano: 50,
+    };
+    expect(leerFiltrosCenso(escribirFiltrosCenso(f))).toEqual(f);
+  });
+
+  it('ignora valores inválidos y el área sin nivel', () => {
+    const f = leerFiltrosCenso(
+      p(
+        'modulo=jovenes&orden=edad&area=sueno_descanso&nivel=malo&pagina=-3&tamano=7&desde=2026-02-30',
+      ),
+    );
+    expect(f).toEqual(CENSO_POR_DEFECTO);
+  });
+
+  it('reconoce todo el historial, los periodos predefinidos y las fechas a elegir', () => {
+    expect(periodoCensoDe({ desde: null, hasta: null }, HOY)).toBe('todo');
+    expect(periodoCensoDe({ desde: sumarDias(HOY, -89), hasta: HOY }, HOY)).toBe(90);
+    expect(periodoCensoDe({ desde: '2026-01-01', hasta: HOY }, HOY)).toBe('personalizado');
+    expect(periodoCensoDe({ desde: null, hasta: '2026-01-01' }, HOY)).toBe('personalizado');
+  });
+
+  it('ordena las fechas si vienen al revés', () => {
+    const f = leerFiltrosCenso(p('desde=2026-10-27&hasta=2026-01-01'));
+    expect([f.desde, f.hasta]).toEqual(['2026-01-01', '2026-10-27']);
   });
 });

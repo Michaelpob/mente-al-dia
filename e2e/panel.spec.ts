@@ -165,8 +165,52 @@ const CUENTA = {
   ],
 };
 
+/** Censo (D-83): cada persona una vez, con su cuestionario más reciente. */
+const CENSO = {
+  personas: 3,
+  cuestionarios: 4,
+  conPrioridad: 1,
+  conFalencias: 2,
+  porModulo: { adulto: 2, adolescente: 1 },
+  resultados: { desafios: 1, por_fortalecer: 1, favorable: 1 },
+  porEdad: [{ edad: 15, n: 1 }],
+  porSexo: [{ sexo: 'Mujer', n: 1 }],
+  porGrado: [{ grado: 'Décimo', n: 1 }],
+  lugares: [
+    { lugar: 'Centro', n: 2 },
+    { lugar: 'Norte', n: 1 },
+  ],
+  areas: [
+    { area: 'bienestar_emocional', nivel: 'requiere_atencion', n: 2 },
+    { area: 'bienestar_emocional', nivel: 'adecuado', n: 1 },
+    { area: 'sueno_descanso', nivel: 'por_fortalecer', n: 2 },
+    { area: 'sueno_descanso', nivel: 'adecuado', n: 1 },
+  ],
+};
+
+const PERSONA_CENSO = {
+  id: FILA.id,
+  codigo: FILA.codigo,
+  creadoEn: FILA.creadoEn,
+  nombre: FILA.nombre,
+  modulo: 'adulto',
+  edad: null,
+  sexo: null,
+  grado: null,
+  lugar: 'Centro',
+  resultadoGeneral: 'desafios',
+  prioridad: true,
+  niveles: { bienestar_emocional: 'requiere_atencion', sueno_descanso: 'por_fortalecer' },
+  cuestionarios: 2,
+  fortalezas: 0,
+  porFortalecer: 1,
+  falencias: 1,
+  sinDato: 18,
+};
+
 interface Llamadas {
   registros: Record<string, unknown>[];
+  censo: Record<string, unknown>[];
   contacto: number;
   impresion: number;
   salida: number;
@@ -236,7 +280,7 @@ async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promi
     [CLAVE_SESION, JSON.stringify(sesion)],
   );
 
-  const llamadas: Llamadas = { registros: [], contacto: 0, impresion: 0, salida: 0 };
+  const llamadas: Llamadas = { registros: [], censo: [], contacto: 0, impresion: 0, salida: 0 };
   await page.route(`${SUPABASE}/**`, async (route) => {
     const peticion = route.request();
     if (peticion.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
@@ -278,6 +322,11 @@ async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promi
         return route.fulfill({ status: 204, headers: CORS });
       case '/rest/v1/rpc/panel_cuentas_resumen':
         return json(RESUMEN_CUENTAS);
+      case '/rest/v1/rpc/panel_censo':
+        return json(CENSO);
+      case '/rest/v1/rpc/panel_censo_personas':
+        llamadas.censo.push(peticion.postDataJSON() as Record<string, unknown>);
+        return json({ total: 1, pagina: 1, tamano: 25, filas: [PERSONA_CENSO] });
       case '/rest/v1/rpc/panel_cuentas':
         return json({ total: 1, pagina: 1, tamano: 25, filas: [CUENTA] });
       default:
@@ -417,6 +466,69 @@ test('la ficha muestra los resultados y deja en la auditoría el contacto y la i
   await expect(page.getByText('Tratamiento de datos personales')).toBeVisible();
   await page.getByRole('tab', { name: 'Historial' }).click();
   await expect(page.getByText('Es la única aplicación de esta persona.')).toBeVisible();
+});
+
+test('el censo cuenta a cada persona una vez y muestra sus fortalezas y falencias', async ({
+  page,
+}) => {
+  const llamadas = await iniciarSesion(page);
+  await page.goto('/panel/censo');
+  await expect(page.getByRole('heading', { level: 1, name: 'Censo' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Personas en el censo' })).toBeVisible();
+  await expect(page.getByText('4 cuestionarios respondidos')).toBeVisible();
+  await expect(page.getByRole('heading', { name: '¿Quiénes son?' })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Fortalezas y falencias por área' }),
+  ).toBeVisible();
+  const lista = page.getByRole('table', { name: 'Personas del censo' });
+  await expect(lista.getByRole('link', { name: 'Ana Prueba' })).toBeVisible();
+  await expect(lista.getByText('Respondió 2 veces')).toBeVisible();
+  expect(await violacionesGraves(page)).toEqual([]);
+
+  await page
+    .getByRole('button', { name: 'Ver quiénes tienen «Bienestar emocional» como falencia' })
+    .click();
+  await expect(page).toHaveURL(/area=bienestar_emocional&nivel=requiere_atencion/);
+  await expect(page.getByText('Personas con «Bienestar emocional» como falencia.')).toBeVisible();
+  expect(llamadas.censo.at(-1)).toMatchObject({
+    p_area: 'bienestar_emocional',
+    p_nivel: 'requiere_atencion',
+  });
+
+  await lista.getByRole('link', { name: 'Ana Prueba' }).click();
+  await expect(page).toHaveURL(new RegExp(`/panel/registros/${FILA.id}/fortalezas$`));
+  await expect(page.getByRole('heading', { name: 'Falencias (1)' })).toBeVisible();
+  await page.getByRole('link', { name: 'Volver al censo' }).click();
+  await expect(page).toHaveURL(/\/panel\/censo\?area=bienestar_emocional/);
+});
+
+test('fortalezas y falencias agrupa las preguntas de una persona y deja la impresión en la auditoría', async ({
+  page,
+}) => {
+  const llamadas = await iniciarSesion(page);
+  await page.goto(`/panel/registros/${FILA.id}`);
+  await page.getByRole('link', { name: 'Ver fortalezas y falencias' }).click();
+  await expect(page.getByRole('heading', { level: 1, name: 'Ana Prueba' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Falencias (1)' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Por fortalecer (1)' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Fortalezas (0)' })).toBeVisible();
+  await expect(page.getByText('Ninguna área quedó en «adecuado».')).toBeVisible();
+
+  const falencia = page.getByRole('article', { name: 'Bienestar emocional' });
+  await expect(falencia.getByText('una sensación general de tranquilidad')).toBeVisible();
+  await expect(falencia.getByText('No o presenta dificultades')).toBeVisible();
+  await falencia.getByText('Orientación que recibió').click();
+  await expect(falencia.locator('details p')).toBeVisible();
+  expect(await violacionesGraves(page)).toEqual([]);
+
+  await page.getByRole('button', { name: 'Imprimir', exact: true }).click();
+  await expect
+    .poll(() => page.evaluate(() => (window as unknown as { impresiones?: number }).impresiones))
+    .toBe(1);
+  expect(llamadas.impresion).toBe(1);
+
+  await page.getByRole('link', { name: 'Volver a la ficha' }).click();
+  await expect(page).toHaveURL(new RegExp(`/panel/registros/${FILA.id}$`));
 });
 
 test('prioritarios muestra los casos pendientes con los días sin gestión', async ({ page }) => {

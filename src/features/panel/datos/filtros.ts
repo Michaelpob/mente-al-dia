@@ -2,7 +2,9 @@ import { areas } from '@/content/v1/areas';
 import type { AreaId, Modulo, Nivel } from '@/types/dominio';
 import {
   ORDENES,
+  ORDENES_CENSO,
   type EstadoSeguimiento,
+  type FiltrosPersonasCenso,
   type FiltrosRegistros,
   type FiltrosTablero,
   type OrdenRegistros,
@@ -195,4 +197,75 @@ export function hayFiltros(f: FiltrosRegistros): boolean {
     f.prioridad !== null ||
     f.estado,
   );
+}
+
+// ---------------------------------------------------------------------------------- censo
+
+/** Por defecto el censo cuenta todo el historial, con quien tiene más falencias primero. */
+export const CENSO_POR_DEFECTO: FiltrosPersonasCenso = {
+  desde: null,
+  hasta: null,
+  modulo: null,
+  lugar: null,
+  q: '',
+  area: null,
+  nivel: null,
+  orden: 'falencias',
+  pagina: 1,
+  tamano: 25,
+};
+
+export function leerFiltrosCenso(params: URLSearchParams): FiltrosPersonasCenso {
+  const d = CENSO_POR_DEFECTO;
+  let desde = fechaValida(params.get('desde'));
+  let hasta = fechaValida(params.get('hasta'));
+  if (desde && hasta && desde > hasta) [desde, hasta] = [hasta, desde];
+  const area = elegir(params.get('area'), AREAS);
+  const nivel = elegir(params.get('nivel'), NIVELES);
+  const pagina = Number.parseInt(params.get('pagina') ?? '', 10);
+  const tamano = Number.parseInt(params.get('tamano') ?? '', 10);
+  return {
+    desde,
+    hasta,
+    modulo: elegir(params.get('modulo'), MODULOS),
+    lugar: textoLimpio(params.get('lugar')),
+    q: textoLimpio(params.get('q')) ?? '',
+    // Como en la base, el área solo filtra junto con un nivel.
+    area: area && nivel ? area : null,
+    nivel: area && nivel ? nivel : null,
+    orden: elegir(params.get('orden'), ORDENES_CENSO) ?? d.orden,
+    pagina: Number.isFinite(pagina) && pagina >= 1 ? pagina : d.pagina,
+    tamano: (TAMANOS as readonly number[]).includes(tamano) ? tamano : d.tamano,
+  };
+}
+
+/** Periodos del censo: todo el historial o los últimos días que terminan hoy. */
+export const PERIODOS_CENSO = [30, 90, 365] as const;
+
+/** El periodo del censo que coincide con las fechas: «todo», uno predefinido o «personalizado». */
+export function periodoCensoDe(
+  f: Pick<FiltrosPersonasCenso, 'desde' | 'hasta'>,
+  hoy: string,
+): 'todo' | (typeof PERIODOS_CENSO)[number] | 'personalizado' {
+  if (!f.desde && !f.hasta) return 'todo';
+  if (f.hasta !== hoy) return 'personalizado';
+  return PERIODOS_CENSO.find((n) => f.desde === sumarDias(hoy, 1 - n)) ?? 'personalizado';
+}
+
+export function escribirFiltrosCenso(f: FiltrosPersonasCenso): URLSearchParams {
+  const d = CENSO_POR_DEFECTO;
+  const p = new URLSearchParams();
+  if (f.desde) p.set('desde', f.desde);
+  if (f.hasta) p.set('hasta', f.hasta);
+  if (f.modulo) p.set('modulo', f.modulo);
+  if (f.lugar) p.set('lugar', f.lugar);
+  if (f.q.trim()) p.set('q', f.q.trim());
+  if (f.area && f.nivel) {
+    p.set('area', f.area);
+    p.set('nivel', f.nivel);
+  }
+  if (f.orden !== d.orden) p.set('orden', f.orden);
+  if (f.pagina !== d.pagina) p.set('pagina', String(f.pagina));
+  if (f.tamano !== d.tamano) p.set('tamano', String(f.tamano));
+  return p;
 }

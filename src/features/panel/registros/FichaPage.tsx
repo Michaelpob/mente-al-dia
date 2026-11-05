@@ -1,8 +1,9 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Eye, Flag, Printer } from 'lucide-react';
+import { ArrowLeft, Eye, Flag, ListChecks, Printer } from 'lucide-react';
 import { Link, useLocation, useParams } from 'react-router';
 import { PageMeta } from '@/components/layout/page';
 import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button-variants';
 import { Card } from '@/components/ui/card';
 import { Callout } from '@/components/ui/feedback';
 import { NivelBadge } from '@/components/ui/nivel-badge';
@@ -84,15 +85,24 @@ export default function FichaPage() {
               ) : null}
             </div>
           </div>
-          <Button
-            variant="secundario"
-            onClick={() => impresion.mutate()}
-            disabled={impresion.isPending}
-            className="print:hidden"
-          >
-            <Printer aria-hidden className="size-4" />
-            {impresion.isPending ? t.imprimiendo : t.imprimir}
-          </Button>
+          <div className="flex flex-wrap items-center gap-3 print:hidden">
+            <Link
+              to={`/panel/registros/${ficha.id}/fortalezas`}
+              state={{ volver: `/panel/registros/${ficha.id}` }}
+              className={buttonVariants({ variant: 'primario' })}
+            >
+              <ListChecks aria-hidden className="size-4" />
+              {t.verFortalezas}
+            </Link>
+            <Button
+              variant="secundario"
+              onClick={() => impresion.mutate()}
+              disabled={impresion.isPending}
+            >
+              <Printer aria-hidden className="size-4" />
+              {impresion.isPending ? t.imprimiendo : t.imprimir}
+            </Button>
+          </div>
         </div>
         {impresion.isError ? <Callout variant="apoyo">{t.errorImprimir}</Callout> : null}
 

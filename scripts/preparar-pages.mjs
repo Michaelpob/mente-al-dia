@@ -34,6 +34,7 @@ const RUTAS = [
   'cuenta/nueva-contrasena',
   'panel',
   'panel/registros',
+  'panel/censo',
   'panel/prioritarios',
   'panel/cuentas',
   'panel/seguimiento',

@@ -1,9 +1,13 @@
 import { supabase } from '@/lib/supabase/cliente';
 import type {
+  Censo,
   DatosContacto,
   Ficha,
+  FiltrosCenso,
+  FiltrosPersonasCenso,
   FiltrosRegistros,
   FiltrosTablero,
+  PaginaCenso,
   PaginaCuentas,
   PaginaRegistros,
   Prioritario,
@@ -81,6 +85,32 @@ export async function registrarImpresion(id: string): Promise<void> {
 /** Cuentas públicas (D-77): totales, actividad y cuentas nuevas por semana. */
 export function obtenerResumenCuentas(): Promise<ResumenCuentas> {
   return rpc('panel_cuentas_resumen');
+}
+
+/** Censo (D-83): quiénes respondieron y cómo están en cada área, una vez por persona. */
+export function obtenerCenso(f: FiltrosCenso): Promise<Censo> {
+  return rpc('panel_censo', {
+    p_desde: f.desde,
+    p_hasta: f.hasta,
+    p_modulo: f.modulo,
+    p_lugar: f.lugar,
+  });
+}
+
+/** Lista del censo: una fila por persona con sus fortalezas y falencias. */
+export function obtenerPersonasCenso(f: FiltrosPersonasCenso): Promise<PaginaCenso> {
+  return rpc('panel_censo_personas', {
+    p_desde: f.desde,
+    p_hasta: f.hasta,
+    p_modulo: f.modulo,
+    p_lugar: f.lugar,
+    p_busqueda: f.q.trim() || null,
+    p_area: f.area,
+    p_nivel: f.nivel,
+    p_orden: f.orden,
+    p_pagina: f.pagina,
+    p_tamano: f.tamano,
+  });
 }
 
 export function obtenerCuentas(busqueda: string, pagina: number): Promise<PaginaCuentas> {

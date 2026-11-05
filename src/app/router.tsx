@@ -31,6 +31,8 @@ const TableroPage = lazy(() => import('@/features/panel/tablero/TableroPage'));
 const RegistrosPage = lazy(() => import('@/features/panel/registros/RegistrosPage'));
 const FichaPage = lazy(() => import('@/features/panel/registros/FichaPage'));
 const PrioritariosPage = lazy(() => import('@/features/panel/prioritarios/PrioritariosPage'));
+const CensoPage = lazy(() => import('@/features/panel/censo/CensoPage'));
+const FortalezasPage = lazy(() => import('@/features/panel/censo/FortalezasPage'));
 const PanelSesion = lazy(() => import('@/features/panel/acceso/PanelSesion'));
 const IngresoPanelPage = lazy(() => import('@/features/panel/acceso/IngresoPanelPage'));
 const DefinirContrasenaPage = lazy(() => import('@/features/panel/acceso/DefinirContrasenaPage'));
@@ -88,6 +90,8 @@ const routes: RouteObject[] = [
               { index: true, element: <TableroPage /> },
               { path: 'registros', element: <RegistrosPage /> },
               { path: 'registros/:id', element: <FichaPage /> },
+              { path: 'registros/:id/fortalezas', element: <FortalezasPage /> },
+              { path: 'censo', element: <CensoPage /> },
               { path: 'prioritarios', element: <PrioritariosPage /> },
               { path: 'cuentas', element: <CuentasPage /> },
               { path: 'seguimiento', element: <EnConstruccion pagina="panelSeguimiento" /> },

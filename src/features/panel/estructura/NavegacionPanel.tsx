@@ -8,6 +8,7 @@ import {
   Settings,
   Table2,
   Users,
+  UsersRound,
   type LucideIcon,
 } from 'lucide-react';
 import { NavLink } from 'react-router';
@@ -28,6 +29,7 @@ interface Seccion {
 const SECCIONES: readonly Seccion[] = [
   { to: '/panel', etiqueta: t.tablero, Icono: LayoutDashboard, fin: true },
   { to: '/panel/registros', etiqueta: t.registros, Icono: Table2 },
+  { to: '/panel/censo', etiqueta: t.censo, Icono: UsersRound },
   { to: '/panel/prioritarios', etiqueta: t.prioritarios, Icono: Flag },
   { to: '/panel/cuentas', etiqueta: t.cuentas, Icono: Contact },
   { to: '/panel/seguimiento', etiqueta: t.seguimiento, Icono: ClipboardList, fase9: true },
