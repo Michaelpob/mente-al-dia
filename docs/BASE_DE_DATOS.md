@@ -102,7 +102,7 @@ BD_PRUEBAS_URL=postgres://postgres@localhost:5432/postgres corepack pnpm test:bd
 
 La base `mente_al_dia_pruebas` se borra y se vuelve a crear en cada ejecución.
 
-Sin PostgreSQL local, una migración nueva y sus pruebas se pueden correr en el proyecto enlazado sin dejar rastro (D-72): `node scripts/bd/probar-en-proyecto.mjs supabase/migrations/<nueva>.sql supabase/tests/<prueba>.sql`. Todo va en un bloque que termina con un error a propósito y se deshace; solo vuelve la salida TAP. Para medir con volumen, se agrega `scripts/bd/datos-ficticios.sql` (10.000 aplicaciones inventadas, solo desarrollo) en la misma llamada.
+Sin PostgreSQL local, una migración nueva y sus pruebas se pueden correr en el proyecto enlazado sin dejar rastro (D-72): `node scripts/bd/probar-en-proyecto.mjs supabase/migrations/<nueva>.sql supabase/tests/<prueba>.sql`. Todo va en un bloque que termina con un error a propósito y se deshace; solo vuelve la salida TAP. Las pruebas que guardan aplicaciones (`01`, `02` y `03`) llevan antes `scripts/bd/codigos-de-prueba.sql`, que les da códigos MD-900001… de una secuencia temporal para no gastar los números de los casos reales; todas miran solo sus propios datos, así que corren con la base real. Por ejemplo: `node scripts/bd/probar-en-proyecto.mjs scripts/bd/codigos-de-prueba.sql supabase/tests/01_permisos_y_auditoria.test.sql`. Para medir con volumen, se agrega `scripts/bd/datos-ficticios.sql` (10.000 aplicaciones inventadas, solo desarrollo) en la misma llamada.
 
 ## Al cambiar el motor o el contenido
 

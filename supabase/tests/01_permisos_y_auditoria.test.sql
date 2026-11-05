@@ -1,5 +1,6 @@
 -- Permisos por rol, cálculo guardado por el servidor y auditoría (Fase 4).
--- Se ejecuta con `supabase test db` o, sin Docker, con `corepack pnpm test:bd`.
+-- Se ejecuta con `supabase test db` o, sin Docker, con `corepack pnpm test:bd`. Solo mira sus propios
+-- datos, así que también corre en el proyecto real (D-72), con códigos de prueba para no gastar los reales.
 begin;
 create extension if not exists pgtap with schema extensions;
 select plan(68);
@@ -84,31 +85,35 @@ select throws_ok(
 );
 reset role;
 grant select on registradas to anon, authenticated, service_role;
+-- Los reportes de esta prueba miran una semana del año 2000, donde no hay casos reales.
+update public.aplicaciones set creado_en = '2000-01-05 12:00:00-05' where id in (select id from registradas);
 
 select is((select count(*) from registradas), 2::bigint, 'El servidor registra las dos aplicaciones');
 select matches((select min(codigo) from registradas), '^MD-[0-9]{4,}$', 'Cada aplicación recibe un código MD-0000');
 select is(
-  (select estado_seguimiento::text from public.aplicaciones where prioridad),
+  (select estado_seguimiento::text from public.aplicaciones where prioridad and id in (select id from registradas)),
   'pendiente',
   'Una aplicación prioritaria entra en seguimiento como «pendiente»'
 );
 select is(
-  (select estado_seguimiento from public.aplicaciones where not prioridad),
+  (select estado_seguimiento from public.aplicaciones where not prioridad and id in (select id from registradas)),
   null,
   'Una aplicación no prioritaria no entra en seguimiento'
 );
 select is(
-  (select lugar_residencia from public.aplicaciones where modulo = 'nino'),
+  (select lugar_residencia from public.aplicaciones where modulo = 'nino' and id in (select id from registradas)),
   'Zona rural',
   'En el módulo infantil el lugar se toma del adulto responsable'
 );
 select is(
-  (select count(*) from public.consentimientos),
+  (select count(*) from public.consentimientos
+   where participante_id in (select participante_id from public.aplicaciones where id in (select id from registradas))),
   5::bigint,
   'Se guardan las autorizaciones de cada participante con su versión'
 );
 select is(
-  (select count(*) from public.auditoria where accion = 'crear' and entidad = 'aplicaciones' and actor_rol = 'sistema'),
+  (select count(*) from public.auditoria where accion = 'crear' and entidad = 'aplicaciones' and actor_rol = 'sistema'
+     and entidad_id in (select codigo from registradas)),
   2::bigint,
   'Cada aplicación registrada queda en la auditoría como acción del sistema'
 );
@@ -161,7 +166,7 @@ select set_config('request.jwt.claims', (select valor from claims where nombre =
 select is((select count(*) from public.aplicaciones), 0::bigint, 'El rol consulta no ve registros individuales');
 -- Con solo 2 registros, todo queda como grupo pequeño (ver 02_reportes_y_conservacion).
 select results_eq(
-  $$select grupos_pequenos, total from public.reporte_agregado(current_date - 30, current_date)$$,
+  $$select grupos_pequenos, total from public.reporte_agregado('2000-01-01', '2000-01-31')$$,
   $$values (true, null::bigint)$$,
   'El rol consulta ve el reporte agregado, sin detalle de los grupos pequeños'
 );
@@ -177,20 +182,21 @@ select is((select count(*) from public.reglas_resultados), 1::bigint, 'El rol co
 
 -- ----------------------------------------------------------------------------- profesional
 select set_config('request.jwt.claims', (select valor from claims where nombre = 'prof'), true);
-select is((select count(*) from public.aplicaciones), 2::bigint, 'Un profesional con doble factor ve las aplicaciones');
+select is((select count(*) from public.aplicaciones where id in (select id from registradas)), 2::bigint, 'Un profesional con doble factor ve las aplicaciones');
 select throws_ok($$select * from public.participantes$$, '42501', null, 'Un profesional no lee participantes directamente');
 select throws_ok($$select * from public.consentimientos$$, '42501', null, 'Un profesional no lee consentimientos directamente');
 select is(
-  public.ver_datos_contacto((select id from public.aplicaciones where modulo = 'adulto'), 'Primer contacto') ->> 'correo',
+  public.ver_datos_contacto((select id from public.aplicaciones where modulo = 'adulto' and id in (select id from registradas)), 'Primer contacto') ->> 'correo',
   'persona@correo.co',
   'Un profesional ve los datos de contacto con ver_datos_contacto'
 );
 select is((select count(*) from public.auditoria), 0::bigint, 'Un profesional no lee la auditoría');
-select is((select count(*) from public.perfiles), 4::bigint, 'Un profesional ve los nombres del equipo');
+select is((select count(*) from public.perfiles where id::text like '00000000-0000-0000-0000-00000000000_'), 4::bigint,
+  'Un profesional ve los nombres del equipo');
 
-update public.aplicaciones set estado_seguimiento = 'en_contacto' where prioridad;
+update public.aplicaciones set estado_seguimiento = 'en_contacto' where prioridad and id in (select id from registradas);
 select is(
-  (select estado_seguimiento::text from public.aplicaciones where prioridad),
+  (select estado_seguimiento::text from public.aplicaciones where prioridad and id in (select id from registradas)),
   'en_contacto',
   'Un profesional cambia el estado del seguimiento'
 );
@@ -199,20 +205,20 @@ select throws_ok(
   '42501', null, 'Nadie del panel puede cambiar el resultado oficial'
 );
 select throws_ok(
-  $$update public.aplicaciones set asignado_a = '00000000-0000-0000-0000-000000000003' where prioridad$$,
+  $$update public.aplicaciones set asignado_a = '00000000-0000-0000-0000-000000000003' where prioridad and id in (select id from registradas)$$,
   '23514', null, 'No se asigna un caso a una cuenta de consulta'
 );
-update public.aplicaciones set asignado_a = '00000000-0000-0000-0000-000000000002' where not prioridad;
+update public.aplicaciones set asignado_a = '00000000-0000-0000-0000-000000000002' where not prioridad and id in (select id from registradas);
 select is(
-  (select estado_seguimiento::text from public.aplicaciones where not prioridad),
+  (select estado_seguimiento::text from public.aplicaciones where not prioridad and id in (select id from registradas)),
   'pendiente',
   'Asignar un caso sin seguimiento lo deja en «pendiente»'
 );
 
 insert into public.notas_seguimiento (aplicacion_id, texto)
-select id, 'Se realizó el primer contacto telefónico.' from public.aplicaciones where prioridad;
+select id, 'Se realizó el primer contacto telefónico.' from public.aplicaciones where prioridad and id in (select id from registradas);
 select is(
-  (select autor_id from public.notas_seguimiento),
+  (select autor_id from public.notas_seguimiento where aplicacion_id in (select id from registradas)),
   '00000000-0000-0000-0000-000000000002'::uuid,
   'Las notas quedan a nombre de quien las escribe'
 );
@@ -275,7 +281,7 @@ select throws_ok(
   '22023', null, 'El reporte nominal exige un motivo'
 );
 select is(
-  (select count(*) from public.reporte_nominal(current_date - 30, current_date, 'Solicitud de la Secretaría de Salud')),
+  (select count(*) from public.reporte_nominal('2000-01-01', '2000-01-31', 'Solicitud de la Secretaría de Salud')),
   2::bigint,
   'El superadministrador genera el reporte nominal'
 );
@@ -303,12 +309,14 @@ select is(
   'La auditoría registra la nota sin copiar su texto'
 );
 select is(
-  (select (detalle ->> 'registros')::int from public.auditoria where accion = 'reporte_nominal'),
+  (select (detalle ->> 'registros')::int from public.auditoria
+   where accion = 'reporte_nominal' and actor_id = '00000000-0000-0000-0000-000000000001'),
   2,
   'El reporte nominal queda en la auditoría con el número de registros'
 );
 select is(
-  (select count(*) from public.auditoria where entidad = 'reglas_resultados' and actor_rol = 'superadministrador'),
+  (select count(*) from public.auditoria where entidad = 'reglas_resultados' and actor_rol = 'superadministrador'
+     and actor_id = '00000000-0000-0000-0000-000000000001'),
   3::bigint,
   'Crear y activar reglas queda en la auditoría'
 );
@@ -333,12 +341,13 @@ select is(
 set local role service_role;
 select is(public.purgar_datos_vencidos(), 0, 'Sin tiempo de conservación definido no se borra nada');
 reset role;
-update public.participantes set creado_en = now() - interval '2 years' where modulo = 'adulto';
+update public.participantes set creado_en = now() - interval '2 years'
+where modulo = 'adulto' and id in (select participante_id from public.aplicaciones where id in (select id from registradas));
 update public.configuracion set valor = '12' where clave = 'retencion_meses';
 set local role service_role;
 select is(public.purgar_datos_vencidos(), 1, 'Se borran los datos que superan el tiempo de conservación');
 reset role;
-select is((select count(*) from public.aplicaciones), 1::bigint, 'Con los datos personales se borra su aplicación');
+select is((select count(*) from public.aplicaciones where id in (select id from registradas)), 1::bigint, 'Con los datos personales se borra su aplicación');
 
 select * from finish();
 rollback;

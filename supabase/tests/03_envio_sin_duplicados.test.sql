@@ -1,8 +1,14 @@
 -- Envío del cuestionario sin duplicados con la clave de envío (D-50).
--- Se ejecuta con `supabase test db` o, sin Docker, con `corepack pnpm test:bd`.
+-- Se ejecuta con `supabase test db` o, sin Docker, con `corepack pnpm test:bd`. Cuenta lo que agrega
+-- sobre lo que ya había, así que también corre en el proyecto real (D-72), con códigos de prueba.
 begin;
 create extension if not exists pgtap with schema extensions;
 select plan(8);
+
+-- Línea base: lo que ya hubiera en la base antes de esta prueba.
+create temporary table base_envio as
+select (select count(*) from public.participantes) as participantes,
+       (select count(*) from public.auditoria where accion = 'crear' and entidad = 'aplicaciones') as creadas;
 
 create temporary table envio (participante jsonb, consentimientos jsonb, respuestas jsonb, resultado jsonb);
 grant select on envio to service_role;
@@ -51,12 +57,13 @@ select is(
   'El reintento no guarda otra aplicación'
 );
 select is(
-  (select count(*) from public.participantes),
+  (select count(*) from public.participantes) - (select participantes from base_envio),
   4::bigint,
   'El reintento no guarda otra copia de los datos personales (4 aplicaciones, 4 participantes)'
 );
 select is(
-  (select count(*) from public.auditoria where accion = 'crear' and entidad = 'aplicaciones'),
+  (select count(*) from public.auditoria where accion = 'crear' and entidad = 'aplicaciones')
+    - (select creadas from base_envio),
   4::bigint,
   'El reintento no deja otra entrada de «crear» en la auditoría'
 );
