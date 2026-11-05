@@ -1,4 +1,3 @@
-import { sitio } from '@/config/sitio';
 import type { Nivel } from '@/types/dominio';
 
 /**
@@ -19,7 +18,7 @@ export interface PaginaInfo {
 const paginas = {
   inicio: {
     titulo: 'Mente al Día',
-    descripcion: `Plataforma de orientación y bienestar emocional de la Alcaldía de ${sitio.municipio}.`,
+    descripcion: 'Plataforma de orientación y bienestar emocional, gratuita y confidencial.',
     fase: 3,
     indexable: true,
   },
@@ -43,7 +42,7 @@ const paginas = {
   },
   privacidad: {
     titulo: 'Política de tratamiento de datos',
-    descripcion: 'Aquí estará la política de tratamiento de datos personales de la Alcaldía.',
+    descripcion: 'Aquí estará la política de tratamiento de datos personales de Mente al Día.',
     fase: 5,
     indexable: true,
   },
@@ -62,7 +61,7 @@ const paginas = {
   },
   panel: {
     titulo: 'Panel de administración',
-    descripcion: 'Espacio privado de la administración de la Alcaldía.',
+    descripcion: 'Espacio privado de la administración de Mente al Día.',
     fase: 8,
     indexable: false,
   },
@@ -103,7 +102,6 @@ export type PaginaId = keyof typeof paginas;
 export const textos = {
   sitio: {
     nombre: 'Mente al Día',
-    alcaldia: `Alcaldía de ${sitio.municipio}`,
     avisoOrientacion:
       'Mente al Día es una herramienta de orientación. No reemplaza la atención profesional ni los servicios de emergencia.',
     tituloPagina: (titulo: string) =>
@@ -137,11 +135,6 @@ export const textos = {
     lineasAyuda: 'Líneas de ayuda',
     lineasAyudaCorto: 'Ayuda',
     accesibilidad: 'Accesibilidad',
-  },
-
-  logoAlcaldia: {
-    marcador: '[LOGO ALCALDÍA]',
-    alternativo: `Logo de la Alcaldía de ${sitio.municipio}`,
   },
 
   lineasAyuda: {
@@ -179,20 +172,14 @@ export const textos = {
   },
 
   pie: {
-    contacto: 'Contacto',
-    correo: 'Correo',
-    telefono: 'Teléfono',
+    descripcion:
+      'Orientación y bienestar emocional para niñas, niños, adolescentes y personas adultas. Gratuita y confidencial.',
     informacion: 'Información',
     politica: 'Política de tratamiento de datos',
     terminos: 'Términos y condiciones',
     accesibilidad: 'Declaración de accesibilidad',
     mapa: 'Mapa del sitio',
-    derechos: (anio: number) => `© ${anio} Alcaldía de ${sitio.municipio}`,
-  },
-
-  govco: {
-    barraSuperior: 'Espacio reservado para la barra superior GOV.CO',
-    pie: 'Espacio reservado para el pie GOV.CO',
+    derechos: (anio: number) => `© ${anio} Mente al Día`,
   },
 
   niveles: {

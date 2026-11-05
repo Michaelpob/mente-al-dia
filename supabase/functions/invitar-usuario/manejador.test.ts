@@ -37,7 +37,7 @@ function dependencias(perfil: PerfilSesion | null = SUPER, cambios: Partial<Depe
 }
 
 const invitacion = {
-  correo: 'Nueva@Alcaldia.gov.co',
+  correo: 'Nueva@Ejemplo.org',
   nombre: 'Administradora Nueva',
   rol: 'superadministrador',
 };
@@ -56,9 +56,9 @@ Deno.test('el superadministrador con doble factor invita y queda como actor', as
   const { deps, llamadas } = dependencias();
   const respuesta = await crearManejador(deps)(pedir());
   assertEquals(respuesta.status, 201);
-  assertEquals(llamadas.invitados, ['nueva@alcaldia.gov.co']);
+  assertEquals(llamadas.invitados, ['nueva@ejemplo.org']);
   assertEquals(llamadas.perfiles, [
-    { actor: 'super', id: 'nuevo', ...invitacion, correo: 'nueva@alcaldia.gov.co' },
+    { actor: 'super', id: 'nuevo', ...invitacion, correo: 'nueva@ejemplo.org' },
   ]);
 });
 

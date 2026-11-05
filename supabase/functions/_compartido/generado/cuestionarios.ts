@@ -281,17 +281,146 @@ export const cuestionarioNino: Cuestionario = {
 export const instruccionesNinoOriginal =
   'Lee cada pregunta con atención y marca con una “X” la respuesta que más se parezca a lo que has vivido durante las últimas semanas.';
 
-/** Módulo PREPARADO y DESACTIVADO: sin cuestionario validado. No se inventan preguntas. */
+/** Preguntas y opciones: DOCUMENTO BASE (sección 6.2). Instrucciones: BORRADOR. */
 export const cuestionarioAdolescente: Cuestionario = {
   modulo: 'adolescente',
   version: '1.0',
-  estado: 'borrador',
-  fuente: 'propuesta',
-  activo: false,
-  edad: '12 a 17 años',
-  instrucciones: { texto: '', estado: 'borrador' },
-  opciones: [],
-  preguntas: [],
+  estado: 'validado',
+  fuente: 'documento base',
+  activo: true,
+  edad: '12 a 17 años, con autorización de un adulto responsable',
+  instrucciones: {
+    texto:
+      'Responde pensando en cómo te has sentido durante las últimas semanas. No hay respuestas correctas o incorrectas. Si prefieres no contestar alguna pregunta, puedes elegir «Prefiero no responder».',
+    estado: 'borrador',
+  },
+  opciones: [
+    { valor: 'si', etiqueta: 'Sí' },
+    { valor: 'a_veces', etiqueta: 'Algunas veces o parcialmente' },
+    { valor: 'no', etiqueta: 'No o presenta dificultades' },
+    { valor: 'prefiero_no_responder', etiqueta: 'Prefiero no responder' },
+  ],
+  preguntas: [
+    {
+      numero: 1,
+      areaId: 'bienestar_emocional',
+      texto:
+        '¿Durante las últimas semanas, te has sentido tranquilo/a y has podido manejar tus emociones en tu vida diaria?',
+    },
+    {
+      numero: 2,
+      areaId: 'sueno_descanso',
+      texto: '¿Has podido dormir lo suficiente y descansar bien durante las noches?',
+    },
+    {
+      numero: 3,
+      areaId: 'energia_vitalidad',
+      texto:
+        '¿Has tenido suficiente energía para estudiar, compartir con tus amigos y realizar tus actividades diarias?',
+    },
+    {
+      numero: 4,
+      areaId: 'motivacion_interes',
+      texto:
+        '¿Has sentido ganas de hacer las cosas que te gustan, como practicar un deporte, escuchar música o compartir con otras personas?',
+    },
+    {
+      numero: 5,
+      areaId: 'manejo_estres',
+      texto:
+        '¿Has podido manejar las preocupaciones, las tareas escolares y otras situaciones que te generan estrés?',
+    },
+    {
+      numero: 6,
+      areaId: 'red_apoyo',
+      texto:
+        '¿Tienes una persona de confianza, como un familiar, amigo, docente u orientador, con quien puedas hablar cuando te sientes mal?',
+    },
+    {
+      numero: 7,
+      areaId: 'relaciones_interpersonales',
+      texto:
+        '¿Sientes que tus relaciones con tu familia, amigos y otras personas son positivas y te hacen sentir bien?',
+    },
+    {
+      numero: 8,
+      areaId: 'valoracion_respeto',
+      texto:
+        '¿Sientes que las personas de tu entorno te respetan, te valoran y te tratan adecuadamente?',
+    },
+    {
+      numero: 9,
+      areaId: 'concentracion',
+      texto:
+        '¿Has podido concentrarte en tus clases, tareas y otras actividades sin que las preocupaciones te lo dificulten demasiado?',
+    },
+    {
+      numero: 10,
+      areaId: 'afrontamiento_dificultades',
+      texto:
+        '¿Sientes que puedes buscar soluciones cuando tienes un problema en casa, en el colegio o con tus amigos?',
+    },
+    {
+      numero: 11,
+      areaId: 'regulacion_emocional',
+      texto:
+        'Cuando sientes tristeza, enojo, miedo o frustración, ¿puedes expresar y manejar esas emociones sin hacerte daño ni lastimar a otras personas?',
+    },
+    {
+      numero: 12,
+      areaId: 'actividad_fisica_recreacion',
+      texto:
+        '¿Dedicas tiempo a realizar actividades que disfrutas, como hacer ejercicio, jugar, bailar, dibujar o compartir con tus amigos?',
+    },
+    {
+      numero: 13,
+      areaId: 'equilibrio_responsabilidades_descanso',
+      texto:
+        '¿Tienes tiempo suficiente para cumplir con tus responsabilidades escolares y personales, descansar y hacer cosas que disfrutas?',
+    },
+    {
+      numero: 14,
+      areaId: 'seguridad_entorno',
+      texto:
+        '¿Te sientes seguro/a en tu casa, en el colegio y en los lugares donde compartes habitualmente con otras personas?',
+    },
+    {
+      numero: 15,
+      areaId: 'perspectiva_futuro',
+      texto:
+        '¿Sientes tranquilidad y confianza al pensar en tu futuro, tus estudios y las metas que te gustaría alcanzar?',
+    },
+    {
+      numero: 16,
+      areaId: 'proposito_sentido_vida',
+      texto:
+        '¿Tienes sueños, metas o actividades que te motivan y te hacen sentir que tu vida es importante?',
+    },
+    {
+      numero: 17,
+      areaId: 'afrontamiento_consumo_sustancias',
+      texto:
+        '¿Has evitado consumir alcohol, cigarrillos electrónicos o sustancias psicoactivas para intentar sentirte mejor cuando tienes problemas o emociones difíciles?',
+    },
+    {
+      numero: 18,
+      areaId: 'busqueda_ayuda',
+      texto:
+        'Cuando tienes un problema que no puedes resolver por tu cuenta, ¿te sientes capaz de pedir ayuda a una persona de confianza?',
+    },
+    {
+      numero: 19,
+      areaId: 'funcionamiento_cotidiano',
+      texto:
+        'Aunque tengas preocupaciones o te sientas triste, ¿has podido continuar con tus actividades diarias, asistir a clases y cuidar de ti mismo/a?',
+    },
+    {
+      numero: 20,
+      areaId: 'bienestar_psicologico_general',
+      texto:
+        'En general, ¿sientes que estás bien emocionalmente y que cuentas con el apoyo y las herramientas necesarias para afrontar las situaciones de tu vida?',
+    },
+  ],
 };
 
 export const cuestionarios: Record<Modulo, Cuestionario> = {

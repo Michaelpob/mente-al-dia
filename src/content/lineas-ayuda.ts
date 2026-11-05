@@ -1,6 +1,6 @@
 /**
  * Líneas de ayuda: valores iniciales del Anexo F.4 (mente-al-dia-contenido.json).
- * ESTADO: EJEMPLO. Confirmar con la Secretaría de Salud antes del lanzamiento.
+ * ESTADO: EJEMPLO. Confirmar con el equipo profesional antes del lanzamiento.
  * En la Fase 4 pasan a la tabla de configuración y se editan desde el panel.
  */
 export type EstadoLinea = 'verificada' | 'completar' | 'opcional';
@@ -20,7 +20,7 @@ export interface LineaAyuda {
 export const lineasAyudaMeta = {
   version: '1.0',
   fuente: 'ejemplo',
-  nota: 'Valores de ejemplo para Colombia; confirmar con la Secretaría de Salud antes del lanzamiento.',
+  nota: 'Valores de ejemplo para Colombia; confirmar con el equipo profesional antes del lanzamiento.',
 } as const;
 
 export const lineasAyuda: readonly LineaAyuda[] = [
@@ -62,7 +62,7 @@ export const lineasAyuda: readonly LineaAyuda[] = [
     horario: '[COMPLETAR]',
     cobertura: '[MUNICIPIO]',
     estado: 'completar',
-    activa: true,
+    activa: false,
   },
   {
     id: 'linea-106',
@@ -82,7 +82,7 @@ export const lineasAyuda: readonly LineaAyuda[] = [
     horario: '[COMPLETAR]',
     cobertura: '[MUNICIPIO]',
     estado: 'completar',
-    activa: true,
+    activa: false,
   },
 ];
 

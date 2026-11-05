@@ -62,7 +62,7 @@ El proyecto en la nube ya existe: `mente-al-dia` (ref `lpcfrtlfiljgwxarpslf`, S�
 3. **Configurar Auth y la API** desde `supabase/config.toml`: `npx supabase@2.119.0 config diff` muestra los cambios y `config push` los aplica. `[remotes.produccion]` cambia las direcciones (Site URL y Redirect URLs) por las del sitio publicado; para otro proyecto se agrega otro bloque `[remotes.…]` con su ref. Queda así:
    - Nadie puede crear su propia cuenta (`[auth] enable_signup = false`), pero el proveedor Email está activo (`[auth.email] enable_signup = true`); con `false` nadie podría ingresar.
    - Contraseñas de 12 caracteres o más, con minúsculas, mayúsculas y números. Doble factor TOTP activo.
-   - _Emails_: para producción, configurar un SMTP propio de la Alcaldía. El de Supabase solo envía a los miembros de la organización en Supabase, con un límite muy bajo de correos por hora.
+   - _Emails_: para producción, configurar un SMTP propio (D-79). El de Supabase solo envía a los miembros de la organización en Supabase, con un límite muy bajo de correos por hora.
 4. **Publicar las funciones** y sus variables:
    ```sh
    npx supabase@2.119.0 secrets set ORIGENES_PERMITIDOS=https://michaelpob.github.io SITIO_URL=https://michaelpob.github.io/mente-al-dia
@@ -73,7 +73,7 @@ El proyecto en la nube ya existe: `mente-al-dia` (ref `lpcfrtlfiljgwxarpslf`, S�
 5. **Crear el primer superadministrador.** En _Authentication → Users_, «Invite user» con su correo. Luego, con `npx supabase@2.119.0 db query --linked "…"` o en el _SQL Editor_:
    ```sql
    insert into public.perfiles (id, nombre, rol)
-   select id, 'Nombre Apellido', 'superadministrador' from auth.users where email = 'correo@alcaldia.gov.co';
+   select id, 'Nombre Apellido', 'superadministrador' from auth.users where email = 'correo@ejemplo.org';
    ```
    La invitación del panel de Supabase lleva a la dirección del sitio, y la plataforma la pasa a `/panel/definir-contrasena`. Allí la persona define su contraseña y activa la verificación en dos pasos. Las demás cuentas las invita desde el panel (Fase 9) o con la función `invitar-usuario`.
 6. **Conectar el sitio.** `.env.production` (en el repositorio, D-67) tiene los dos valores públicos de _Project Settings → API Keys_:

@@ -24,8 +24,7 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { Card, TiltCard } from '@/components/ui/card';
-import { Eyebrow } from '@/components/ui/feedback';
+import { TiltCard } from '@/components/ui/card';
 import { MotionScope } from '@/components/ui/motion-scope';
 import { Reveal } from '@/components/ui/reveal';
 import { inicio } from '@/content/inicio';
@@ -159,7 +158,6 @@ function Hero() {
       <FondoNoche />
       <div className="contenedor grid items-center gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
         <div className="flex flex-col gap-5">
-          <Eyebrow>{textos.sitio.alcaldia}</Eyebrow>
           <h1 id="hero-titulo" className="max-w-[14ch] text-display brillo-suave">
             {h.titulo}
           </h1>
@@ -278,55 +276,30 @@ function Publicos() {
   return (
     <Seccion id="para-quien" titulo={p.titulo} texto={p.texto} alterna>
       <ul className="grid grid-cols-1 gap-5 hyphens-auto lg:grid-cols-3">
-        {grupos.map((grupo, i) => {
-          const pronto = grupo.id === 'adolescente';
-          const Tarjeta = pronto ? Card : TiltCard;
-          return (
-            <li key={grupo.id} className="h-full">
-              <Reveal index={i} className="h-full">
-                <Tarjeta
-                  className={cn(
-                    'flex h-full flex-col gap-3 p-7',
-                    pronto ? 'border-dashed border-borde-campo bg-piedra-50' : 'shadow-1',
-                  )}
+        {grupos.map((grupo, i) => (
+          <li key={grupo.id} className="h-full">
+            <Reveal index={i} className="h-full">
+              <TiltCard className="flex h-full flex-col gap-3 p-7 shadow-1">
+                <span
+                  aria-hidden
+                  className="grid size-13 place-items-center rounded-lg bg-salvia-100 text-salvia-600 [&_svg]:size-7"
                 >
-                  <span
-                    aria-hidden
-                    className={cn(
-                      'grid size-13 place-items-center rounded-lg [&_svg]:size-7',
-                      pronto ? 'bg-piedra-200 text-grafito-600' : 'bg-salvia-100 text-salvia-600',
-                    )}
+                  <grupo.icono />
+                </span>
+                <h3 className="text-h3">{grupo.titulo}</h3>
+                <p className="flex-1 text-grafito-600">{grupo.texto}</p>
+                <Button asChild variant="secundario" size="sm" className="self-start">
+                  <Link
+                    to={`${RUTA_REGISTRO}?grupo=${grupo.id}`}
+                    aria-label={p.empezarComo(grupo.titulo)}
                   >
-                    <grupo.icono />
-                  </span>
-                  <h3 className="flex flex-wrap items-center gap-2 text-h3">
-                    {grupo.titulo}
-                    {pronto ? (
-                      <span className="rounded-pill bg-piedra-200 px-2.5 py-0.5 text-pequeno font-semibold text-grafito-900 contraste-alto:border contraste-alto:border-current">
-                        {p.proximamente}
-                      </span>
-                    ) : null}
-                  </h3>
-                  <p className="flex-1 text-grafito-600">{grupo.texto}</p>
-                  {pronto ? (
-                    <Button asChild variant="enlace" className="self-start">
-                      <Link to="/lineas-de-ayuda">{p.verLineas}</Link>
-                    </Button>
-                  ) : (
-                    <Button asChild variant="secundario" size="sm" className="self-start">
-                      <Link
-                        to={`${RUTA_REGISTRO}?grupo=${grupo.id}`}
-                        aria-label={p.empezarComo(grupo.titulo)}
-                      >
-                        {p.empezar}
-                      </Link>
-                    </Button>
-                  )}
-                </Tarjeta>
-              </Reveal>
-            </li>
-          );
-        })}
+                    {p.empezar}
+                  </Link>
+                </Button>
+              </TiltCard>
+            </Reveal>
+          </li>
+        ))}
       </ul>
     </Seccion>
   );

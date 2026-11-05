@@ -96,10 +96,23 @@ describe('Casos de prueba del Anexo G', () => {
 });
 
 describe('Validación de la entrada', () => {
-  it('rechaza un módulo desactivado (adolescentes)', () => {
-    expect(() => calcularParaModulo('adolescente', [])).toThrow(
-      'El módulo «adolescente» no está disponible.',
-    );
+  it('rechaza un módulo desactivado', () => {
+    const apagado = { ...instrumentoDe('adolescente'), activo: false };
+    expect(() =>
+      calcularResultados({
+        instrumento: apagado,
+        respuestas: respuestas('si'),
+        reglas: reglasProvisionales,
+        nombresAreas,
+      }),
+    ).toThrow('El módulo «adolescente» no está disponible.');
+  });
+
+  it('el módulo de adolescentes calcula y admite «prefiero no responder»', () => {
+    const r = calcularParaModulo('adolescente', respuestas('si', { 7: 'prefiero_no_responder' }));
+    expect(r.resultadoGeneral).toBe('favorable');
+    expect(r.conteo.sinDato).toBe(1);
+    expect(r.mensajes.sueno_descanso).toBe('adolescente.sueno_descanso.adecuado');
   });
 
   it('rechaza un área que no pertenece al cuestionario', () => {

@@ -1,6 +1,6 @@
 import { Menu } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
-import { AlcaldiaLogo, MenteAlDiaLogo } from '@/components/brand/logos';
+import { MenteAlDiaLogo } from '@/components/brand/logos';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { textos } from '@/content/textos-interfaz';
@@ -31,7 +31,6 @@ function MobileMenu() {
         </Button>
       </DrawerTrigger>
       <DrawerContent title={textos.nav.tituloMenu}>
-        <AlcaldiaLogo className="mb-6" />
         <nav aria-label={textos.nav.etiqueta}>
           <ul className="flex flex-col gap-1">
             {mainNavItems.map((item) => (
@@ -58,7 +57,7 @@ function MobileMenu() {
 }
 
 /**
- * Encabezado institucional fijo. Se compacta y toma un fondo con desenfoque al hacer scroll.
+ * Encabezado fijo. Se compacta y toma un fondo con desenfoque al hacer scroll.
  * Con el texto agrandado (barra de accesibilidad) el menú completo pasa al panel «Menú» y los
  * botones muestran su versión corta; si aun así no cabe, la fila de botones baja a una segunda línea.
  */
@@ -82,11 +81,6 @@ export function SiteHeader() {
         )}
       >
         <div className="flex min-w-0 items-center gap-3">
-          <AlcaldiaLogo className="hidden xl:inline-flex xl:texto-grande:hidden" />
-          <span
-            aria-hidden
-            className="hidden h-8 w-px bg-piedra-200 xl:block xl:texto-grande:hidden"
-          />
           <Link
             to="/"
             aria-label={textos.encabezado.irAlInicio}

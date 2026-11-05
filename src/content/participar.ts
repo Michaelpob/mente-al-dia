@@ -22,11 +22,10 @@ export const participar = {
     nino: { titulo: 'Una niña o un niño', detalle: 'De 6 a 11 años, con un adulto de confianza.' },
     adolescente: {
       titulo: 'Un adolescente',
-      detalle: 'De 12 a 17 años. Este cuestionario estará disponible pronto.',
-      insignia: 'Próximamente',
+      detalle: 'De 12 a 17 años, con la autorización de un adulto responsable.',
     },
     adulto: { titulo: 'Una persona adulta', detalle: 'De 18 años en adelante.' },
-    adolescenteAyuda: '¿Eres adolescente y necesitas apoyo ahora?',
+    ayudaAhora: '¿Necesitas apoyo ahora?',
     verLineas: 'Ver líneas de ayuda',
     falta: 'Elige quién va a responder para continuar.',
   },
@@ -35,23 +34,33 @@ export const participar = {
     adulto: {
       titulo: 'Tus datos',
       texto:
-        'Los usamos solo para que un profesional de la Alcaldía pueda contactarte si lo necesitas. Se guardan aparte de tus respuestas.',
+        'Los usamos solo para que un profesional pueda contactarte si lo necesitas. Se guardan aparte de tus respuestas.',
     },
     nino: {
       titulo: 'Datos de la niña o el niño',
       texto: 'Este cuestionario se responde junto a un adulto de confianza.',
+    },
+    adolescente: {
+      titulo: 'Tus datos',
+      texto:
+        'Como eres menor de edad, también te pedimos los datos de un adulto responsable. Tus respuestas se guardan aparte de estos datos.',
     },
     acudiente: {
       titulo: 'Datos del adulto responsable',
       texto:
         'Es quien acompaña a la niña o el niño. Si hace falta, el contacto será con esta persona.',
     },
+    acudienteAdolescente: {
+      titulo: 'Datos de tu adulto responsable',
+      texto:
+        'Tu madre, tu padre o el adulto que te cuida. Si hace falta, un profesional se comunicará con esta persona.',
+    },
     campos: {
       nombreAdulto,
       correo,
       telefono,
       lugarResidencia,
-      lugarAyuda: 'Comuna, barrio o vereda del municipio.',
+      lugarAyuda: 'Barrio, comuna o vereda donde vive.',
       nombreNino,
       edad,
       edadElegir: 'Elige la edad',
@@ -60,6 +69,11 @@ export const participar = {
       /** La etiqueta del documento base trae las opciones entre paréntesis. */
       sexo: sexoConOpciones.replace(/\s*\(.*\)\s*$/, ''),
       sexoAyuda: 'Puedes dejarla sin responder.',
+      /** Adolescentes: responden por sí mismos, en «tú» (documento base, sección 10). */
+      nombreAdolescente: 'Tu nombre completo',
+      edadAdolescente: 'Tu edad',
+      gradoAdolescente: 'Grado que cursas',
+      sexoAdolescente: '¿Con qué sexo te identificas?',
       /** El del niño y el del adulto se llamarían igual («Nombre»): este se precisa. */
       nombreAcudiente: `${nombreAcudiente} del adulto responsable`,
       parentesco,
@@ -82,6 +96,18 @@ export const participar = {
       'Sexto',
       'No está estudiando',
     ],
+    /** Pendiente 7: de 12 a 17 años; el equipo profesional valida la lista. */
+    gradosAdolescente: [
+      'Quinto',
+      'Sexto',
+      'Séptimo',
+      'Octavo',
+      'Noveno',
+      'Décimo',
+      'Undécimo',
+      'Ya terminé el colegio',
+      'No estoy estudiando',
+    ],
     obligatorios: 'Los campos con * son obligatorios.',
     revisa: 'Revisa los campos marcados para continuar.',
   },
@@ -103,13 +129,16 @@ export const participar = {
     terminos: 'Leer los términos y condiciones',
     otraPestana: '(se abre en otra pestaña)',
     tratamientoDatos:
-      'Autorizo el tratamiento de mis datos personales conforme a la política de la Alcaldía.',
+      'Autorizo el tratamiento de mis datos personales conforme a la política de tratamiento de datos.',
     datosSensibles:
       'Entiendo que mis respuestas sobre bienestar emocional son datos sensibles, que no estoy obligado(a) a responderlas y que puedo elegir «Prefiero no responder».',
     datosSensiblesNino:
       'Entiendo que las respuestas sobre bienestar emocional son datos sensibles y que la niña o el niño no está obligado(a) a responderlas.',
     autorizacionAcudiente:
       'Como adulto responsable, autorizo que la niña o el niño responda, y le pregunté si quiere hacerlo.',
+    /** Pendiente de validación jurídica: cómo autoriza el adulto cuando el adolescente responde solo. */
+    autorizacionAcudienteAdolescente:
+      'Mi madre, mi padre o el adulto responsable que registré sabe que respondo este cuestionario y autoriza el tratamiento de mis datos.',
     falta: 'Para continuar necesitamos esta autorización.',
     continuar: 'Aceptar y continuar',
   },
@@ -203,7 +232,11 @@ export const participar = {
   /** Resultados (Fase 7). BORRADOR, los mismos de la demostración. */
   resultados: {
     titulo: 'Tus resultados',
-    modulo: { adulto: 'Cuestionario de personas adultas', nino: 'Cuestionario de niñas y niños' },
+    modulo: {
+      adulto: 'Cuestionario de personas adultas',
+      adolescente: 'Cuestionario de adolescentes',
+      nino: 'Cuestionario de niñas y niños',
+    },
     orientacionNoDiagnostico: 'Orientación, no diagnóstico',
     titulosGenerales: {
       favorable: 'Tu resultado es favorable',
@@ -239,7 +272,7 @@ export const participar = {
   enviado: {
     titulo: 'Gracias por responder',
     codigo: 'Código de tu cuestionario',
-    codigoAyuda: 'Si te comunicas con la Alcaldía, menciona este código.',
+    codigoAyuda: 'Guárdalo: si hablas con un profesional de Mente al Día, menciona este código.',
     orientacion: 'Tu orientación',
     acompanante: 'Para el adulto que acompaña',
     apoyo: 'Si necesitas apoyo ahora',

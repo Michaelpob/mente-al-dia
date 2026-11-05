@@ -1,6 +1,6 @@
 # Mente al Día
 
-Plataforma web de orientación y bienestar emocional de la Alcaldía de [MUNICIPIO], liderada por [SECRETARÍA RESPONSABLE].
+Plataforma web de orientación y bienestar emocional, gratuita y confidencial, para niñas, niños, adolescentes y personas adultas.
 
 Es una página web responsiva (no es una app nativa ni una APK). Ofrece orientación y no reemplaza la atención profesional ni los servicios de emergencia.
 
@@ -61,7 +61,7 @@ scripts/        verificador de contraste, generador de contenido y publicación 
 ## Sistema visual
 
 - **Tokens:** todos están en `src/styles/tokens.css`. Para aplicar un manual de marca se cambian los valores de «Marca» ahí, sin tocar componentes, y luego se ejecuta `corepack pnpm contraste`.
-- **Datos de la Alcaldía:** los marcadores (`[MUNICIPIO]`, `[LOGO ALCALDÍA]`, contacto, GOV.CO) están en `src/config/sitio.ts`.
+- **Sin la Alcaldía:** el sitio no muestra logos, datos ni la barra GOV.CO de la Alcaldía (D-82).
 - **Textos de interfaz:** están centralizados en `src/content/textos-interfaz.ts`.
 
 ## Variables de entorno

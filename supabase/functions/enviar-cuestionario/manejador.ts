@@ -47,7 +47,8 @@ function consentimientos(envio: Envio, version: string): Record<string, string> 
   return {
     tratamiento_datos: version,
     datos_sensibles: version,
-    ...(envio.modulo === 'nino' ? { autorizacion_acudiente: version } : {}),
+    // Con un menor de edad (niña, niño o adolescente) va también la del adulto responsable.
+    ...(envio.modulo === 'adulto' ? {} : { autorizacion_acudiente: version }),
   };
 }
 

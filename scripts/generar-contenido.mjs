@@ -106,17 +106,21 @@ ${preguntas('nino')},
 /** Texto original del documento base para niñas y niños (en papel: «marca con una X»). */
 export const instruccionesNinoOriginal = ${s(fuente.instrucciones.nino.original)};
 
-/** Módulo PREPARADO y DESACTIVADO: sin cuestionario validado. No se inventan preguntas. */
+/** Preguntas y opciones: DOCUMENTO BASE (sección 6.2). Instrucciones: BORRADOR. */
 export const cuestionarioAdolescente: Cuestionario = {
   modulo: 'adolescente',
   version: ${s(VERSION)},
-  estado: 'borrador',
-  fuente: 'propuesta',
+  estado: 'validado',
+  fuente: 'documento base',
   activo: ${fuente.modulos.adolescente.activo},
   edad: ${s(fuente.modulos.adolescente.edad)},
-  instrucciones: { texto: '', estado: 'borrador' },
-  opciones: [],
-  preguntas: [],
+  instrucciones: { texto: ${s(fuente.instrucciones.adolescente.texto)}, estado: 'borrador' },
+  opciones: [
+${opciones('adolescente')},
+  ],
+  preguntas: [
+${preguntas('adolescente')},
+  ],
 };
 
 export const cuestionarios: Record<Modulo, Cuestionario> = {
@@ -155,9 +159,17 @@ export const mensajesNinoPorNivel: Record<NivelConMensaje, string> = {
   requiere_atencion: ${s(fuente.mensajes_nino_por_nivel.requiere_atencion)},
 };
 
-/** E.1 Mensaje general (adultos): DOCUMENTO BASE. E.2 Complementarios: BORRADOR. */
+/**
+ * E.1 Mensaje general (adultos): DOCUMENTO BASE. Adolescentes: el mismo mensaje general del
+ * documento base (sección 8), que no trae uno propio. E.2 Complementarios: BORRADOR.
+ */
 export const mensajesGenerales = {
   adulto: {
+    favorable: ${s(mg.adulto.favorable)},
+    por_fortalecer: ${s(mg.adulto.por_fortalecer)},
+    desafios: ${s(mg.adulto.desafios)},
+  },
+  adolescente: {
     favorable: ${s(mg.adulto.favorable)},
     por_fortalecer: ${s(mg.adulto.por_fortalecer)},
     desafios: ${s(mg.adulto.desafios)},
@@ -177,6 +189,7 @@ export const mensajesGenerales = {
 
 export const estadoMensajesGenerales = {
   adulto: ${s(estado(mg.adulto.estado))},
+  adolescente: ${s(estado(mg.adulto.estado))},
   nino: 'borrador',
   adultoAcompanante: 'borrador',
   insuficiente: 'borrador',
@@ -184,9 +197,13 @@ export const estadoMensajesGenerales = {
   sinDatoArea: 'borrador',
 } as const;
 
-/** F.1 Atención especial: DOCUMENTO BASE. F.2 Versión para niñas y niños: BORRADOR. */
+/**
+ * F.1 Atención especial: DOCUMENTO BASE (también para adolescentes, sección 9).
+ * F.2 Versión para niñas y niños: BORRADOR.
+ */
 export const mensajesAtencionEspecial = {
   adulto: ${s(fuente.atencion_especial.mensaje.texto)},
+  adolescente: ${s(fuente.atencion_especial.mensaje.texto)},
   nino: ${s(fuente.atencion_especial.mensaje_nino.texto)},
 } as const;
 

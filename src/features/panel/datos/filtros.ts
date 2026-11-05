@@ -19,7 +19,12 @@ export const PERIODOS = [7, 30, 90, 365] as const;
 export const PERIODO_POR_DEFECTO = 30;
 export const TAMANOS = [25, 50, 100] as const;
 
-const MODULOS: readonly Modulo[] = ['adulto', 'nino'];
+/** Módulos con cuestionario, en el orden de los filtros del panel. */
+export const MODULOS: readonly Modulo[] = ['adulto', 'adolescente', 'nino'];
+
+/** El módulo elegido en un filtro, o null para «Todos». */
+export const moduloDeFiltro = (valor: string): Modulo | null =>
+  MODULOS.find((m) => m === valor) ?? null;
 const RESULTADOS: readonly ResultadoGeneral[] = [
   'favorable',
   'por_fortalecer',

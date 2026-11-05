@@ -21,7 +21,7 @@ export const cuenta = {
     sinCuenta: '¿Todavía no tienes una cuenta?',
     crear: 'Crear una cuenta',
     equipo:
-      'Si eres del equipo de la Alcaldía, ingresa aquí con tu correo institucional: después te pediremos el código de verificación.',
+      'Si eres del equipo de Mente al Día, ingresa aquí con tu correo: después te pediremos el código de verificación.',
   },
 
   recuperar: {
@@ -98,7 +98,7 @@ export const cuenta = {
     cargando: 'Cargando tu cuenta…',
     error: 'No pudimos cargar tu cuenta. Revisa tu conexión e inténtalo de nuevo.',
     reintentar: 'Intentar de nuevo',
-    esEquipo: 'Esta es una cuenta del equipo de la Alcaldía.',
+    esEquipo: 'Esta es una cuenta del equipo de Mente al Día.',
     irPanel: 'Ir al panel de administración',
   },
 

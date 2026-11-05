@@ -1,6 +1,6 @@
 /**
  * Textos de demostración de la guía de estilo (herramienta interna, no se publica en producción).
- * Los ejemplos de lugares usan marcadores: la lista real la entrega la Alcaldía.
+ * Los ejemplos de lugares usan marcadores.
  */
 export const guia = {
   titulo: 'Guía de estilo',
@@ -279,6 +279,5 @@ export const guia = {
   marca: {
     completo: 'Logotipo completo',
     isotipo: 'Isotipo',
-    alcaldia: 'Logo de la Alcaldía (marcador hasta recibir el oficial)',
   },
 } as const;

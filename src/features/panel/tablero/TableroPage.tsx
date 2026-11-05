@@ -7,10 +7,12 @@ import { panel } from '@/content/panel';
 import { CampoFecha, CampoSelect, EncabezadoPanel, ErrorCarga, PaginaPanel } from '../compartido';
 import { obtenerTablero, obtenerVisitas } from '../datos/consultas';
 import {
+  MODULOS,
   PERIODOS,
   escribirFiltrosTablero,
   hoyEnColombia,
   leerFiltrosTablero,
+  moduloDeFiltro,
   periodoDe,
   sumarDias,
 } from '../datos/filtros';
@@ -87,12 +89,9 @@ export default function TableroPage() {
           valor={filtros.modulo ?? ''}
           opciones={[
             { valor: '', etiqueta: f.todos },
-            { valor: 'adulto', etiqueta: panel.modulos.adulto },
-            { valor: 'nino', etiqueta: panel.modulos.nino },
+            ...MODULOS.map((m) => ({ valor: m, etiqueta: panel.modulos[m] })),
           ]}
-          alCambiar={(valor) =>
-            cambiar({ modulo: valor === 'adulto' || valor === 'nino' ? valor : null })
-          }
+          alCambiar={(valor) => cambiar({ modulo: moduloDeFiltro(valor) })}
         />
         <CampoSelect
           etiqueta={f.lugar}

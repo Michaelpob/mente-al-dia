@@ -6,7 +6,7 @@
     "fecha": "2026-10-19",
     "notas": [
       "Los textos marcados como 'documento_base' se copian literalmente, sin modificaciones.",
-      "Los elementos marcados como 'propuesta' o 'borrador' deben ser validados por el equipo profesional de la alcaldía.",
+      "Los elementos marcados como 'propuesta' o 'borrador' deben ser validados por el equipo profesional.",
       "Las 20 preguntas de cada cuestionario corresponden, en el mismo orden, a las 20 áreas."
     ]
   },
@@ -23,9 +23,10 @@
       "rango_edad_estado": "propuesta"
     },
     "adolescente": {
-      "activo": false,
-      "edad": "12 a 17 años",
-      "estado": "pendiente: cuestionario y mensajes por diseñar y validar"
+      "activo": true,
+      "edad": "12 a 17 años, con autorización de un adulto responsable",
+      "fuente": "documento_base",
+      "rango_edad_estado": "propuesta"
     }
   },
   "opciones_respuesta": {
@@ -60,6 +61,24 @@
         "valor": "no",
         "etiqueta": "No"
       }
+    ],
+    "adolescente": [
+      {
+        "valor": "si",
+        "etiqueta": "Sí"
+      },
+      {
+        "valor": "a_veces",
+        "etiqueta": "Algunas veces o parcialmente"
+      },
+      {
+        "valor": "no",
+        "etiqueta": "No o presenta dificultades"
+      },
+      {
+        "valor": "prefiero_no_responder",
+        "etiqueta": "Prefiero no responder"
+      }
     ]
   },
   "instrucciones": {
@@ -71,6 +90,10 @@
       "texto": "Lee cada pregunta con atención y elige la respuesta que más se parezca a lo que has vivido durante las últimas semanas.",
       "estado": "adaptacion_web",
       "original": "Lee cada pregunta con atención y marca con una “X” la respuesta que más se parezca a lo que has vivido durante las últimas semanas."
+    },
+    "adolescente": {
+      "texto": "Responde pensando en cómo te has sentido durante las últimas semanas. No hay respuestas correctas o incorrectas. Si prefieres no contestar alguna pregunta, puedes elegir «Prefiero no responder».",
+      "estado": "borrador"
     }
   },
   "registro_nino_campos": {
@@ -145,7 +168,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Durante las últimas semanas, ha experimentado una sensación general de tranquilidad y equilibrio emocional?",
-        "nino": "¿Durante las últimas semanas te has sentido tranquilo(a) y bien contigo mismo(a)?"
+        "nino": "¿Durante las últimas semanas te has sentido tranquilo(a) y bien contigo mismo(a)?",
+        "adolescente": "¿Durante las últimas semanas, te has sentido tranquilo/a y has podido manejar tus emociones en tu vida diaria?"
       },
       "mensajes_adulto": {
         "adecuado": "Tu bienestar emocional se encuentra en un nivel favorable. Continúa fortaleciendo las actividades, relaciones y hábitos que contribuyen a mantener tu equilibrio emocional.",
@@ -163,7 +187,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Ha logrado mantener un descanso nocturno adecuado que le permita recuperar su energía?",
-        "nino": "¿Has podido dormir y descansar bien durante las últimas semanas?"
+        "nino": "¿Has podido dormir y descansar bien durante las últimas semanas?",
+        "adolescente": "¿Has podido dormir lo suficiente y descansar bien durante las noches?"
       },
       "mensajes_adulto": {
         "adecuado": "Tus hábitos de descanso parecen favorecer tu bienestar. Mantén horarios regulares de sueño y continúa cuidando tus espacios de descanso.",
@@ -181,7 +206,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Ha contado con suficiente energía para realizar sus actividades cotidianas?",
-        "nino": "¿Tienes suficiente energía para estudiar, jugar y hacer tus actividades durante el día?"
+        "nino": "¿Tienes suficiente energía para estudiar, jugar y hacer tus actividades durante el día?",
+        "adolescente": "¿Has tenido suficiente energía para estudiar, compartir con tus amigos y realizar tus actividades diarias?"
       },
       "mensajes_adulto": {
         "adecuado": "Cuentas con un nivel de energía que parece permitirte desarrollar adecuadamente tus actividades cotidianas. Continúa procurando un equilibrio entre actividad, alimentación, descanso y tiempo personal.",
@@ -199,7 +225,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Ha mantenido el interés y la motivación para realizar actividades que habitualmente disfruta?",
-        "nino": "¿Tienes ganas de hacer las actividades que normalmente te gustan y disfrutas?"
+        "nino": "¿Tienes ganas de hacer las actividades que normalmente te gustan y disfrutas?",
+        "adolescente": "¿Has sentido ganas de hacer las cosas que te gustan, como practicar un deporte, escuchar música o compartir con otras personas?"
       },
       "mensajes_adulto": {
         "adecuado": "Mantienes interés y motivación por actividades significativas para ti. Continúa dedicando tiempo a aquello que disfrutas y que contribuye a tu bienestar.",
@@ -217,7 +244,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Considera que dispone de recursos adecuados para afrontar situaciones de estrés, preocupación o tensión emocional?",
-        "nino": "Cuando estás preocupado(a), estresado(a) o tienes muchas cosas por hacer, ¿sabes qué puedes hacer para sentirte mejor?"
+        "nino": "Cuando estás preocupado(a), estresado(a) o tienes muchas cosas por hacer, ¿sabes qué puedes hacer para sentirte mejor?",
+        "adolescente": "¿Has podido manejar las preocupaciones, las tareas escolares y otras situaciones que te generan estrés?"
       },
       "mensajes_adulto": {
         "adecuado": "Actualmente cuentas con recursos que te permiten afrontar situaciones de estrés y preocupación. Continúa utilizando estrategias saludables como la organización del tiempo, el descanso y las pausas.",
@@ -235,7 +263,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Cuenta con al menos una persona de confianza a quien pueda acudir cuando enfrenta una dificultad personal o emocional?",
-        "nino": "¿Tienes una persona de confianza con quien puedas hablar cuando tienes un problema o te sientes mal?"
+        "nino": "¿Tienes una persona de confianza con quien puedas hablar cuando tienes un problema o te sientes mal?",
+        "adolescente": "¿Tienes una persona de confianza, como un familiar, amigo, docente u orientador, con quien puedas hablar cuando te sientes mal?"
       },
       "mensajes_adulto": {
         "adecuado": "Cuentas con personas a quienes puedes acudir cuando enfrentas dificultades. Continúa fortaleciendo estos vínculos y recuerda que compartir lo que sientes puede favorecer tu bienestar.",
@@ -253,7 +282,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Considera que sus relaciones familiares, sociales o de pareja contribuyen positivamente a su bienestar emocional?",
-        "nino": "¿Sientes que tus relaciones con tu familia, amigos y compañeros te hacen sentir bien?"
+        "nino": "¿Sientes que tus relaciones con tu familia, amigos y compañeros te hacen sentir bien?",
+        "adolescente": "¿Sientes que tus relaciones con tu familia, amigos y otras personas son positivas y te hacen sentir bien?"
       },
       "mensajes_adulto": {
         "adecuado": "Tus relaciones interpersonales parecen contribuir favorablemente a tu bienestar. Continúa promoviendo una comunicación respetuosa, límites saludables y espacios de diálogo.",
@@ -271,7 +301,8 @@
       "sensible": true,
       "pregunta": {
         "adulto": "¿Se siente valorado/a, respetado/a y tratado/a de manera adecuada por las personas de su entorno?",
-        "nino": "¿Te sientes respetado(a), valorado(a) y bien tratado(a) por las personas que te rodean?"
+        "nino": "¿Te sientes respetado(a), valorado(a) y bien tratado(a) por las personas que te rodean?",
+        "adolescente": "¿Sientes que las personas de tu entorno te respetan, te valoran y te tratan adecuadamente?"
       },
       "mensajes_adulto": {
         "adecuado": "Percibes valoración y respeto en tu entorno. Continúa fortaleciendo relaciones saludables y manteniendo límites que protejan tu bienestar.",
@@ -289,7 +320,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Ha podido mantener una adecuada concentración durante sus actividades de estudio, trabajo o vida cotidiana?",
-        "nino": "¿Puedes concentrarte cuando estás en clase, estudiando o haciendo tus tareas?"
+        "nino": "¿Puedes concentrarte cuando estás en clase, estudiando o haciendo tus tareas?",
+        "adolescente": "¿Has podido concentrarte en tus clases, tareas y otras actividades sin que las preocupaciones te lo dificulten demasiado?"
       },
       "mensajes_adulto": {
         "adecuado": "Tu capacidad de concentración parece favorecer el desarrollo de tus actividades. Mantén hábitos de descanso, organización y espacios adecuados para estudiar, trabajar o realizar tus actividades.",
@@ -307,7 +339,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Considera que cuenta con recursos personales para afrontar los problemas y dificultades que se presentan en su vida?",
-        "nino": "Cuando tienes un problema, ¿sientes que puedes encontrar una forma de solucionarlo?"
+        "nino": "Cuando tienes un problema, ¿sientes que puedes encontrar una forma de solucionarlo?",
+        "adolescente": "¿Sientes que puedes buscar soluciones cuando tienes un problema en casa, en el colegio o con tus amigos?"
       },
       "mensajes_adulto": {
         "adecuado": "Cuentas con recursos personales que te permiten afrontar las dificultades de tu vida cotidiana. Continúa utilizando estrategias de solución de problemas y apoyándote en personas de confianza cuando sea necesario.",
@@ -325,7 +358,8 @@
       "sensible": true,
       "pregunta": {
         "adulto": "¿Ha logrado manejar sus emociones de manera adecuada cuando enfrenta situaciones difíciles o estresantes?",
-        "nino": "Cuando estás triste, enojado(a) o preocupado(a), ¿puedes manejar lo que sientes sin hacerte daño ni lastimar a otras personas?"
+        "nino": "Cuando estás triste, enojado(a) o preocupado(a), ¿puedes manejar lo que sientes sin hacerte daño ni lastimar a otras personas?",
+        "adolescente": "Cuando sientes tristeza, enojo, miedo o frustración, ¿puedes expresar y manejar esas emociones sin hacerte daño ni lastimar a otras personas?"
       },
       "mensajes_adulto": {
         "adecuado": "Has desarrollado recursos que favorecen un manejo adecuado de tus emociones. Continúa reconociendo lo que sientes y utilizando estrategias saludables para afrontar situaciones difíciles.",
@@ -343,7 +377,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Realiza de manera regular actividades físicas, recreativas o de esparcimiento que contribuyan a su bienestar?",
-        "nino": "¿Tienes tiempo para jugar, hacer ejercicio o realizar actividades que te divierten?"
+        "nino": "¿Tienes tiempo para jugar, hacer ejercicio o realizar actividades que te divierten?",
+        "adolescente": "¿Dedicas tiempo a realizar actividades que disfrutas, como hacer ejercicio, jugar, bailar, dibujar o compartir con tus amigos?"
       },
       "mensajes_adulto": {
         "adecuado": "Mantienes espacios de actividad física, recreación o esparcimiento que pueden contribuir positivamente a tu bienestar. Continúa incorporándolos dentro de tu rutina.",
@@ -361,7 +396,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Dispone de tiempo suficiente para descansar y realizar actividades que favorezcan su bienestar personal?",
-        "nino": "¿Tienes suficiente tiempo para hacer tus tareas, descansar y realizar actividades que te gustan?"
+        "nino": "¿Tienes suficiente tiempo para hacer tus tareas, descansar y realizar actividades que te gustan?",
+        "adolescente": "¿Tienes tiempo suficiente para cumplir con tus responsabilidades escolares y personales, descansar y hacer cosas que disfrutas?"
       },
       "mensajes_adulto": {
         "adecuado": "Mantienes un equilibrio favorable entre tus responsabilidades, el descanso y tus actividades personales. Continúa protegiendo estos espacios dentro de tu rutina.",
@@ -379,7 +415,8 @@
       "sensible": true,
       "pregunta": {
         "adulto": "¿Se siente seguro/a en los espacios donde desarrolla habitualmente sus actividades, como el hogar, trabajo, estudio y entorno cercano?",
-        "nino": "¿Te sientes seguro(a) en los lugares donde pasas la mayor parte del tiempo, como tu casa, colegio y barrio?"
+        "nino": "¿Te sientes seguro(a) en los lugares donde pasas la mayor parte del tiempo, como tu casa, colegio y barrio?",
+        "adolescente": "¿Te sientes seguro/a en tu casa, en el colegio y en los lugares donde compartes habitualmente con otras personas?"
       },
       "mensajes_adulto": {
         "adecuado": "Percibes seguridad en los principales espacios donde desarrollas tus actividades. Continúa identificando y manteniendo condiciones que favorezcan tu bienestar y protección.",
@@ -397,7 +434,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Durante las últimas semanas, ha logrado mantener una perspectiva tranquila frente a su futuro?",
-        "nino": "¿Te sientes tranquilo(a) cuando piensas en tu futuro?"
+        "nino": "¿Te sientes tranquilo(a) cuando piensas en tu futuro?",
+        "adolescente": "¿Sientes tranquilidad y confianza al pensar en tu futuro, tus estudios y las metas que te gustaría alcanzar?"
       },
       "mensajes_adulto": {
         "adecuado": "Mantienes una perspectiva favorable frente a tu futuro. Continúa estableciendo objetivos realistas y enfocándote en acciones que puedas desarrollar progresivamente.",
@@ -415,7 +453,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "¿Considera que actualmente tiene un propósito, proyecto o sentido que le resulte significativo en su vida?",
-        "nino": "¿Tienes sueños, metas o cosas que te gustaría lograr en el futuro?"
+        "nino": "¿Tienes sueños, metas o cosas que te gustaría lograr en el futuro?",
+        "adolescente": "¿Tienes sueños, metas o actividades que te motivan y te hacen sentir que tu vida es importante?"
       },
       "mensajes_adulto": {
         "adecuado": "Identificas actividades, relaciones, proyectos o metas que aportan significado a tu vida. Continúa fortaleciendo aquellos aspectos que consideras importantes para ti.",
@@ -433,7 +472,8 @@
       "sensible": true,
       "pregunta": {
         "adulto": "¿Ha evitado recurrir al alcohol, sustancias psicoactivas u otras sustancias como una forma de afrontar dificultades emocionales?",
-        "nino": "Cuando te sientes mal o tienes un problema, ¿evitas usar alcohol, cigarrillos, vapeadores u otras sustancias para sentirte mejor?"
+        "nino": "Cuando te sientes mal o tienes un problema, ¿evitas usar alcohol, cigarrillos, vapeadores u otras sustancias para sentirte mejor?",
+        "adolescente": "¿Has evitado consumir alcohol, cigarrillos electrónicos o sustancias psicoactivas para intentar sentirte mejor cuando tienes problemas o emociones difíciles?"
       },
       "mensajes_adulto": {
         "adecuado": "No identificas el consumo de alcohol u otras sustancias como una estrategia principal para afrontar tus dificultades emocionales. Continúa fortaleciendo alternativas saludables de afrontamiento.",
@@ -451,7 +491,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "Cuando enfrenta una situación que supera sus recursos personales, ¿puede identificar y solicitar apoyo oportunamente?",
-        "nino": "Cuando tienes un problema que no puedes solucionar solo(a), ¿sabes a quién pedirle ayuda?"
+        "nino": "Cuando tienes un problema que no puedes solucionar solo(a), ¿sabes a quién pedirle ayuda?",
+        "adolescente": "Cuando tienes un problema que no puedes resolver por tu cuenta, ¿te sientes capaz de pedir ayuda a una persona de confianza?"
       },
       "mensajes_adulto": {
         "adecuado": "Reconoces la importancia de solicitar apoyo cuando una situación supera tus recursos personales. Continúa identificando personas e instituciones a las que puedas acudir cuando lo necesites.",
@@ -469,7 +510,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "A pesar de las dificultades emocionales, ¿ha logrado mantener sus actividades habituales, responsabilidades y rutinas de autocuidado?",
-        "nino": "Aunque tengas algún problema o estés triste, ¿puedes continuar con tus actividades, tareas y responsabilidades?"
+        "nino": "Aunque tengas algún problema o estés triste, ¿puedes continuar con tus actividades, tareas y responsabilidades?",
+        "adolescente": "Aunque tengas preocupaciones o te sientas triste, ¿has podido continuar con tus actividades diarias, asistir a clases y cuidar de ti mismo/a?"
       },
       "mensajes_adulto": {
         "adecuado": "Has logrado mantener tus actividades, responsabilidades y rutinas de autocuidado a pesar de las dificultades que puedan presentarse. Continúa manteniendo hábitos que favorezcan tu bienestar.",
@@ -487,7 +529,8 @@
       "sensible": false,
       "pregunta": {
         "adulto": "En términos generales, ¿considera que su bienestar psicológico actual es adecuado?",
-        "nino": "En general, ¿sientes que estás bien emocionalmente?"
+        "nino": "En general, ¿sientes que estás bien emocionalmente?",
+        "adolescente": "En general, ¿sientes que estás bien emocionalmente y que cuentas con el apoyo y las herramientas necesarias para afrontar las situaciones de tu vida?"
       },
       "mensajes_adulto": {
         "adecuado": "Tu percepción general de bienestar psicológico es favorable. Continúa fortaleciendo tus hábitos de autocuidado, relaciones de apoyo y actividades significativas.",

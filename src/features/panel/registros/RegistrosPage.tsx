@@ -33,12 +33,14 @@ import {
 } from '../compartido';
 import { obtenerOpcionesLugar, obtenerRegistros } from '../datos/consultas';
 import {
+  MODULOS,
   REGISTROS_POR_DEFECTO,
   TAMANOS,
   escribirFiltrosRegistros,
   hayFiltros,
   hoyEnColombia,
   leerFiltrosRegistros,
+  moduloDeFiltro,
 } from '../datos/filtros';
 import { formatearFecha, formatearNumero } from '../datos/formato';
 import type {
@@ -227,10 +229,9 @@ export default function RegistrosPage() {
             valor={filtros.modulo ?? ''}
             opciones={[
               { valor: '', etiqueta: f.todos },
-              { valor: 'adulto', etiqueta: panel.modulos.adulto },
-              { valor: 'nino', etiqueta: panel.modulos.nino },
+              ...MODULOS.map((m) => ({ valor: m, etiqueta: panel.modulos[m] })),
             ]}
-            alCambiar={(v) => cambiar({ modulo: v === 'adulto' || v === 'nino' ? v : null })}
+            alCambiar={(v) => cambiar({ modulo: moduloDeFiltro(v) })}
           />
           <CampoSelect
             etiqueta={f.lugar}

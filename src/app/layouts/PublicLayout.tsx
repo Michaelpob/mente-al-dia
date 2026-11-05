@@ -1,6 +1,5 @@
 import { Suspense, useEffect, useRef } from 'react';
 import { Outlet, ScrollRestoration, useLocation } from 'react-router';
-import { GovCoTopBar } from '@/components/layout/govco';
 import { PageLoading } from '@/components/layout/page';
 import { PreviewBar } from '@/components/layout/preview-bar';
 import { SiteFooter } from '@/components/layout/site-footer';
@@ -46,7 +45,6 @@ export function PublicLayout() {
     <div className="flex min-h-dvh flex-col print:[&>:not(main)]:hidden">
       <SkipLink />
       <PreviewBar />
-      <GovCoTopBar />
       <SiteHeader />
       <main id={MAIN_CONTENT_ID} ref={mainRef} tabIndex={-1} className="flex-1 outline-none">
         <Suspense fallback={<PageLoading />}>

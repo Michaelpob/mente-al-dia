@@ -1,5 +1,3 @@
-import { sitio } from '@/config/sitio';
-import { textos } from '@/content/textos-interfaz';
 import { cn } from '@/lib/utils/cn';
 
 /**
@@ -40,32 +38,6 @@ export function MenteAlDiaLogo({ className, wordmarkClassName }: MenteAlDiaLogoP
       >
         Mente <span className="text-salvia-600">al</span> Día
       </span>
-    </span>
-  );
-}
-
-/** Logo de la Alcaldía. Mientras no exista el archivo oficial, muestra el marcador. */
-export function AlcaldiaLogo({ className }: { className?: string }) {
-  if (sitio.logoAlcaldia) {
-    return (
-      <img
-        src={sitio.logoAlcaldia}
-        alt={textos.logoAlcaldia.alternativo}
-        // Máximo 160 px de ancho: más ancho no cabe junto al menú completo a 1280 px.
-        className={cn('h-10 w-auto max-w-40 object-contain', className)}
-      />
-    );
-  }
-  return (
-    <span
-      role="img"
-      aria-label={textos.logoAlcaldia.alternativo}
-      className={cn(
-        'inline-flex h-10 shrink-0 items-center rounded-sm border border-dashed border-borde-campo px-3 text-etiqueta whitespace-nowrap text-grafito-600 uppercase',
-        className,
-      )}
-    >
-      {textos.logoAlcaldia.marcador}
     </span>
   );
 }

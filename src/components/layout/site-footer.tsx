@@ -1,54 +1,24 @@
 import { useId } from 'react';
 import { Link } from 'react-router';
-import { AlcaldiaLogo, MenteAlDiaLogo } from '@/components/brand/logos';
-import { esMarcador, sitio } from '@/config/sitio';
+import { MenteAlDiaLogo } from '@/components/brand/logos';
 import { textos } from '@/content/textos-interfaz';
-import { GovCoFooter } from './govco';
 import { footerLinks } from './navigation';
 
-function ContactValue({ value, href }: { value: string; href: string }) {
-  if (esMarcador(value)) return <span>{value}</span>;
-  return <a href={href}>{value}</a>;
-}
-
-/** Pie de página institucional. */
+/** Pie de página: qué es Mente al Día, los enlaces de información y el aviso de orientación. */
 export function SiteFooter() {
-  const contactId = useId();
   const linksId = useId();
   const year = new Date().getFullYear();
 
   return (
     <footer className="border-t border-piedra-200 bg-piedra-100">
-      <div className="contenedor grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="contenedor grid gap-10 py-12 md:grid-cols-[1.4fr_1fr]">
         <div className="flex flex-col gap-4">
-          <div className="flex flex-wrap items-center gap-4">
-            <AlcaldiaLogo />
-            <MenteAlDiaLogo />
-          </div>
-          <div>
-            <p className="font-semibold text-grafito-900">{sitio.secretaria}</p>
-            <p className="text-grafito-600">{textos.sitio.alcaldia}</p>
-          </div>
+          <MenteAlDiaLogo />
+          <p className="max-w-lectura text-grafito-600">{textos.pie.descripcion}</p>
         </div>
 
-        <section aria-labelledby={contactId}>
-          <h2 id={contactId} className="text-etiqueta text-grafito-600 uppercase">
-            {textos.pie.contacto}
-          </h2>
-          <ul className="mt-3 flex flex-col gap-2 text-grafito-900">
-            <li>
-              <span className="font-semibold">{textos.pie.correo}: </span>
-              <ContactValue value={sitio.correoContacto} href={`mailto:${sitio.correoContacto}`} />
-            </li>
-            <li>
-              <span className="font-semibold">{textos.pie.telefono}: </span>
-              <ContactValue value={sitio.telefonoContacto} href={`tel:${sitio.telefonoContacto}`} />
-            </li>
-          </ul>
-        </section>
-
         <nav aria-labelledby={linksId}>
-          <h2 id={linksId} className="text-etiqueta text-grafito-600 uppercase">
+          <h2 id={linksId} className="text-pequeno font-semibold text-grafito-600">
             {textos.pie.informacion}
           </h2>
           <ul className="mt-3 flex flex-col gap-1">
@@ -72,7 +42,6 @@ export function SiteFooter() {
           <p className="shrink-0">{textos.pie.derechos(year)}</p>
         </div>
       </div>
-      <GovCoFooter />
     </footer>
   );
 }

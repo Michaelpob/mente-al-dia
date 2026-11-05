@@ -17,7 +17,7 @@ export const inicio = {
   queEs: {
     titulo: 'Un espacio para conocerte y cuidarte',
     texto:
-      'Mente al Día es una herramienta de la Alcaldía para promover el bienestar emocional. Respondes 20 preguntas sobre cómo te has sentido en las últimas semanas y recibes una orientación por áreas, con ideas de autocuidado y rutas de apoyo.',
+      'Mente al Día es una herramienta para promover el bienestar emocional. Respondes 20 preguntas sobre cómo te has sentido en las últimas semanas y recibes una orientación por áreas, con ideas de autocuidado y rutas de apoyo.',
     esTitulo: 'Lo que es',
     es: [
       'Una herramienta de orientación para conocer cómo estás.',
@@ -74,8 +74,6 @@ export const inicio = {
       'Cada grupo tiene su propio cuestionario, con preguntas y mensajes pensados para su edad.',
     empezar: 'Empezar',
     empezarComo: (grupo: string) => `Empezar el cuestionario de ${grupo.toLowerCase()}`,
-    proximamente: 'Próximamente',
-    verLineas: 'Ver líneas de ayuda',
     grupos: {
       nino: {
         titulo: 'Niñas y niños',
@@ -85,7 +83,7 @@ export const inicio = {
       adolescente: {
         titulo: 'Adolescentes',
         texto:
-          'De 12 a 17 años. Su cuestionario está en preparación con el equipo profesional de la Alcaldía.',
+          'De 12 a 17 años, con la autorización de un adulto responsable. 20 preguntas sobre tu día a día, el colegio y tus amigos.',
       },
       adulto: {
         titulo: 'Personas adultas',
@@ -128,7 +126,7 @@ export const inicio = {
       {
         pregunta: '¿Quién puede ver mis respuestas?',
         respuesta:
-          'Solo la administración autorizada de la Alcaldía, para orientar y hacer seguimiento cuando sea necesario. Cada acceso queda registrado.',
+          'Solo el equipo autorizado de Mente al Día, para orientar y hacer seguimiento cuando sea necesario. Cada acceso queda registrado.',
       },
       {
         pregunta: '¿Cuánto tiempo tarda?',
@@ -147,12 +145,11 @@ export const inicio = {
       {
         pregunta: '¿Qué pasa si mis resultados muestran áreas para cuidar?',
         respuesta:
-          'Verás mensajes con ideas para empezar y las líneas de apoyo disponibles. Un resultado así no te define: es una oportunidad para cuidarte. Si hay señales que requieren atención, un profesional de la Alcaldía podrá revisarlo.',
+          'Verás mensajes con ideas para empezar y las líneas de apoyo disponibles. Un resultado así no te define: es una oportunidad para cuidarte. Si hay señales que requieren atención, un profesional podrá revisarlo.',
       },
       {
         pregunta: '¿Cómo pido que eliminen mis datos?',
-        respuesta:
-          'Desde «Mi cuenta» puedes solicitarlo, o escribiendo al correo de contacto de la Alcaldía.',
+        respuesta: 'Desde «Mi cuenta» puedes solicitarlo.',
       },
     ],
   },

@@ -3,7 +3,7 @@ import { ArrowRight, Baby, Inbox, PersonStanding, Sparkles, UserRound } from 'lu
 import { useEffect, useState, type ReactNode } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { AlcaldiaLogo, MenteAlDiaIsotipo, MenteAlDiaLogo } from '@/components/brand/logos';
+import { MenteAlDiaIsotipo, MenteAlDiaLogo } from '@/components/brand/logos';
 import { PageMeta } from '@/components/layout/page';
 import {
   Accordion,
@@ -655,10 +655,6 @@ function BrandSection() {
         <Card className="flex flex-col items-start gap-4 p-6">
           <MenteAlDiaIsotipo className="size-14" />
           <p className="text-pequeno text-grafito-600">{mk.isotipo}</p>
-        </Card>
-        <Card className="flex flex-col items-start gap-4 p-6">
-          <AlcaldiaLogo />
-          <p className="text-pequeno text-grafito-600">{mk.alcaldia}</p>
         </Card>
       </div>
     </GuideSection>

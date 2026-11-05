@@ -178,9 +178,20 @@ export const mensajesNinoPorNivel: Record<NivelConMensaje, string> = {
     'Parece que esto ha sido difícil para ti últimamente, y está bien contarlo. No estás solo(a): habla con un adulto de confianza para que te acompañe. Pedir ayuda es una forma de cuidarte.',
 };
 
-/** E.1 Mensaje general (adultos): DOCUMENTO BASE. E.2 Complementarios: BORRADOR. */
+/**
+ * E.1 Mensaje general (adultos): DOCUMENTO BASE. Adolescentes: el mismo mensaje general del
+ * documento base (sección 8), que no trae uno propio. E.2 Complementarios: BORRADOR.
+ */
 export const mensajesGenerales = {
   adulto: {
+    favorable:
+      'Tu resultado refleja un nivel favorable de bienestar en las áreas evaluadas. Continúa fortaleciendo tus hábitos de autocuidado, tus relaciones de apoyo y las actividades que aportan bienestar y significado a tu vida.',
+    por_fortalecer:
+      'Tus resultados muestran algunas áreas que podrían beneficiarse de mayor atención. Revisa las recomendaciones específicas que aparecen en cada área e intenta incorporar progresivamente estrategias que favorezcan tu bienestar.',
+    desafios:
+      'Tus resultados muestran algunas áreas que pueden necesitar mayor cuidado. Esto no constituye un diagnóstico ni define quién eres. Tómalo como una oportunidad para conocerte, cuidarte y seguir avanzando. Revisa las recomendaciones y considera buscar orientación profesional si sientes que necesitas acompañamiento.',
+  },
+  adolescente: {
     favorable:
       'Tu resultado refleja un nivel favorable de bienestar en las áreas evaluadas. Continúa fortaleciendo tus hábitos de autocuidado, tus relaciones de apoyo y las actividades que aportan bienestar y significado a tu vida.',
     por_fortalecer:
@@ -209,6 +220,7 @@ export const mensajesGenerales = {
 
 export const estadoMensajesGenerales = {
   adulto: 'validado',
+  adolescente: 'validado',
   nino: 'borrador',
   adultoAcompanante: 'borrador',
   insuficiente: 'borrador',
@@ -216,9 +228,14 @@ export const estadoMensajesGenerales = {
   sinDatoArea: 'borrador',
 } as const;
 
-/** F.1 Atención especial: DOCUMENTO BASE. F.2 Versión para niñas y niños: BORRADOR. */
+/**
+ * F.1 Atención especial: DOCUMENTO BASE (también para adolescentes, sección 9).
+ * F.2 Versión para niñas y niños: BORRADOR.
+ */
 export const mensajesAtencionEspecial = {
   adulto:
+    'Si consideras que estás en peligro inmediato, que podrías hacerte daño o que otra persona podría hacerlo, no permanezcas solo/a. Busca apoyo inmediato de una persona de confianza y comunícate con los servicios de emergencia o acude al servicio de salud más cercano.',
+  adolescente:
     'Si consideras que estás en peligro inmediato, que podrías hacerte daño o que otra persona podría hacerlo, no permanezcas solo/a. Busca apoyo inmediato de una persona de confianza y comunícate con los servicios de emergencia o acude al servicio de salud más cercano.',
   nino: 'Si sientes que estás en peligro, que alguien te puede hacer daño o que tú podrías hacerte daño, no te quedes solo(a). Busca ahora mismo a un adulto de confianza (tu mamá, tu papá, tu cuidador o tu profesor) y cuéntale lo que pasa. Ese adulto puede llamar a las líneas de ayuda.',
 } as const;

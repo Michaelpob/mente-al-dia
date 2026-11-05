@@ -12,7 +12,7 @@ import {
   autorizacionesRequeridas,
   camposDe,
   claveCampo,
-  EDAD_NINO,
+  EDADES,
   esModuloDisponible,
   faltanAutorizaciones,
   validarRegistro,
@@ -118,10 +118,8 @@ function PasoGrupo({ tituloRef, onContinuar }: PasoProps & { onContinuar: () => 
         />
         <RadioCard
           value="adolescente"
-          disabled
           title={t.adolescente.titulo}
           description={t.adolescente.detalle}
-          badge={t.adolescente.insignia}
           icon={<School />}
         />
         <RadioCard
@@ -132,7 +130,7 @@ function PasoGrupo({ tituloRef, onContinuar }: PasoProps & { onContinuar: () => 
         />
       </RadioCardGroup>
       <p className="mt-6 text-pequeno text-grafito-600">
-        {t.adolescenteAyuda}{' '}
+        {t.ayudaAhora}{' '}
         <Link to="/lineas-de-ayuda" className={claseEnlace}>
           {t.verLineas}
         </Link>
@@ -156,7 +154,9 @@ function PasoDatos({
   const [errores, setErrores] = useState<ErroresRegistro>({});
   const t = participar.datos;
   const c = t.campos;
-  const nino = modulo === 'nino';
+  // Niñas, niños y adolescentes registran además a un adulto responsable; el adolescente
+  // responde por sí mismo y los textos le hablan a él.
+  const adolescente = modulo === 'adolescente';
 
   /** value, onChange, id y error de un campo. */
   const campo = (grupo: GrupoCampos, nombre: string) => {
@@ -194,7 +194,8 @@ function PasoDatos({
     if (primero) document.getElementById(idCampo(primero))?.focus();
   }
 
-  const titulo = nino ? t.nino : t.adulto;
+  const titulo = modulo === 'adulto' ? t.adulto : t[modulo];
+  const acudiente = adolescente ? t.acudienteAdolescente : t.acudiente;
 
   return (
     <form noValidate onSubmit={continuar}>
@@ -204,18 +205,22 @@ function PasoDatos({
       <p className="mt-3 text-cuerpo-grande text-grafito-600">{titulo.texto}</p>
       <p className="mt-4 text-pequeno text-grafito-600">{t.obligatorios}</p>
 
-      {nino ? (
+      {modulo !== 'adulto' ? (
         <div className="mt-8 grid gap-6">
           <TextField
-            label={c.nombreNino}
+            label={adolescente ? c.nombreAdolescente : c.nombreNino}
             required
-            autoComplete="off"
+            autoComplete={adolescente ? 'name' : 'off'}
             {...campo('participante', 'nombre')}
           />
-          <SelectField label={c.edad} required {...campo('participante', 'edad')}>
+          <SelectField
+            label={adolescente ? c.edadAdolescente : c.edad}
+            required
+            {...campo('participante', 'edad')}
+          >
             <option value="">{c.edadElegir}</option>
-            {Array.from({ length: EDAD_NINO.max - EDAD_NINO.min + 1 }, (_, i) => {
-              const edad = String(EDAD_NINO.min + i);
+            {Array.from({ length: EDADES[modulo].max - EDADES[modulo].min + 1 }, (_, i) => {
+              const edad = String(EDADES[modulo].min + i);
               return (
                 <option key={edad} value={edad}>
                   {edad}
@@ -223,15 +228,23 @@ function PasoDatos({
               );
             })}
           </SelectField>
-          <SelectField label={c.grado} required {...campo('participante', 'grado')}>
+          <SelectField
+            label={adolescente ? c.gradoAdolescente : c.grado}
+            required
+            {...campo('participante', 'grado')}
+          >
             <option value="">{c.gradoElegir}</option>
-            {t.grados.map((grado) => (
+            {(adolescente ? t.gradosAdolescente : t.grados).map((grado) => (
               <option key={grado} value={grado}>
                 {grado}
               </option>
             ))}
           </SelectField>
-          <SelectField label={c.sexo} hint={c.sexoAyuda} {...campo('participante', 'sexo')}>
+          <SelectField
+            label={adolescente ? c.sexoAdolescente : c.sexo}
+            hint={c.sexoAyuda}
+            {...campo('participante', 'sexo')}
+          >
             <option value="">{t.sexoSinResponder}</option>
             {t.opcionesSexo.map((opcion) => (
               <option key={opcion} value={opcion}>
@@ -241,8 +254,8 @@ function PasoDatos({
           </SelectField>
 
           <div className="mt-6 border-t border-piedra-200 pt-8">
-            <h2 className="text-h3">{t.acudiente.titulo}</h2>
-            <p className="mt-2 text-grafito-600">{t.acudiente.texto}</p>
+            <h2 className="text-h3">{acudiente.titulo}</h2>
+            <p className="mt-2 text-grafito-600">{acudiente.texto}</p>
           </div>
           <TextField
             label={c.nombreAcudiente}
@@ -339,7 +352,8 @@ function PasoAutorizacion({
   const etiquetas: Record<keyof Autorizaciones, string> = {
     tratamientoDatos: t.tratamientoDatos,
     datosSensibles: modulo === 'nino' ? t.datosSensiblesNino : t.datosSensibles,
-    autorizacionAcudiente: t.autorizacionAcudiente,
+    autorizacionAcudiente:
+      modulo === 'adolescente' ? t.autorizacionAcudienteAdolescente : t.autorizacionAcudiente,
   };
   const idCasilla = (clave: keyof Autorizaciones) => `autorizacion-${clave}`;
 

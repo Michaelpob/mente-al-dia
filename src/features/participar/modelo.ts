@@ -9,13 +9,21 @@ import type { AreaId, ResultadoAplicacion, ValorRespuesta } from '@/types/domini
  * avisar antes de enviar; la del servidor es la que manda.
  */
 
-export type ModuloDisponible = 'adulto' | 'nino';
+export type ModuloDisponible = 'adulto' | 'nino' | 'adolescente';
+
+/** Módulos de menores de edad: llevan los datos y la autorización de un adulto responsable. */
+export type ModuloMenor = Exclude<ModuloDisponible, 'adulto'>;
 
 export const esModuloDisponible = (valor: unknown): valor is ModuloDisponible =>
-  valor === 'adulto' || valor === 'nino';
+  valor === 'adulto' || valor === 'nino' || valor === 'adolescente';
 
 /** Pendiente 7: rangos de edad por validar. El servidor acepta un margen más amplio. */
 export const EDAD_NINO = { min: 6, max: 11 } as const;
+export const EDAD_ADOLESCENTE = { min: 12, max: 17 } as const;
+export const EDADES: Record<ModuloMenor, { min: number; max: number }> = {
+  nino: EDAD_NINO,
+  adolescente: EDAD_ADOLESCENTE,
+};
 
 export type GrupoCampos = 'participante' | 'acudiente';
 
@@ -63,21 +71,29 @@ const esquemaAdulto = z.object({
   lugarResidencia: texto(1, 120),
 });
 
-const esquemaNino = z.object({
-  nombre: texto(1, 120),
-  edad: z
-    .string()
-    .min(1, e.edad)
-    .transform(Number)
-    .pipe(z.number().int(e.edad).min(EDAD_NINO.min, e.edad).max(EDAD_NINO.max, e.edad)),
-  grado: texto(1, 40),
-  // Opcional (pendiente 8): vacío = sin responder.
-  sexo: z
-    .string()
-    .trim()
-    .max(40, e.largo(40))
-    .transform((valor) => valor || undefined),
-});
+/** Datos de una niña, un niño o un adolescente: los mismos campos, cada uno con su rango de edad. */
+const esquemaMenor = (edades: { min: number; max: number }) =>
+  z.object({
+    nombre: texto(1, 120),
+    edad: z
+      .string()
+      .min(1, e.edad)
+      .transform(Number)
+      .pipe(z.number().int(e.edad).min(edades.min, e.edad).max(edades.max, e.edad)),
+    grado: texto(1, 40),
+    // Opcional (pendiente 8): vacío = sin responder.
+    sexo: z
+      .string()
+      .trim()
+      .max(40, e.largo(40))
+      .transform((valor) => valor || undefined),
+  });
+
+const esquemaNino = esquemaMenor(EDAD_NINO);
+const esquemas: Record<ModuloMenor, typeof esquemaNino> = {
+  nino: esquemaNino,
+  adolescente: esquemaMenor(EDAD_ADOLESCENTE),
+};
 
 const esquemaAcudiente = z.object({
   nombre: texto(2, 120, e.nombre),
@@ -91,12 +107,15 @@ export type ParticipanteAdulto = z.output<typeof esquemaAdulto>;
 export type ParticipanteNino = z.output<typeof esquemaNino>;
 export type Acudiente = z.output<typeof esquemaAcudiente>;
 
+const camposMenor = {
+  participante: Object.keys(esquemaNino.shape),
+  acudiente: Object.keys(esquemaAcudiente.shape),
+};
+
 export const camposDe = {
   adulto: { participante: Object.keys(esquemaAdulto.shape), acudiente: [] as string[] },
-  nino: {
-    participante: Object.keys(esquemaNino.shape),
-    acudiente: Object.keys(esquemaAcudiente.shape),
-  },
+  nino: camposMenor,
+  adolescente: camposMenor,
 } satisfies Record<ModuloDisponible, Record<GrupoCampos, string[]>>;
 
 /** Clave de un campo en los errores y en el id del control: «participante.nombre». */
@@ -106,7 +125,7 @@ export type ErroresRegistro = Partial<Record<string, string>>;
 
 export type RegistroValidado =
   | { ok: true; modulo: 'adulto'; participante: ParticipanteAdulto }
-  | { ok: true; modulo: 'nino'; participante: ParticipanteNino; acudiente: Acudiente }
+  | { ok: true; modulo: ModuloMenor; participante: ParticipanteNino; acudiente: Acudiente }
   | { ok: false; errores: ErroresRegistro };
 
 /** Lee los campos de un grupo como texto (un campo que nunca se tocó vale «»). */
@@ -135,10 +154,10 @@ export function validarRegistro(
     return { ok: false, errores };
   }
 
-  const participante = esquemaNino.safeParse(
-    leer(valores.participante, camposDe.nino.participante),
+  const participante = esquemas[modulo].safeParse(
+    leer(valores.participante, camposDe[modulo].participante),
   );
-  const acudiente = esquemaAcudiente.safeParse(leer(valores.acudiente, camposDe.nino.acudiente));
+  const acudiente = esquemaAcudiente.safeParse(leer(valores.acudiente, camposDe[modulo].acudiente));
   if (participante.success && acudiente.success) {
     return { ok: true, modulo, participante: participante.data, acudiente: acudiente.data };
   }
@@ -147,10 +166,11 @@ export function validarRegistro(
   return { ok: false, errores };
 }
 
+/** Con un menor de edad (niña, niño o adolescente) se pide además la del adulto responsable. */
 export function autorizacionesRequeridas(modulo: ModuloDisponible): (keyof Autorizaciones)[] {
-  return modulo === 'nino'
-    ? ['tratamientoDatos', 'datosSensibles', 'autorizacionAcudiente']
-    : ['tratamientoDatos', 'datosSensibles'];
+  return modulo === 'adulto'
+    ? ['tratamientoDatos', 'datosSensibles']
+    : ['tratamientoDatos', 'datosSensibles', 'autorizacionAcudiente'];
 }
 
 export const faltanAutorizaciones = (modulo: ModuloDisponible, autorizaciones: Autorizaciones) =>
@@ -175,7 +195,7 @@ export type EnvioCuestionario =
     }
   | {
       claveEnvio: string;
-      modulo: 'nino';
+      modulo: ModuloMenor;
       participante: ParticipanteNino;
       acudiente: Acudiente;
       autorizaciones: { tratamientoDatos: true; datosSensibles: true; autorizacionAcudiente: true };
@@ -221,7 +241,7 @@ export function construirEnvio(datos: DatosEnvio): EnvioCuestionario {
   }
   return {
     claveEnvio: datos.claveEnvio,
-    modulo: 'nino',
+    modulo: registro.modulo,
     participante: registro.participante,
     acudiente: registro.acudiente,
     autorizaciones: { tratamientoDatos: true, datosSensibles: true, autorizacionAcudiente: true },

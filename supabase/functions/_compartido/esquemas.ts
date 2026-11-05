@@ -49,41 +49,53 @@ const envioAdulto = z
   })
   .strict();
 
-/** Envío del módulo infantil: datos de la niña o el niño y del adulto responsable. */
-const envioNino = z
-  .object({
-    claveEnvio,
-    modulo: z.literal('nino'),
-    participante: z
-      .object({
-        nombre: texto(1, 120),
-        // Rangos de edad pendientes de validar (pendiente 7): se acepta un margen amplio.
-        edad: z.int().min(5).max(17),
-        grado: texto(1, 40),
-        sexo: texto(1, 40).optional(),
-      })
-      .strict(),
-    acudiente: z
-      .object({
-        nombre: texto(2, 120),
-        parentesco: texto(2, 60),
-        correo,
-        telefono,
-        lugarResidencia: texto(1, 120),
-      })
-      .strict(),
-    autorizaciones: z
-      .object({
-        tratamientoDatos: z.literal(true),
-        datosSensibles: z.literal(true),
-        autorizacionAcudiente: z.literal(true),
-      })
-      .strict(),
-    respuestas,
-  })
-  .strict();
+/**
+ * Envío de un menor de edad (módulo infantil o adolescente): sus datos y los del adulto
+ * responsable, con la autorización de ese adulto. Los rangos de edad están pendientes de
+ * validar (pendiente 7): se acepta un margen amplio.
+ */
+const envioMenor = <M extends 'nino' | 'adolescente'>(
+  modulo: M,
+  edadMin: number,
+  edadMax: number,
+) =>
+  z
+    .object({
+      claveEnvio,
+      modulo: z.literal(modulo),
+      participante: z
+        .object({
+          nombre: texto(1, 120),
+          edad: z.int().min(edadMin).max(edadMax),
+          grado: texto(1, 40),
+          sexo: texto(1, 40).optional(),
+        })
+        .strict(),
+      acudiente: z
+        .object({
+          nombre: texto(2, 120),
+          parentesco: texto(2, 60),
+          correo,
+          telefono,
+          lugarResidencia: texto(1, 120),
+        })
+        .strict(),
+      autorizaciones: z
+        .object({
+          tratamientoDatos: z.literal(true),
+          datosSensibles: z.literal(true),
+          autorizacionAcudiente: z.literal(true),
+        })
+        .strict(),
+      respuestas,
+    })
+    .strict();
 
-export const esquemaEnvio = z.discriminatedUnion('modulo', [envioAdulto, envioNino]);
+export const esquemaEnvio = z.discriminatedUnion('modulo', [
+  envioAdulto,
+  envioMenor('nino', 5, 17),
+  envioMenor('adolescente', 11, 19),
+]);
 export type Envio = z.infer<typeof esquemaEnvio>;
 
 /** Reglas de resultados tal como se guardan en public.reglas_resultados. */

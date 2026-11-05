@@ -49,7 +49,7 @@ describe('Áreas y dimensiones', () => {
 });
 
 describe('Cuestionarios', () => {
-  for (const modulo of ['adulto', 'nino'] as const) {
+  for (const modulo of ['adulto', 'nino', 'adolescente'] as const) {
     it(`${modulo}: 20 preguntas en el orden original, una por área y con texto literal`, () => {
       const c = cuestionarios[modulo];
       expect(c.activo).toBe(true);
@@ -70,9 +70,11 @@ describe('Cuestionarios', () => {
     expect(cuestionarios.nino.opciones.map((o) => o.valor)).toEqual(['si', 'a_veces', 'no']);
   });
 
-  it('adolescentes queda desactivado y sin preguntas inventadas', () => {
-    expect(cuestionarios.adolescente.activo).toBe(false);
-    expect(cuestionarios.adolescente.preguntas).toHaveLength(0);
+  it('adolescentes usa las opciones del adulto, con «prefiero no responder»', () => {
+    expect(cuestionarios.adolescente.opciones).toEqual(cuestionarios.adulto.opciones);
+    expect(cuestionarios.adolescente.opciones.map((o) => o.valor)).toContain(
+      'prefiero_no_responder',
+    );
   });
 
   it('conserva la instrucción original del documento base', () => {
