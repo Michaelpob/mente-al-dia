@@ -1,5 +1,11 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
+import * as ExcelJSModulo from 'exceljs';
+
+/** ExcelJS es CommonJS: según cómo lo cargue Node, llega como «default» o con sus nombres. */
+const ExcelJS =
+  (ExcelJSModulo as typeof ExcelJSModulo & { default?: typeof ExcelJSModulo }).default ??
+  ExcelJSModulo;
 
 /**
  * Criterios de aceptación de la Fase 8: tablero, registros, ficha, prioritarios y cierre por
@@ -211,6 +217,7 @@ const PERSONA_CENSO = {
 interface Llamadas {
   registros: Record<string, unknown>[];
   censo: Record<string, unknown>[];
+  exportacion: Record<string, unknown>[];
   contacto: number;
   impresion: number;
   salida: number;
@@ -280,7 +287,14 @@ async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promi
     [CLAVE_SESION, JSON.stringify(sesion)],
   );
 
-  const llamadas: Llamadas = { registros: [], censo: [], contacto: 0, impresion: 0, salida: 0 };
+  const llamadas: Llamadas = {
+    registros: [],
+    censo: [],
+    exportacion: [],
+    contacto: 0,
+    impresion: 0,
+    salida: 0,
+  };
   await page.route(`${SUPABASE}/**`, async (route) => {
     const peticion = route.request();
     if (peticion.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
@@ -327,6 +341,14 @@ async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promi
       case '/rest/v1/rpc/panel_censo_personas':
         llamadas.censo.push(peticion.postDataJSON() as Record<string, unknown>);
         return json({ total: 1, pagina: 1, tamano: 25, filas: [PERSONA_CENSO] });
+      case '/rest/v1/rpc/panel_censo_exportar':
+        llamadas.exportacion.push(peticion.postDataJSON() as Record<string, unknown>);
+        return json({
+          generadoEn: '2026-11-05T15:00:00Z',
+          generadoPor: 'Administración Prueba',
+          resumen: CENSO,
+          personas: [PERSONA_CENSO],
+        });
       case '/rest/v1/rpc/panel_cuentas':
         return json({ total: 1, pagina: 1, tamano: 25, filas: [CUENTA] });
       default:
@@ -500,6 +522,38 @@ test('el censo cuenta a cada persona una vez y muestra sus fortalezas y falencia
   await expect(page.getByRole('heading', { name: 'Falencias (1)' })).toBeVisible();
   await page.getByRole('link', { name: 'Volver al censo' }).click();
   await expect(page).toHaveURL(/\/panel\/censo\?area=bienestar_emocional/);
+});
+
+test('el censo se descarga en Excel solo con un motivo, que queda en la auditoría', async ({
+  page,
+}) => {
+  const llamadas = await iniciarSesion(page);
+  await page.goto('/panel/censo');
+  await page.getByRole('button', { name: 'Descargar en Excel' }).click();
+  const dialogo = page.getByRole('dialog', { name: 'Descargar el censo en Excel' });
+  await expect(dialogo).toBeVisible();
+  expect(await violacionesGraves(page)).toEqual([]);
+
+  // Sin motivo no se pide nada a la base.
+  await dialogo.getByRole('button', { name: 'Descargar', exact: true }).click();
+  await expect(dialogo.getByText('Escribe el motivo, con al menos 10 caracteres.')).toBeVisible();
+  expect(llamadas.exportacion).toHaveLength(0);
+
+  await dialogo.getByLabel('Motivo de la descarga').fill('Informe mensual del equipo');
+  const [descarga] = await Promise.all([
+    page.waitForEvent('download'),
+    dialogo.getByRole('button', { name: 'Descargar', exact: true }).click(),
+  ]);
+  expect(descarga.suggestedFilename()).toBe('censo-mente-al-dia-2026-11-05.xlsx');
+  expect(llamadas.exportacion[0]).toMatchObject({ p_motivo: 'Informe mensual del equipo' });
+  await expect(page.getByText('Listo: descargaste el censo de 1 persona.')).toBeVisible();
+  await expect(dialogo).toBeHidden();
+
+  // El archivo se abre con sus tres hojas y la persona del censo.
+  const libro = new ExcelJS.Workbook();
+  await libro.xlsx.readFile(await descarga.path());
+  expect(libro.worksheets.map((h) => h.name)).toEqual(['Resumen', 'Áreas', 'Personas']);
+  expect(libro.getWorksheet('Personas')?.getRow(2).getCell(1).value).toBe('Ana Prueba');
 });
 
 test('fortalezas y falencias agrupa las preguntas de una persona y deja la impresión en la auditoría', async ({

@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Callout } from '@/components/ui/feedback';
 import { esMarcador } from '@/config/sitio';
-import { esMarcable, lineasActivas, type LineaAyuda } from '@/content/lineas-ayuda';
+import { esMarcable, lineasActivas, numeroVisible, type LineaAyuda } from '@/content/lineas-ayuda';
 import { textos } from '@/content/textos-interfaz';
 import { cn } from '@/lib/utils/cn';
 
@@ -18,7 +18,7 @@ function HelplineItem({ linea }: { linea: LineaAyuda }) {
           esMarcador(linea.numero) ? 'text-cuerpo-grande' : 'text-h2',
         )}
       >
-        {linea.numero}
+        {numeroVisible(linea.numero)}
       </p>
       <p className="font-semibold text-grafito-900">{linea.nombre}</p>
       <dl className="grid gap-0.5 text-pequeno text-grafito-600">
@@ -26,10 +26,12 @@ function HelplineItem({ linea }: { linea: LineaAyuda }) {
           <dt className="inline font-semibold">{textos.lineasAyuda.atiende}: </dt>
           <dd className="inline">{linea.atiende}</dd>
         </div>
-        <div>
-          <dt className="inline font-semibold">{textos.lineasAyuda.horario}: </dt>
-          <dd className="inline">{linea.horario}</dd>
-        </div>
+        {linea.horario ? (
+          <div>
+            <dt className="inline font-semibold">{textos.lineasAyuda.horario}: </dt>
+            <dd className="inline">{linea.horario}</dd>
+          </div>
+        ) : null}
         <div>
           <dt className="inline font-semibold">{textos.lineasAyuda.cobertura}: </dt>
           <dd className="inline">{linea.cobertura}</dd>
@@ -39,7 +41,7 @@ function HelplineItem({ linea }: { linea: LineaAyuda }) {
         <Button asChild size="sm" className="mt-1 self-start">
           <a
             href={`tel:${linea.numero}`}
-            aria-label={textos.lineasAyuda.llamarA(linea.numero, linea.nombre)}
+            aria-label={textos.lineasAyuda.llamarA(numeroVisible(linea.numero), linea.nombre)}
           >
             <Phone aria-hidden />
             {textos.lineasAyuda.llamar}

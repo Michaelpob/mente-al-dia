@@ -1,16 +1,17 @@
 /**
- * Líneas de ayuda: valores iniciales del Anexo F.4 (mente-al-dia-contenido.json).
- * ESTADO: EJEMPLO. Confirmar con el equipo profesional antes del lanzamiento.
- * En la Fase 4 pasan a la tabla de configuración y se editan desde el panel.
+ * Líneas de ayuda (D-85): las que entregó el equipo del proyecto, en su mismo orden. Son las únicas
+ * que se muestran en el sitio (encabezado, página de líneas y resultados).
  */
 export type EstadoLinea = 'verificada' | 'completar' | 'opcional';
 
 export interface LineaAyuda {
   id: string;
+  /** Solo dígitos, para el enlace tel:. En pantalla se muestra con numeroVisible(). */
   numero: string;
   nombre: string;
   atiende: string;
-  horario: string;
+  /** Solo si se conoce: no se inventa un horario. */
+  horario?: string;
   cobertura: string;
   estado: EstadoLinea;
   /** Solo las líneas activas se muestran en el sitio. */
@@ -18,77 +19,66 @@ export interface LineaAyuda {
 }
 
 export const lineasAyudaMeta = {
-  version: '1.0',
-  fuente: 'ejemplo',
-  nota: 'Valores de ejemplo para Colombia; confirmar con el equipo profesional antes del lanzamiento.',
+  version: '2.0',
+  fuente: 'equipo del proyecto',
+  nota: 'Líneas entregadas por el equipo del proyecto el 5 de noviembre de 2026 (D-85).',
 } as const;
 
 export const lineasAyuda: readonly LineaAyuda[] = [
   {
+    id: 'salud-mental-106',
+    numero: '106',
+    nombre: 'Línea Nacional de Salud Mental',
+    atiende: 'Escucha y orientación en salud mental',
+    cobertura: 'Nacional',
+    estado: 'verificada',
+    activa: true,
+  },
+  {
+    id: 'tolima-linea-naranja',
+    numero: '3186072341',
+    nombre: 'Tolima – Línea Naranja «Yo te escucho»',
+    atiende: 'Escucha y apoyo emocional',
+    cobertura: 'Tolima',
+    estado: 'verificada',
+    activa: true,
+  },
+  {
+    id: 'tolima-hablalo',
+    numero: '3173188854',
+    nombre: 'Tolima – «Háblalo», línea diseñada para hombres',
+    atiende: 'Escucha y apoyo emocional para hombres',
+    cobertura: 'Tolima',
+    estado: 'verificada',
+    activa: true,
+  },
+  {
     id: 'emergencias',
     numero: '123',
-    nombre: 'Línea de emergencias',
+    nombre: 'Emergencias',
     atiende: 'Cualquier situación de peligro inmediato',
     horario: '24 horas',
     cobertura: 'Nacional',
     estado: 'verificada',
     activa: true,
   },
-  {
-    id: 'icbf',
-    numero: '141',
-    nombre: 'Línea ICBF',
-    atiende: 'Protección de niñas, niños y adolescentes',
-    horario: '24 horas, gratuita',
-    cobertura: 'Nacional',
-    estado: 'verificada',
-    activa: true,
-  },
-  {
-    id: 'linea-155',
-    numero: '155',
-    nombre: 'Línea 155',
-    atiende: 'Orientación a mujeres víctimas de violencia',
-    horario: '24 horas',
-    cobertura: 'Nacional',
-    estado: 'verificada',
-    activa: true,
-  },
-  {
-    id: 'salud-mental-local',
-    numero: '[LÍNEA DE SALUD MENTAL LOCAL]',
-    nombre: 'Línea de salud mental del municipio o departamento',
-    atiende: 'Escucha y orientación en salud mental',
-    horario: '[COMPLETAR]',
-    cobertura: '[MUNICIPIO]',
-    estado: 'completar',
-    activa: false,
-  },
-  {
-    id: 'linea-106',
-    numero: '106',
-    nombre: 'Línea 106 «El poder de ser escuchado»',
-    atiende: 'Escucha y orientación (incluye niñas, niños y adolescentes)',
-    horario: '[VERIFICAR]',
-    cobertura: 'Solo Bogotá: activar únicamente si aplica',
-    estado: 'opcional',
-    activa: false,
-  },
-  {
-    id: 'servicio-salud',
-    numero: '[DIRECCIÓN Y TELÉFONO]',
-    nombre: 'Servicio de salud más cercano / Secretaría de Salud',
-    atiende: 'Atención presencial y rutas de atención',
-    horario: '[COMPLETAR]',
-    cobertura: '[MUNICIPIO]',
-    estado: 'completar',
-    activa: false,
-  },
 ];
 
 export const lineasActivas: readonly LineaAyuda[] = lineasAyuda.filter((linea) => linea.activa);
 
+/** La línea de emergencias (123): va primero en el apoyo inmediato de los resultados. */
+export const lineaEmergencias: LineaAyuda | undefined = lineasActivas.find(
+  (linea) => linea.id === 'emergencias',
+);
+
 /** Solo los números reales se pueden marcar con un enlace tel:. */
 export function esMarcable(numero: string): boolean {
   return /^\d{3,10}$/.test(numero);
+}
+
+/** Un celular de 10 dígitos se lee mejor en grupos: «318 607 2341». Los cortos quedan igual. */
+export function numeroVisible(numero: string): string {
+  return /^\d{10}$/.test(numero)
+    ? `${numero.slice(0, 3)} ${numero.slice(3, 6)} ${numero.slice(6)}`
+    : numero;
 }

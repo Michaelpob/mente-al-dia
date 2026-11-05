@@ -64,9 +64,9 @@ export const guia = {
       {
         nombre: 'Luces (solo decoración)',
         tokens: [
-          { token: 'luz-lavanda', uso: 'La mente: brillos, borde del orbe y luz del inicio' },
-          { token: 'luz-turquesa', uso: 'La calma: foco, anillo del orbe y estrellas' },
-          { token: 'luz-coral', uso: 'La calidez: anillo del orbe y degradados' },
+          { token: 'luz-lavanda', uso: 'La mente: brillos y luz del inicio' },
+          { token: 'luz-turquesa', uso: 'La calma: foco y estrellas' },
+          { token: 'luz-coral', uso: 'La calidez: degradados' },
           { token: 'luz-amanecer', uso: 'La esperanza: el amanecer del inicio y del cierre' },
         ],
       },

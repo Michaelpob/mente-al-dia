@@ -62,13 +62,12 @@ test('no tiene el ejercicio de respiración guiada (se quitó del sitio)', async
   await expect(page.getByText('Tómate un minuto')).toHaveCount(0);
 });
 
-test('el orbe 3D se dibuja y, con «reducir movimiento», queda la imagen fija', async ({ page }) => {
+test('el inicio muestra la ilustración de la comunidad en lugar del orbe 3D', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('main canvas')).toHaveCount(1);
-  await page.getByRole('button', { name: 'Accesibilidad' }).click();
-  await page.getByRole('switch', { name: 'Reducir movimiento' }).click();
+  const imagen = page.getByRole('img', { name: /personas de todas las edades/ });
+  await expect(imagen).toBeVisible();
+  await expect(imagen).toHaveAttribute('srcset', /comunidad-768.*768w.*comunidad-1536.*1536w/);
   await expect(page.locator('main canvas')).toHaveCount(0);
-  await expect(page.locator('main img[src*="orbe"]')).toBeVisible();
 });
 
 test('sin violaciones de accesibilidad en alto contraste', async ({ page }) => {

@@ -32,7 +32,7 @@ function vigilarConsola(page: Page): string[] {
   const mensajes: string[] = [];
   page.on('console', (m) => {
     // Avisos de rendimiento del controlador de GPU por software del navegador de pruebas
-    // (aparecen cuando axe lee la página con el orbe 3D); no vienen del sitio.
+    // (aparecían con el orbe 3D, que ya no está); no vienen del sitio.
     if (m.text().includes('GL Driver Message')) return;
     if (m.type() === 'error' || m.type() === 'warning') mensajes.push(`${m.type()}: ${m.text()}`);
   });
@@ -209,6 +209,14 @@ test.describe('Teclado', () => {
     await expect(panel.getByRole('link', { name: /Llamar al 123/ })).toHaveAttribute(
       'href',
       'tel:123',
+    );
+    // Solo las cuatro líneas que entregó el equipo (D-85), con los celulares agrupados.
+    await expect(panel.getByRole('listitem')).toHaveCount(4);
+    await expect(panel.getByText('Línea Nacional de Salud Mental')).toBeVisible();
+    await expect(panel.getByText('318 607 2341')).toBeVisible();
+    await expect(panel.getByRole('link', { name: /Llamar al 317 318 8854/ })).toHaveAttribute(
+      'href',
+      'tel:3173188854',
     );
     expect(await violacionesGraves(page)).toEqual([]);
     await page.keyboard.press('Escape');

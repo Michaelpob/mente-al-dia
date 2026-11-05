@@ -12,6 +12,8 @@ export const inicio = {
     comoFunciona: 'Cómo funciona',
     confianzaEtiqueta: 'Lo que debes saber',
     confianza: ['Gratuito', 'Confidencial', 'Unos 10 minutos', 'Orientación, no diagnóstico'],
+    imagenAlt:
+      'Ilustración: personas de todas las edades —abuelos, adultos, jóvenes, niñas y niños— sonríen juntas al aire libre.',
   },
 
   queEs: {

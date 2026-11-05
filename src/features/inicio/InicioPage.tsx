@@ -31,8 +31,9 @@ import { inicio } from '@/content/inicio';
 import { textos } from '@/content/textos-interfaz';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { cn } from '@/lib/utils/cn';
+import comunidad1536 from '@/assets/inicio/comunidad-1536.webp';
+import comunidad768 from '@/assets/inicio/comunidad-768.webp';
 import { ExploradorAreas } from './ExploradorAreas';
-import { Orbe } from './orbe/Orbe';
 
 const RUTA_REGISTRO = '/registro';
 
@@ -99,9 +100,20 @@ function EscenaHero() {
   return (
     <div
       ref={ref}
-      className="-order-1 mx-auto w-[min(17rem,72vw)] will-change-transform lg:order-none lg:w-full lg:max-w-120"
+      className="-order-1 mx-auto w-full max-w-xl will-change-transform lg:order-none lg:max-w-none"
     >
-      <Orbe />
+      {/* La ilustración de la comunidad (D-85) reemplaza al orbe 3D: es lo primero que se ve. */}
+      <img
+        src={comunidad1536}
+        srcSet={`${comunidad768} 768w, ${comunidad1536} 1536w`}
+        sizes="(min-width: 1024px) 42vw, 92vw"
+        width={1536}
+        height={1024}
+        alt={inicio.hero.imagenAlt}
+        fetchPriority="high"
+        decoding="async"
+        className="h-auto w-full rounded-xl border border-piedra-200 shadow-[0_0_64px_-16px_var(--luz-lavanda)] contraste-alto:shadow-none"
+      />
     </div>
   );
 }
@@ -120,7 +132,7 @@ const amanecer = {
 };
 
 /**
- * Noche del inicio (D-75): retícula, estrellas, la luz lavanda de la mente detrás del orbe, la
+ * Noche del inicio (D-75): retícula, estrellas, la luz lavanda de la mente detrás de la imagen, la
  * turquesa de la calma y un amanecer abajo; derivan despacio. Se desvanece hacia abajo para no
  * cortarse en el borde de la sección. Es decorativa; con alto contraste o al imprimir no se muestra.
  */

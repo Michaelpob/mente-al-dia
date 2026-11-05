@@ -313,6 +313,11 @@ test('con ruta de atención especial, el apoyo inmediato va antes que todo', asy
       .getByRole('link', { name: /Llamar al 123/ })
       .first(),
   ).toBeVisible();
+  // El primer botón del apoyo inmediato marca el 123, aunque en la lista vaya de último (D-85).
+  const llamadas = page.locator('main').getByRole('link', { name: /^Llamar al / });
+  await expect(llamadas.first()).toHaveAttribute('href', 'tel:123');
+  await expect(llamadas.first()).toHaveText(/Llamar al 123/);
+  await expect(llamadas.nth(1)).toHaveAttribute('href', 'tel:106');
   expect(await violacionesGraves(page)).toEqual([]);
 });
 

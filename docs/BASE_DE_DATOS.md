@@ -13,7 +13,8 @@ Mente al Día usa **Supabase**: PostgreSQL con permisos por fila (RLS), inicio d
 | Ingreso al panel              | `src/features/panel/acceso/`                              | `/panel/ingresar` (contraseña + verificación en dos pasos), `/panel/definir-contrasena` (invitaciones y recuperación) y la protección de las rutas del panel.              |
 | Consultas del panel (Fase 8)  | `supabase/migrations/20261027120000_panel_fase8.sql`      | Tablero, registros (búsqueda, filtros y páginas en el servidor), ficha con historial, prioritarios y registro de impresión. Contacto enmascarado (D-68).                   |
 | Censo del panel (D-83)        | `supabase/migrations/20261105120000_censo_del_panel.sql`  | Censo: cada persona una vez, con su cuestionario más reciente; fortalezas y falencias por área y la lista de personas con filtros (`panel_censo`, `panel_censo_personas`). |
-| Pruebas de la base de datos   | `supabase/tests/`                                         | Comprobaciones pgTAP de permisos, auditoría, reportes, envíos y consultas del panel (`04_panel`, 40) y el censo (`08_censo`, 30).                                          |
+| Descarga del censo (D-84)     | `supabase/migrations/20261105150000_descargar_censo.sql`  | Excel del censo: solo superadministración con doble factor, con motivo y auditoría, sin contacto (`panel_censo_exportar`).                                                 |
+| Pruebas de la base de datos   | `supabase/tests/`                                         | Comprobaciones pgTAP de permisos, auditoría, reportes, envíos y consultas del panel (`04_panel`, 40) el censo (`08_censo`, 30) y su descarga (`09_descargar_censo`, 14).   |
 | Pruebas de las funciones      | `supabase/functions/*/manejador.test.ts`                  | 18 pruebas con Deno.                                                                                                                                                       |
 
 ## Roles

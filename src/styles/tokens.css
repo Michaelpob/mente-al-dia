@@ -42,7 +42,7 @@
   --arena-400: #ff9f8a; /* acento cálido decorativo: coral (no usar para texto) */
   --arena-100: #2b1834; /* fondos cálidos (apoyo inmediato) */
 
-  /* Luces: solo decoración (brillos, retícula, orbe y degradados), nunca texto pequeño */
+  /* Luces: solo decoración (brillos, retícula y degradados), nunca texto pequeño */
   --luz-lavanda: #8b7cf6; /* la mente: introspección */
   --luz-turquesa: #3fd8d4; /* la calma: equilibrio y claridad */
   --luz-coral: #ff9a85; /* la calidez: vínculo */

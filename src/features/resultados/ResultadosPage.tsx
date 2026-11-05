@@ -8,7 +8,13 @@ import { PageMeta } from '@/components/layout/page';
 import { Button } from '@/components/ui/button';
 import { Callout, Eyebrow } from '@/components/ui/feedback';
 import { NivelBadge } from '@/components/ui/nivel-badge';
-import { esMarcable, lineasActivas, type LineaAyuda } from '@/content/lineas-ayuda';
+import {
+  esMarcable,
+  lineaEmergencias,
+  lineasActivas,
+  numeroVisible,
+  type LineaAyuda,
+} from '@/content/lineas-ayuda';
 import { participar } from '@/content/participar';
 import { textos } from '@/content/textos-interfaz';
 import { mensajesAtencionEspecial, mensajesGenerales } from '@/content/v1/mensajes';
@@ -28,11 +34,16 @@ import {
 
 const idTarjeta = (areaId: AreaId) => `area-${areaId}`;
 
-/** Botones de llamada del apoyo inmediato: las tres primeras líneas con número marcable. */
-const LINEAS_APOYO = lineasActivas.filter((linea) => esMarcable(linea.numero)).slice(0, 3);
-/** «Línea ICBF (141)»; si el nombre ya trae el número («Línea 155»), sin repetirlo. */
+/** Botones de llamada del apoyo inmediato: primero el 123 y después las demás líneas marcables. */
+const LINEAS_APOYO = [
+  ...(lineaEmergencias ? [lineaEmergencias] : []),
+  ...lineasActivas.filter((linea) => linea !== lineaEmergencias && esMarcable(linea.numero)),
+];
+/** «Línea Nacional de Salud Mental (106)»; si el nombre ya trae el número, sin repetirlo. */
 const etiquetaLinea = (linea: LineaAyuda) =>
-  linea.nombre.includes(linea.numero) ? linea.nombre : `${linea.nombre} (${linea.numero})`;
+  linea.nombre.includes(linea.numero)
+    ? linea.nombre
+    : `${linea.nombre} (${numeroVisible(linea.numero)})`;
 
 /**
  * Resultados (Fase 7): apoyo inmediato si aplica, mensaje general, rueda con el nivel de cada
@@ -239,14 +250,20 @@ function ApoyoInmediato({ modulo, titulo }: { modulo: ModuloDisponible; titulo: 
           </>
         ) : null}
         <div className="mt-5 flex flex-wrap gap-3">
-          {LINEAS_APOYO.map((linea, i) => (
-            <Button key={linea.id} asChild variant={i === 0 ? 'primario' : 'secundario'}>
+          {LINEAS_APOYO.map((linea) => (
+            <Button
+              key={linea.id}
+              asChild
+              variant={linea === lineaEmergencias ? 'primario' : 'secundario'}
+            >
               <a
                 href={`tel:${linea.numero}`}
-                aria-label={textos.lineasAyuda.llamarA(linea.numero, linea.nombre)}
+                aria-label={textos.lineasAyuda.llamarA(numeroVisible(linea.numero), linea.nombre)}
               >
                 <Phone aria-hidden />
-                {i === 0 ? participar.resultados.llamar123 : etiquetaLinea(linea)}
+                {linea === lineaEmergencias
+                  ? participar.resultados.llamar123
+                  : etiquetaLinea(linea)}
               </a>
             </Button>
           ))}
