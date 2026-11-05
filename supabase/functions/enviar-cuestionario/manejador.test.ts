@@ -59,6 +59,14 @@ const envioNino = (cambios: Record<string, unknown> = {}) => ({
   ...cambios,
 });
 
+const envioAdolescente = (cambios: Record<string, unknown> = {}) => ({
+  ...envioNino(),
+  modulo: 'adolescente',
+  participante: { nombre: 'Adolescente', edad: 15, grado: 'Décimo' },
+  respuestas: respuestas((i) => (i === 3 ? 'prefiero_no_responder' : 'si')),
+  ...cambios,
+});
+
 const enviar = (cuerpo: unknown, init: RequestInit = {}) =>
   new Request('http://localhost/enviar-cuestionario', {
     method: 'POST',
@@ -162,6 +170,33 @@ Deno.test('exige las autorizaciones', async () => {
   });
   assertEquals((await crearManejador(deps)(enviar(sinSensibles))).status, 400);
   assertEquals(registros.length, 0);
+});
+
+Deno.test('adolescentes: su cuestionario, con adulto responsable y su autorización', async () => {
+  const { deps, registros } = dependencias();
+  const respuesta = await crearManejador(deps)(enviar(envioAdolescente()));
+  assertEquals(respuesta.status, 200);
+  const esperado = calcularParaModulo('adolescente', envioAdolescente().respuestas as never);
+  assertEquals(registros[0]!.resultado, esperado);
+  assertEquals(registros[0]!.participante.modulo, 'adolescente');
+  assertEquals(registros[0]!.consentimientos, {
+    tratamiento_datos: '0.1-borrador',
+    datos_sensibles: '0.1-borrador',
+    autorizacion_acudiente: '0.1-borrador',
+  });
+
+  const sinAutorizacion = envioAdolescente({
+    autorizaciones: { tratamientoDatos: true, datosSensibles: true },
+  });
+  assertEquals((await crearManejador(deps)(enviar(sinAutorizacion))).status, 400);
+  const sinAdulto: Record<string, unknown> = envioAdolescente();
+  delete sinAdulto.acudiente;
+  assertEquals((await crearManejador(deps)(enviar(sinAdulto))).status, 400);
+  const mayor = envioAdolescente({
+    participante: { nombre: 'Persona', edad: 25, grado: 'Décimo' },
+  });
+  assertEquals((await crearManejador(deps)(enviar(mayor))).status, 400);
+  assertEquals(registros.length, 1);
 });
 
 Deno.test('valida los datos del registro sin repetir lo recibido', async () => {
