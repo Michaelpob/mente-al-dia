@@ -2,6 +2,7 @@ import { supabase } from '@/lib/supabase/cliente';
 import type {
   Censo,
   DatosContacto,
+  ExportacionCenso,
   Ficha,
   FiltrosCenso,
   FiltrosPersonasCenso,
@@ -110,6 +111,20 @@ export function obtenerPersonasCenso(f: FiltrosPersonasCenso): Promise<PaginaCen
     p_orden: f.orden,
     p_pagina: f.pagina,
     p_tamano: f.tamano,
+  });
+}
+
+/**
+ * Descarga del censo (D-84): todas las personas del filtro, para el Excel. Solo superadministración,
+ * con un motivo; la base deja la descarga en la auditoría antes de devolver los datos.
+ */
+export function exportarCenso(f: FiltrosCenso, motivo: string): Promise<ExportacionCenso> {
+  return rpc('panel_censo_exportar', {
+    p_motivo: motivo,
+    p_desde: f.desde,
+    p_hasta: f.hasta,
+    p_modulo: f.modulo,
+    p_lugar: f.lugar,
   });
 }
 

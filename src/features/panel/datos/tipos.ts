@@ -264,3 +264,11 @@ export interface PaginaCenso {
   tamano: number;
   filas: PersonaCenso[];
 }
+
+/** panel_censo_exportar (D-84): el censo completo para el Excel, sin contacto y con auditoría. */
+export interface ExportacionCenso {
+  generadoEn: string;
+  generadoPor: string | null;
+  resumen: Censo;
+  personas: PersonaCenso[];
+}

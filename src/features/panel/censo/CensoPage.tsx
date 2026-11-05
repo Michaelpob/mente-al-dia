@@ -43,6 +43,7 @@ import {
 } from '../datos/tipos';
 import { Indicador } from '../tablero/indicadores';
 import { NIVELES_CENSO, ordenarGrados, resumenAreas } from './analisis';
+import { DescargaCenso } from './DescargaCenso';
 import { AreasCenso, ListaBarras } from './piezas';
 
 const c = panel.censo;
@@ -113,7 +114,9 @@ export default function CensoPage() {
   return (
     <PaginaPanel>
       <PageMeta title={c.titulo} indexable={false} />
-      <EncabezadoPanel titulo={c.titulo} descripcion={c.descripcion} />
+      <EncabezadoPanel titulo={c.titulo} descripcion={c.descripcion}>
+        <DescargaCenso filtros={base} personas={resumen.data?.personas} />
+      </EncabezadoPanel>
 
       <section
         aria-label={f.titulo}
