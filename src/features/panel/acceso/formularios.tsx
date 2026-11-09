@@ -244,6 +244,7 @@ const TEXTO_SIN_ACCESO: Record<MotivoSinAcceso, string> = {
   sin_perfil: t.sinPerfil,
   inactivo: t.inactivo,
   sin_permiso: t.soloAdministracion,
+  institucion_inactiva: t.institucionInactiva,
 };
 
 export function SinAcceso({ motivo }: { motivo: MotivoSinAcceso }) {

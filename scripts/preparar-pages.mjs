@@ -37,6 +37,7 @@ const RUTAS = [
   'panel/censo',
   'panel/prioritarios',
   'panel/cuentas',
+  'panel/instituciones',
   'panel/seguimiento',
   'panel/reportes',
   'panel/configuracion',

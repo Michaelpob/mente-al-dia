@@ -11,6 +11,7 @@ const ExcelJS =
  * Criterios de aceptación de la Fase 8: tablero, registros, ficha, prioritarios y cierre por
  * inactividad. La build de pruebas apunta a un Supabase ficticio (.env.pruebas): aquí se simula una
  * sesión de superadministración con doble factor y las respuestas de las consultas del panel.
+ * Desde D-86 también el administrador de una institución, que solo ve la suya.
  */
 
 const SUPABASE = 'http://127.0.0.1:54321';
@@ -50,6 +51,120 @@ const TABLERO = {
   opcionesLugar: ['Centro', 'Norte'],
 };
 
+const COLEGIO = {
+  id: '00000000-0000-0000-0000-0000000001e1',
+  nombre: 'Colegio 1',
+  slug: 'colegio1',
+  activa: true,
+};
+const ALCALDIA = {
+  id: '00000000-0000-0000-0000-0000000002e1',
+  nombre: 'Alcaldía 2',
+  slug: 'alcaldia2',
+  activa: false,
+};
+const INSTITUCIONES = [
+  {
+    ...COLEGIO,
+    creadoEn: '2026-11-08T12:00:00Z',
+    cuestionarios: 4,
+    personas: 3,
+    prioritariosPendientes: 1,
+    ultimoCuestionario: '2026-11-05T15:00:00Z',
+    visitas: 9,
+    administradores: 1,
+  },
+  {
+    ...ALCALDIA,
+    creadoEn: '2026-11-08T12:00:00Z',
+    cuestionarios: 0,
+    personas: 0,
+    prioritariosPendientes: 0,
+    ultimoCuestionario: null,
+    visitas: 0,
+    administradores: 0,
+  },
+];
+
+/** Filas de public.mi_perfil: el administrador general no tiene institución. */
+const PERFIL_GENERAL = {
+  id: ADMIN,
+  nombre: 'Administración Prueba',
+  rol: 'superadministrador',
+  activo: true,
+  institucion_id: null,
+  institucion_nombre: null,
+  institucion_slug: null,
+  institucion_activa: null,
+};
+const PERFIL_INSTITUCIONAL = {
+  id: ADMIN,
+  nombre: 'Rectoría Prueba',
+  rol: 'administrador_institucional',
+  activo: true,
+  institucion_id: COLEGIO.id,
+  institucion_nombre: COLEGIO.nombre,
+  institucion_slug: COLEGIO.slug,
+  institucion_activa: true,
+};
+const RECTORIA = '00000000-0000-0000-0000-0000000000b1';
+
+const ADMINISTRADORES = [
+  {
+    id: ADMIN,
+    nombre: 'Administración Prueba',
+    correo: 'admin@ejemplo.gov.co',
+    rol: 'superadministrador',
+    activo: true,
+    institucion: null,
+    creadoEn: '2026-10-26T20:00:00Z',
+    ultimoIngreso: '2026-11-08T12:00:00Z',
+    dobleFactor: true,
+  },
+  {
+    id: RECTORIA,
+    nombre: 'Rectoría Prueba',
+    correo: 'rectoria@colegio.edu.co',
+    rol: 'administrador_institucional',
+    activo: true,
+    institucion: { id: COLEGIO.id, nombre: COLEGIO.nombre, activa: true },
+    creadoEn: '2026-11-08T12:00:00Z',
+    ultimoIngreso: null,
+    dobleFactor: false,
+  },
+];
+
+const AUDITORIA = {
+  total: 2,
+  pagina: 1,
+  tamano: 50,
+  acciones: ['actualizar', 'exportar_censo'],
+  filas: [
+    {
+      id: 2,
+      ocurridoEn: '2026-11-08T14:00:00Z',
+      actor: 'Rectoría Prueba',
+      actorRol: 'administrador_institucional',
+      accion: 'exportar_censo',
+      entidad: 'censo',
+      entidadId: null,
+      institucion: 'Colegio 1',
+      detalle: { motivo: 'Informe mensual', personas: 3 },
+    },
+    {
+      id: 1,
+      ocurridoEn: '2026-11-08T13:00:00Z',
+      actor: 'Administración Prueba',
+      actorRol: 'superadministrador',
+      accion: 'actualizar',
+      entidad: 'instituciones',
+      entidadId: 'colegio1',
+      institucion: 'Colegio 1',
+      detalle: { nombre: { antes: 'Colegio', despues: 'Colegio 1' } },
+    },
+  ],
+};
+
 const VISITAS = {
   total: 13,
   anterior: 9,
@@ -64,6 +179,7 @@ const FILA = {
   modulo: 'adulto',
   edad: 30,
   lugar: 'Centro',
+  institucion: 'Colegio 1',
   resultadoGeneral: 'desafios',
   atencion: 9,
   prioridad: true,
@@ -178,6 +294,7 @@ const CENSO = {
   conPrioridad: 1,
   conFalencias: 2,
   porModulo: { adulto: 2, adolescente: 1 },
+  porInstitucion: [{ institucion: 'Colegio 1', n: 3 }],
   resultados: { desafios: 1, por_fortalecer: 1, favorable: 1 },
   porEdad: [{ edad: 15, n: 1 }],
   porSexo: [{ sexo: 'Mujer', n: 1 }],
@@ -215,6 +332,14 @@ const PERSONA_CENSO = {
 };
 
 interface Llamadas {
+  tablero: Record<string, unknown>[];
+  prioritarios: Record<string, unknown>[];
+  instituciones: number;
+  institucionActualizada: Record<string, unknown>[];
+  administradores: number;
+  administradorActualizado: Record<string, unknown>[];
+  invitaciones: Record<string, unknown>[];
+  auditoria: Record<string, unknown>[];
   registros: Record<string, unknown>[];
   censo: Record<string, unknown>[];
   exportacion: Record<string, unknown>[];
@@ -225,11 +350,22 @@ interface Llamadas {
 
 const base64url = (o: unknown) => Buffer.from(JSON.stringify(o)).toString('base64url');
 
+interface OpcionesSesion {
+  /** La fila de mi_perfil: por defecto, el administrador general. */
+  perfil?: Record<string, unknown>;
+  /** Cómo responde la Edge Function invitar-usuario. */
+  invitacion?: 'ok' | 'conflicto';
+}
+
 /**
  * Sesión de superadministración y las consultas simuladas. Por defecto, con el doble factor ya
  * verificado (aal2); con aal1 la sesión espera el código de la app de autenticación.
  */
-async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promise<Llamadas> {
+async function iniciarSesion(
+  page: Page,
+  nivel: 'aal1' | 'aal2' = 'aal2',
+  { perfil = PERFIL_GENERAL, invitacion = 'ok' }: OpcionesSesion = {},
+): Promise<Llamadas> {
   const ahora = Math.floor(Date.now() / 1000);
   const usuario = {
     id: ADMIN,
@@ -288,6 +424,14 @@ async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promi
   );
 
   const llamadas: Llamadas = {
+    tablero: [],
+    prioritarios: [],
+    instituciones: 0,
+    institucionActualizada: [],
+    administradores: 0,
+    administradorActualizado: [],
+    invitaciones: [],
+    auditoria: [],
     registros: [],
     censo: [],
     exportacion: [],
@@ -311,14 +455,47 @@ async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promi
         llamadas.salida += 1;
         return route.fulfill({ status: 204, headers: CORS });
       case '/rest/v1/rpc/mi_perfil':
-        return json({
-          id: ADMIN,
-          nombre: 'Administración Prueba',
-          rol: 'superadministrador',
-          activo: true,
-        });
+        return json(perfil);
       case '/rest/v1/rpc/panel_tablero':
+        llamadas.tablero.push(peticion.postDataJSON() as Record<string, unknown>);
         return json(TABLERO);
+      case '/rest/v1/rpc/panel_instituciones':
+        llamadas.instituciones += 1;
+        return json(INSTITUCIONES);
+      case '/rest/v1/rpc/panel_institucion_actualizar': {
+        const cuerpo = peticion.postDataJSON() as Record<string, unknown>;
+        llamadas.institucionActualizada.push(cuerpo);
+        return json({
+          id: cuerpo.p_id,
+          nombre: cuerpo.p_nombre,
+          slug: cuerpo.p_slug,
+          activa: cuerpo.p_activa,
+        });
+      }
+      case '/rest/v1/rpc/panel_administradores':
+        llamadas.administradores += 1;
+        return json(ADMINISTRADORES);
+      case '/rest/v1/rpc/panel_administrador_actualizar':
+        llamadas.administradorActualizado.push(peticion.postDataJSON() as Record<string, unknown>);
+        return route.fulfill({ status: 204, headers: CORS });
+      case '/rest/v1/rpc/panel_auditoria':
+        llamadas.auditoria.push(peticion.postDataJSON() as Record<string, unknown>);
+        return json(AUDITORIA);
+      case '/functions/v1/invitar-usuario':
+        llamadas.invitaciones.push(peticion.postDataJSON() as Record<string, unknown>);
+        return invitacion === 'ok'
+          ? route.fulfill({
+              status: 201,
+              headers: { ...CORS, 'content-type': 'application/json' },
+              body: JSON.stringify({ id: '00000000-0000-0000-0000-0000000000b2' }),
+            })
+          : route.fulfill({
+              status: 409,
+              headers: { ...CORS, 'content-type': 'application/json' },
+              body: JSON.stringify({
+                error: { codigo: 'conflicto', mensaje: 'Ese correo ya tiene una cuenta.' },
+              }),
+            });
       case '/rest/v1/rpc/panel_visitas':
         return json(VISITAS);
       case '/rest/v1/rpc/panel_registros':
@@ -327,6 +504,7 @@ async function iniciarSesion(page: Page, nivel: 'aal1' | 'aal2' = 'aal2'): Promi
       case '/rest/v1/rpc/panel_detalle':
         return json(FICHA);
       case '/rest/v1/rpc/panel_prioritarios':
+        llamadas.prioritarios.push(peticion.postDataJSON() as Record<string, unknown>);
         return json(PRIORITARIOS);
       case '/rest/v1/rpc/ver_datos_contacto':
         llamadas.contacto += 1;
@@ -610,8 +788,8 @@ test('cuentas muestra quién se registró, su actividad y su avance, sin sus res
 
 test('las secciones de la Fase 9 explican que están en construcción', async ({ page }) => {
   await iniciarSesion(page);
-  await page.goto('/panel/auditoria');
-  await expect(page.getByRole('heading', { level: 1, name: 'Auditoría' })).toBeVisible();
+  await page.goto('/panel/configuracion');
+  await expect(page.getByRole('heading', { level: 1, name: 'Configuración' })).toBeVisible();
   await expect(
     page.getByText('Esta sección se construye en la Fase 9 del proyecto.'),
   ).toBeVisible();
@@ -697,4 +875,197 @@ test('«Cerrar sesión» en la verificación en dos pasos también vuelve a la p
   await page.getByRole('button', { name: 'Cerrar sesión', exact: true }).click();
   await expect(page.locator('h1')).toHaveText('Cuidar tu mente también es cuidarte');
   expect(llamadas.salida).toBe(1);
+});
+
+// ---------------------------------------------------------------------------------- D-86
+
+/** El menú del panel (en el teléfono, dentro del panel deslizable). */
+async function menuDelPanel(page: Page) {
+  if (test.info().project.name.includes('movil')) {
+    await page.getByRole('button', { name: 'Menú' }).click();
+    return page.getByRole('dialog').getByRole('navigation', { name: 'Secciones del panel' });
+  }
+  return page.getByRole('navigation', { name: 'Secciones del panel' });
+}
+
+test('el administrador de una institución solo ve la suya y no las secciones del general', async ({
+  page,
+}) => {
+  const llamadas = await iniciarSesion(page, 'aal2', { perfil: PERFIL_INSTITUCIONAL });
+  await page.goto('/panel');
+  await expect(page.getByRole('heading', { level: 1, name: 'Tablero' })).toBeVisible();
+  // Su institución y el enlace para compartir, sin selector de instituciones.
+  await expect(
+    page.getByRole('heading', { name: 'Enlace para responder · Colegio 1' }),
+  ).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Enlace de Colegio 1' })).toHaveValue(
+    /\/\?sede=colegio1$/,
+  );
+  await expect(page.getByRole('combobox', { name: 'Institución' })).toHaveCount(0);
+  // El panel no pide otra institución: la base lo deja siempre en la suya.
+  await expect.poll(() => llamadas.tablero.at(-1)).toMatchObject({ p_institucion: null });
+  expect(llamadas.instituciones).toBe(0);
+  expect(await violacionesGraves(page)).toEqual([]);
+
+  const menu = await menuDelPanel(page);
+  await expect(menu.getByRole('link', { name: 'Censo' })).toBeVisible();
+  for (const seccion of ['Cuentas', 'Instituciones', 'Usuarios', 'Auditoría']) {
+    await expect(menu.getByRole('link', { name: seccion })).toHaveCount(0);
+  }
+
+  // Escribiendo la dirección tampoco: el panel lo explica y no consulta nada.
+  await page.goto('/panel/usuarios');
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Esta sección es del administrador general' }),
+  ).toBeVisible();
+  expect(llamadas.administradores).toBe(0);
+});
+
+test('con su institución desactivada, el administrador institucional no entra', async ({
+  page,
+}) => {
+  await iniciarSesion(page, 'aal2', {
+    perfil: { ...PERFIL_INSTITUCIONAL, institucion_activa: false },
+  });
+  await page.goto('/panel');
+  await expect(page).toHaveURL(/\/panel\/ingresar$/);
+  await expect(page.getByText(/Tu institución está desactivada/)).toBeVisible();
+});
+
+test('el general elige una institución y el panel consulta solo esa', async ({ page }) => {
+  const llamadas = await iniciarSesion(page);
+  await page.goto('/panel');
+  const selector = page.getByRole('combobox', { name: 'Institución' });
+  await expect(selector.getByRole('option')).toHaveText([
+    'Todas las instituciones',
+    'Colegio 1',
+    'Alcaldía 2 (inactiva)',
+  ]);
+  await expect.poll(() => llamadas.tablero.at(-1)).toMatchObject({ p_institucion: null });
+
+  await selector.selectOption({ label: 'Colegio 1' });
+  await expect.poll(() => llamadas.tablero.at(-1)).toMatchObject({ p_institucion: COLEGIO.id });
+  await expect(
+    page.getByRole('heading', { name: 'Enlace para responder · Colegio 1' }),
+  ).toBeVisible();
+
+  // La elección sigue al pasar a otra sección.
+  await page.goto('/panel/registros');
+  await expect.poll(() => llamadas.registros.at(-1)).toMatchObject({ p_institucion: COLEGIO.id });
+  await expect(page.getByRole('columnheader', { name: 'Institución' })).toHaveCount(0);
+
+  // Con todas, cada registro dice de qué institución es.
+  await page
+    .getByRole('combobox', { name: 'Institución' })
+    .selectOption({ label: 'Todas las instituciones' });
+  await expect.poll(() => llamadas.registros.at(-1)).toMatchObject({ p_institucion: null });
+  await expect(page.getByRole('columnheader', { name: 'Institución' })).toBeVisible();
+  await expect(page.getByRole('row', { name: /Ana Prueba/ })).toContainText('Colegio 1');
+});
+
+test('Instituciones muestra cada una con su enlace y su actividad, y se puede editar', async ({
+  page,
+}) => {
+  const llamadas = await iniciarSesion(page);
+  await page.goto('/panel/instituciones');
+  await expect(page.getByRole('heading', { level: 1, name: 'Instituciones' })).toBeVisible();
+  await expect(page.getByText('4 cuestionarios de 3 personas en total')).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Colegio 1' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: 'Alcaldía 2' })).toBeVisible();
+  await expect(page.getByText('Inactiva', { exact: true })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Enlace de Alcaldía 2' })).toHaveValue(
+    /\/\?sede=alcaldia2$/,
+  );
+  expect(await violacionesGraves(page)).toEqual([]);
+
+  await page.getByRole('button', { name: 'Editar Colegio 1' }).click();
+  const dialogo = page.getByRole('dialog', { name: 'Editar Colegio 1' });
+  await dialogo.getByLabel('Nombre').fill('Colegio Uno');
+  await dialogo.getByLabel(/^Enlace/).fill('colegio uno');
+  await dialogo.getByRole('button', { name: 'Guardar cambios' }).click();
+  await expect(dialogo.getByText(/Usa solo minúsculas/)).toBeVisible();
+  expect(llamadas.institucionActualizada).toHaveLength(0);
+
+  await dialogo.getByLabel(/^Enlace/).fill('colegio1');
+  await dialogo.getByRole('button', { name: 'Guardar cambios' }).click();
+  await expect(page.getByText('Cambios guardados en Colegio Uno.')).toBeVisible();
+  expect(llamadas.institucionActualizada[0]).toEqual({
+    p_id: COLEGIO.id,
+    p_nombre: 'Colegio Uno',
+    p_slug: 'colegio1',
+    p_activa: true,
+  });
+});
+
+test('Usuarios invita por correo al administrador de una institución', async ({ page }) => {
+  const llamadas = await iniciarSesion(page);
+  await page.goto('/panel/usuarios');
+  await expect(page.getByRole('heading', { level: 1, name: 'Usuarios' })).toBeVisible();
+  const rectoria = page.getByRole('row', { name: /Rectoría Prueba/ });
+  await expect(rectoria).toContainText('Administrador institucional');
+  await expect(rectoria).toContainText('Colegio 1');
+  await expect(page.getByRole('row', { name: /Administración Prueba/ })).toContainText('Tú');
+  expect(await violacionesGraves(page)).toEqual([]);
+
+  await page.getByRole('button', { name: 'Invitar', exact: true }).click();
+  const dialogo = page.getByRole('dialog', { name: 'Invitar a un administrador' });
+  await dialogo.getByLabel('Nombre').fill('Nueva Rectora');
+  await dialogo.getByLabel('Correo').fill('Rectora@Colegio.edu.co');
+  // Sin institución no se envía; las inactivas no se ofrecen.
+  await dialogo.getByRole('button', { name: 'Enviar invitación' }).click();
+  await expect(dialogo.getByText('Elige la institución que va a administrar.')).toBeVisible();
+  const institucion = dialogo.getByRole('combobox', { name: 'Institución' });
+  await expect(institucion.getByRole('option')).toHaveText(['Elige una institución', 'Colegio 1']);
+  await institucion.selectOption({ label: 'Colegio 1' });
+  await dialogo.getByRole('button', { name: 'Enviar invitación' }).click();
+
+  await expect(page.getByText('Invitación enviada a rectora@colegio.edu.co.')).toBeVisible();
+  expect(llamadas.invitaciones).toEqual([
+    {
+      nombre: 'Nueva Rectora',
+      correo: 'rectora@colegio.edu.co',
+      rol: 'administrador_institucional',
+      institucionId: COLEGIO.id,
+    },
+  ]);
+
+  await rectoria.getByRole('button', { name: 'Desactivar a Rectoría Prueba' }).click();
+  await expect
+    .poll(() => llamadas.administradorActualizado)
+    .toEqual([{ p_id: RECTORIA, p_activo: false, p_institucion: null }]);
+});
+
+test('una invitación a un correo que ya tiene cuenta lo explica', async ({ page }) => {
+  await iniciarSesion(page, 'aal2', { invitacion: 'conflicto' });
+  await page.goto('/panel/usuarios');
+  await page.getByRole('button', { name: 'Invitar', exact: true }).click();
+  const dialogo = page.getByRole('dialog', { name: 'Invitar a un administrador' });
+  await dialogo.getByLabel('Nombre').fill('Otra Persona');
+  await dialogo.getByLabel('Correo').fill('rectoria@colegio.edu.co');
+  await dialogo
+    .getByRole('combobox', { name: 'Rol' })
+    .selectOption({ label: 'Administrador general' });
+  await dialogo.getByRole('button', { name: 'Enviar invitación' }).click();
+  await expect(dialogo.getByText('Ese correo ya tiene una cuenta.')).toBeVisible();
+});
+
+test('Auditoría muestra quién hizo qué y filtra por acción', async ({ page }) => {
+  const llamadas = await iniciarSesion(page);
+  await page.goto('/panel/auditoria');
+  await expect(page.getByRole('heading', { level: 1, name: 'Auditoría' })).toBeVisible();
+  const descarga = page.getByRole('row', { name: /Rectoría Prueba/ });
+  await expect(descarga).toContainText('Descargó el censo');
+  await expect(descarga).toContainText('Colegio 1');
+  await descarga.getByText('Ver detalle').click();
+  await expect(descarga.getByText('Informe mensual')).toBeVisible();
+  expect(await violacionesGraves(page)).toEqual([]);
+
+  await page.getByRole('combobox', { name: 'Acción' }).selectOption({ label: 'Descargó el censo' });
+  await expect(page).toHaveURL(/accion=exportar_censo/);
+  await expect
+    .poll(() => llamadas.auditoria.at(-1))
+    .toMatchObject({
+      p_accion: 'exportar_censo',
+      p_institucion: null,
+    });
 });

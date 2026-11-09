@@ -4,6 +4,7 @@ import {
   ORDENES,
   ORDENES_CENSO,
   type EstadoSeguimiento,
+  type FiltrosAuditoria,
   type FiltrosPersonasCenso,
   type FiltrosRegistros,
   type FiltrosTablero,
@@ -267,5 +268,38 @@ export function escribirFiltrosCenso(f: FiltrosPersonasCenso): URLSearchParams {
   if (f.orden !== d.orden) p.set('orden', f.orden);
   if (f.pagina !== d.pagina) p.set('pagina', String(f.pagina));
   if (f.tamano !== d.tamano) p.set('tamano', String(f.tamano));
+  return p;
+}
+
+// ---------------------------------------------------------------------------------- auditoría (D-86)
+
+export const AUDITORIA_POR_DEFECTO: FiltrosAuditoria = {
+  desde: null,
+  hasta: null,
+  accion: null,
+  pagina: 1,
+};
+
+export function leerFiltrosAuditoria(params: URLSearchParams): FiltrosAuditoria {
+  let desde = fechaValida(params.get('desde'));
+  let hasta = fechaValida(params.get('hasta'));
+  if (desde && hasta && desde > hasta) [desde, hasta] = [hasta, desde];
+  const accion = textoLimpio(params.get('accion'), 60);
+  const pagina = Number.parseInt(params.get('pagina') ?? '', 10);
+  return {
+    desde,
+    hasta,
+    // Las acciones son palabras en minúscula con guion bajo («ver_datos_contacto»).
+    accion: accion && /^[a-z_]+$/.test(accion) ? accion : null,
+    pagina: Number.isFinite(pagina) && pagina >= 1 ? pagina : 1,
+  };
+}
+
+export function escribirFiltrosAuditoria(f: FiltrosAuditoria): URLSearchParams {
+  const p = new URLSearchParams();
+  if (f.desde) p.set('desde', f.desde);
+  if (f.hasta) p.set('hasta', f.hasta);
+  if (f.accion) p.set('accion', f.accion);
+  if (f.pagina !== 1) p.set('pagina', String(f.pagina));
   return p;
 }

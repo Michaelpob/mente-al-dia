@@ -143,3 +143,53 @@ describe('Excel del censo', () => {
     // Armar y volver a abrir el libro tarda varios segundos cuando corren todas las pruebas juntas.
   }, 30_000);
 });
+
+describe('Excel del censo por institución (D-86)', () => {
+  it('dice de qué institución es y cada persona lleva la suya al final', async () => {
+    const excel = await cargarExcelJS();
+    const deUna: ExportacionCenso = {
+      ...DATOS,
+      institucion: 'Colegio 1',
+      personas: DATOS.personas.map((p) => ({ ...p, institucion: 'Colegio 1' })),
+    };
+    const libro = construirLibroCenso(excel, deUna, {
+      filtros: { desde: null, hasta: null, modulo: null, lugar: null },
+      motivo: 'Informe de la institución',
+    });
+    const leido = new excel.Workbook();
+    await leido.xlsx.load(await libro.xlsx.writeBuffer());
+    const resumen = textos(leido.getWorksheet('Resumen')!);
+    expect(resumen).toContain('Institución');
+    expect(resumen).toContain('Colegio 1');
+    expect(resumen).not.toContain('Todas las instituciones');
+
+    const personas = leido.getWorksheet('Personas')!;
+    const cabeza = personas.getRow(1).values as unknown[];
+    const columna = cabeza.indexOf('Institución');
+    expect(columna).toBe(cabeza.length - 1);
+    expect(personas.getRow(2).getCell(columna).value).toBe('Colegio 1');
+  }, 30_000);
+
+  it('la descarga de todas las instituciones las cuenta por separado en el resumen', async () => {
+    const excel = await cargarExcelJS();
+    const todas: ExportacionCenso = {
+      ...DATOS,
+      resumen: {
+        ...DATOS.resumen,
+        porInstitucion: [
+          { institucion: 'Colegio 1', n: 1 },
+          { institucion: 'Alcaldía 2', n: 1 },
+        ],
+      },
+    };
+    const libro = construirLibroCenso(excel, todas, {
+      filtros: { desde: null, hasta: null, modulo: null, lugar: null },
+      motivo: 'Consolidado general',
+    });
+    const leido = new excel.Workbook();
+    await leido.xlsx.load(await libro.xlsx.writeBuffer());
+    const resumen = textos(leido.getWorksheet('Resumen')!);
+    expect(resumen).toContain('Todas las instituciones');
+    expect(resumen).toContain('Alcaldía 2');
+  }, 30_000);
+});

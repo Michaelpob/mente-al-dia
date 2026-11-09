@@ -222,7 +222,8 @@ export const textos = {
   /** Ingreso al panel (Fase 4): solo el administrador, con contraseña y doble factor (D-65). */
   accesoPanel: {
     titulo: 'Ingreso de administración',
-    descripcion: 'Solo el administrador puede ver el panel. Ingresa con tu correo y tu contraseña.',
+    descripcion:
+      'Solo los administradores pueden ver el panel. Ingresa con tu correo y tu contraseña.',
     correo: 'Correo institucional',
     contrasena: 'Contraseña',
     ingresar: 'Ingresar',
@@ -248,16 +249,19 @@ export const textos = {
     activar: 'Activar y entrar',
     sinAccesoTitulo: 'Tu cuenta no tiene acceso al panel',
     sinPerfil:
-      'Tu cuenta no tiene un rol asignado. Pide al superadministrador que revise tu invitación.',
+      'Tu cuenta no tiene un rol asignado. Pide al administrador general que revise tu invitación.',
     inactivo:
-      'Tu cuenta está desactivada. Si crees que es un error, escríbele al superadministrador.',
+      'Tu cuenta está desactivada. Si crees que es un error, escríbele al administrador general.',
     soloAdministracion:
-      'El panel es solo para el administrador. Tu cuenta tiene otro rol, así que no puede verlo.',
+      'El panel es solo para los administradores. Tu cuenta tiene otro rol, así que no puede verlo.',
+    institucionInactiva:
+      'Tu institución está desactivada en Mente al Día, así que por ahora no puedes entrar al panel. Si crees que es un error, escríbele al administrador general.',
     cerrarSesion: 'Cerrar sesión',
     volverInicio: 'Volver al inicio',
     sesionComo: (nombre: string, rol: string) => `Sesión iniciada como ${nombre} (${rol}).`,
     roles: {
-      superadministrador: 'superadministrador',
+      superadministrador: 'administración general',
+      administrador_institucional: 'administración institucional',
       profesional: 'profesional',
       consulta: 'consulta',
     },

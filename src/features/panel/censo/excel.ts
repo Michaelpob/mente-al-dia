@@ -152,6 +152,8 @@ function hojaResumen(libro: Workbook, datos: ExportacionCenso, contexto: Context
 
   const f = contexto.filtros;
   const info: [string, string][] = [
+    // La institución descargada (D-86); sin ella, el administrador general bajó todas.
+    [x.datos.institucion, datos.institucion ?? x.todasInstituciones],
     [x.datos.periodo, describirPeriodo(f)],
     [x.datos.modulo, f.modulo ? panel.modulos[f.modulo] : x.todos],
     [x.datos.lugar, f.lugar ?? x.todos],
@@ -201,6 +203,13 @@ function hojaResumen(libro: Workbook, datos: ExportacionCenso, contexto: Context
   hoja.addRow([]);
 
   const menores = r.porSexo.reduce((suma, s) => suma + s.n, 0);
+  if (!datos.institucion && r.porInstitucion?.length) {
+    tabla(
+      x.grupos.institucion,
+      r.porInstitucion.map((i) => [i.institucion, i.n]),
+      r.personas,
+    );
+  }
   tabla(
     x.grupos.modulo,
     MODULOS.filter((m) => !f.modulo || m === f.modulo).map((m) => [
@@ -323,13 +332,16 @@ function hojaPersonas(libro: Workbook, datos: ExportacionCenso) {
     [k.areasPorFortalecer, 36],
     [k.areasFortaleza, 36],
   ] as const;
+  // La institución va al final, después de las áreas: así las columnas de siempre no se mueven.
   hoja.columns = [
     ...fijas.map(([, width]) => ({ width })),
     ...areasEnOrden.map(() => ({ width: 17 })),
+    { width: 24 },
   ];
   const cabeza = hoja.addRow([
     ...fijas.map(([titulo]) => titulo),
     ...areasEnOrden.map((a) => `${a.numero}. ${a.nombre}`),
+    k.institucion,
   ]);
   estiloEncabezado(cabeza);
   cabeza.height = 48;
@@ -356,6 +368,7 @@ function hojaPersonas(libro: Workbook, datos: ExportacionCenso) {
       nombresEn(p, 'por_fortalecer'),
       nombresEn(p, 'adecuado'),
       ...areasEnOrden.map((a) => c.niveles[p.niveles[a.id] ?? 'sin_dato']),
+      p.institucion ?? datos.institucion ?? null,
     ]);
     estiloCuerpo(fila);
     fila.getCell(8).numFmt = 'dd/mm/yyyy';
@@ -376,7 +389,7 @@ function hojaPersonas(libro: Workbook, datos: ExportacionCenso) {
       celda.alignment = { vertical: 'top', horizontal: 'center' };
     });
   }
-  const columnas = fijas.length + areasEnOrden.length;
+  const columnas = fijas.length + areasEnOrden.length + 1;
   hoja.views = [{ state: 'frozen', xSplit: 1, ySplit: 1 }];
   hoja.autoFilter = `A1:${letra(columnas)}1`;
 }

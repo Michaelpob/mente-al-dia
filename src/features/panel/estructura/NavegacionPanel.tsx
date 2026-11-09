@@ -1,4 +1,5 @@
 import {
+  Building2,
   ClipboardList,
   Contact,
   FileChartColumn,
@@ -24,33 +25,37 @@ interface Seccion {
   Icono: LucideIcon;
   fin?: boolean;
   fase9?: boolean;
+  /** Solo para el administrador general (D-86). */
+  soloGeneral?: boolean;
 }
 
+/** Lo de cada institución: su administrador ve solo sus datos; el general, los de todas. */
 const SECCIONES: readonly Seccion[] = [
   { to: '/panel', etiqueta: t.tablero, Icono: LayoutDashboard, fin: true },
   { to: '/panel/registros', etiqueta: t.registros, Icono: Table2 },
   { to: '/panel/censo', etiqueta: t.censo, Icono: UsersRound },
   { to: '/panel/prioritarios', etiqueta: t.prioritarios, Icono: Flag },
-  { to: '/panel/cuentas', etiqueta: t.cuentas, Icono: Contact },
+  { to: '/panel/cuentas', etiqueta: t.cuentas, Icono: Contact, soloGeneral: true },
   { to: '/panel/seguimiento', etiqueta: t.seguimiento, Icono: ClipboardList, fase9: true },
   { to: '/panel/reportes', etiqueta: t.reportes, Icono: FileChartColumn, fase9: true },
 ];
 
-/** Solo superadministración (Fase 8): configuración, usuarios y auditoría. */
+/** Solo el administrador general: instituciones, usuarios, auditoría y configuración. */
 const ADMINISTRACION: readonly Seccion[] = [
+  { to: '/panel/instituciones', etiqueta: t.instituciones, Icono: Building2 },
+  { to: '/panel/usuarios', etiqueta: t.usuarios, Icono: Users },
+  { to: '/panel/auditoria', etiqueta: t.auditoria, Icono: ScrollText },
   { to: '/panel/configuracion', etiqueta: t.configuracion, Icono: Settings, fase9: true },
-  { to: '/panel/usuarios', etiqueta: t.usuarios, Icono: Users, fase9: true },
-  { to: '/panel/auditoria', etiqueta: t.auditoria, Icono: ScrollText, fase9: true },
 ];
 
 export function NavegacionPanel({
   contraido = false,
-  superadministrador,
+  general,
   prioritarios,
   alNavegar,
 }: {
   contraido?: boolean;
-  superadministrador: boolean;
+  general: boolean;
   prioritarios?: number;
   alNavegar?: () => void;
 }) {
@@ -106,8 +111,10 @@ export function NavegacionPanel({
 
   return (
     <nav aria-label={t.etiqueta} className="flex flex-col gap-6 p-3">
-      <ul className="flex flex-col gap-1">{SECCIONES.map(enlace)}</ul>
-      {superadministrador ? (
+      <ul className="flex flex-col gap-1">
+        {SECCIONES.filter((s) => general || !s.soloGeneral).map(enlace)}
+      </ul>
+      {general ? (
         <div className="flex flex-col gap-1">
           <p
             className={cn(

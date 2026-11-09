@@ -41,6 +41,8 @@ import {
   type PaginaCenso,
   type PersonaCenso,
 } from '../datos/tipos';
+import { useAlcance } from '../instituciones/alcance';
+import { SelectorInstitucion } from '../instituciones/piezas';
 import { Indicador } from '../tablero/indicadores';
 import { NIVELES_CENSO, ordenarGrados, resumenAreas } from './analisis';
 import { DescargaCenso } from './DescargaCenso';
@@ -66,6 +68,7 @@ export default function CensoPage() {
   const periodo = periodoCensoDe(filtros, hoy);
   const [elegirFechas, setElegirFechas] = useState(false);
   const mostrarFechas = elegirFechas || periodo === 'personalizado';
+  const { general, elegida } = useAlcance();
 
   const base: FiltrosCenso = {
     desde: filtros.desde,
@@ -74,18 +77,18 @@ export default function CensoPage() {
     lugar: filtros.lugar,
   };
   const resumen = useQuery({
-    queryKey: ['panel', 'censo', 'resumen', base],
-    queryFn: () => obtenerCenso(base),
+    queryKey: ['panel', 'censo', 'resumen', elegida, base],
+    queryFn: () => obtenerCenso(base, elegida),
     placeholderData: keepPreviousData,
   });
   const personas = useQuery({
-    queryKey: ['panel', 'censo', 'personas', filtros],
-    queryFn: () => obtenerPersonasCenso(filtros),
+    queryKey: ['panel', 'censo', 'personas', elegida, filtros],
+    queryFn: () => obtenerPersonasCenso(filtros, elegida),
     placeholderData: keepPreviousData,
   });
   const lugares = useQuery({
-    queryKey: ['panel', 'lugares'],
-    queryFn: () => obtenerOpcionesLugar(hoy),
+    queryKey: ['panel', 'lugares', elegida],
+    queryFn: () => obtenerOpcionesLugar(hoy, elegida),
     staleTime: 5 * 60_000,
   });
 
@@ -115,7 +118,8 @@ export default function CensoPage() {
     <PaginaPanel>
       <PageMeta title={c.titulo} indexable={false} />
       <EncabezadoPanel titulo={c.titulo} descripcion={c.descripcion}>
-        <DescargaCenso filtros={base} personas={resumen.data?.personas} />
+        <SelectorInstitucion />
+        <DescargaCenso filtros={base} institucion={elegida} personas={resumen.data?.personas} />
       </EncabezadoPanel>
 
       <section
@@ -188,7 +192,11 @@ export default function CensoPage() {
             resumen.isPlaceholderData && 'opacity-60 transition-opacity',
           )}
         >
-          <Resumen censo={resumen.data} modulo={filtros.modulo} />
+          <Resumen
+            censo={resumen.data}
+            modulo={filtros.modulo}
+            porInstitucion={general && !elegida}
+          />
           <AreasCenso resumen={resumenAreas(resumen.data.areas)} alElegir={verFalencias} />
         </div>
       ) : resumen.isPending ? (
@@ -211,7 +219,16 @@ export default function CensoPage() {
   );
 }
 
-function Resumen({ censo, modulo }: { censo: Censo; modulo: FiltrosCenso['modulo'] }) {
+function Resumen({
+  censo,
+  modulo,
+  porInstitucion,
+}: {
+  censo: Censo;
+  modulo: FiltrosCenso['modulo'];
+  /** Con todas las instituciones a la vista (solo el general), cuántas personas hay en cada una. */
+  porInstitucion: boolean;
+}) {
   const parte = (n: number) => c.indicadores.parte(formatearPorcentaje(n / censo.personas));
   const menores = censo.porSexo.reduce((suma, s) => suma + s.n, 0);
   const conEdad = censo.porEdad.reduce((suma, e) => suma + e.n, 0);
@@ -246,6 +263,14 @@ function Resumen({ censo, modulo }: { censo: Censo; modulo: FiltrosCenso['modulo
           {c.quienes.titulo}
         </h2>
         <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+          {porInstitucion && censo.porInstitucion ? (
+            <ListaBarras
+              titulo={c.quienes.institucion}
+              nota={c.quienes.institucionNota}
+              total={censo.personas}
+              filas={censo.porInstitucion.map((i) => ({ etiqueta: i.institucion, n: i.n }))}
+            />
+          ) : null}
           <ListaBarras
             titulo={c.quienes.modulo}
             nota={c.quienes.moduloNota}

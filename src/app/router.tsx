@@ -33,6 +33,9 @@ const FichaPage = lazy(() => import('@/features/panel/registros/FichaPage'));
 const PrioritariosPage = lazy(() => import('@/features/panel/prioritarios/PrioritariosPage'));
 const CensoPage = lazy(() => import('@/features/panel/censo/CensoPage'));
 const FortalezasPage = lazy(() => import('@/features/panel/censo/FortalezasPage'));
+const InstitucionesPage = lazy(() => import('@/features/panel/instituciones/InstitucionesPage'));
+const UsuariosPage = lazy(() => import('@/features/panel/instituciones/UsuariosPage'));
+const AuditoriaPage = lazy(() => import('@/features/panel/instituciones/AuditoriaPage'));
 const PanelSesion = lazy(() => import('@/features/panel/acceso/PanelSesion'));
 const IngresoPanelPage = lazy(() => import('@/features/panel/acceso/IngresoPanelPage'));
 const DefinirContrasenaPage = lazy(() => import('@/features/panel/acceso/DefinirContrasenaPage'));
@@ -93,12 +96,15 @@ const routes: RouteObject[] = [
               { path: 'registros/:id/fortalezas', element: <FortalezasPage /> },
               { path: 'censo', element: <CensoPage /> },
               { path: 'prioritarios', element: <PrioritariosPage /> },
+              // Cuentas, Instituciones, Usuarios, Auditoría y Configuración: solo el administrador
+              // general (D-86). PanelShell las cierra a los demás y la base les niega los datos.
               { path: 'cuentas', element: <CuentasPage /> },
+              { path: 'instituciones', element: <InstitucionesPage /> },
               { path: 'seguimiento', element: <EnConstruccion pagina="panelSeguimiento" /> },
               { path: 'reportes', element: <EnConstruccion pagina="panelReportes" /> },
               { path: 'configuracion', element: <EnConstruccion pagina="panelConfiguracion" /> },
-              { path: 'usuarios', element: <EnConstruccion pagina="panelUsuarios" /> },
-              { path: 'auditoria', element: <EnConstruccion pagina="panelAuditoria" /> },
+              { path: 'usuarios', element: <UsuariosPage /> },
+              { path: 'auditoria', element: <AuditoriaPage /> },
             ],
           },
           {

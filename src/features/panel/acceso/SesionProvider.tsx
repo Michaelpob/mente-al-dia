@@ -1,13 +1,16 @@
 import { isAuthError, type SupabaseClient } from '@supabase/supabase-js';
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { supabase } from '@/lib/supabase/cliente';
+import { guardarAlcance } from '../instituciones/alcance';
 import { direccionDefinirContrasena } from './enlaces';
 import { qrComoImagen } from './qr';
 import {
+  perfilDeFila,
   resolverEstado,
   type CierreSesion,
   type EstadoSesion,
-  type PerfilPanel,
+  type FilaMiPerfil,
 } from './estado-sesion';
 import { SesionContext, type SesionContextValue } from './sesion-context';
 
@@ -18,7 +21,7 @@ async function leerEstado(cliente: SupabaseClient): Promise<EstadoSesion> {
   const [nivel, factores, perfil] = await Promise.all([
     cliente.auth.mfa.getAuthenticatorAssuranceLevel(),
     cliente.auth.mfa.listFactors(),
-    cliente.rpc('mi_perfil').maybeSingle<PerfilPanel>(),
+    cliente.rpc('mi_perfil').maybeSingle<FilaMiPerfil>(),
   ]);
   if (nivel.error) throw nivel.error;
   if (factores.error) throw factores.error;
@@ -28,7 +31,7 @@ async function leerEstado(cliente: SupabaseClient): Promise<EstadoSesion> {
     haySesion: true,
     nivel: nivel.data.currentLevel,
     factoresVerificados: factores.data.totp.map((f) => f.id),
-    perfil: perfil.data,
+    perfil: perfilDeFila(perfil.data),
   });
 }
 
@@ -88,11 +91,34 @@ export function SesionProvider({ children }: { children: ReactNode }) {
   const [estado, setEstado] = useState<EstadoSesion>(
     supabase ? { tipo: 'cargando' } : { tipo: 'sin_configurar' },
   );
+  const queryClient = useQueryClient();
+  const ultimoPerfil = useRef<string | null>(null);
+
+  // Los datos del panel en memoria son de quien tenía la sesión: al cerrarla o al entrar otra
+  // cuenta se borran antes de mostrar nada, para que nadie vea lo de otra institución (D-86).
+  // RequierePanel, además, vuelve a montar el panel cuando cambia la cuenta.
+  const cambiarDeCuenta = useCallback(
+    (nuevo: EstadoSesion) => {
+      const id = nuevo.tipo === 'lista' ? nuevo.perfil.id : null;
+      if (ultimoPerfil.current !== null && id !== ultimoPerfil.current) {
+        queryClient.removeQueries({ queryKey: ['panel'] });
+        // La institución que había elegido el general tampoco pasa a la siguiente cuenta.
+        try {
+          guardarAlcance(window.sessionStorage, null);
+        } catch {
+          // Sin almacenamiento no hay nada guardado que borrar.
+        }
+      }
+      ultimoPerfil.current = id;
+    },
+    [queryClient],
+  );
 
   const actualizar = useCallback(async () => {
     const cliente = exigirCliente();
     try {
       const nuevo = await leerEstado(cliente);
+      cambiarDeCuenta(nuevo);
       // Una sesión ya cerrada conserva cómo se cerró, porque de eso depende adónde se va (D-74).
       setEstado((previo) =>
         nuevo.tipo === 'sin_sesion' && previo.tipo === 'sin_sesion' ? previo : nuevo,
@@ -102,9 +128,10 @@ export function SesionProvider({ children }: { children: ReactNode }) {
       if (isAuthError(error) || /^PGRST30/.test((error as { code?: string }).code ?? '')) {
         await cliente.auth.signOut({ scope: 'local' });
       }
+      cambiarDeCuenta({ tipo: 'sin_sesion' });
       setEstado({ tipo: 'sin_sesion' });
     }
-  }, []);
+  }, [cambiarDeCuenta]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -117,10 +144,17 @@ export function SesionProvider({ children }: { children: ReactNode }) {
 
   // Supabase borra la sesión de este navegador aunque falle la llamada de cierre, así que el
   // cierre se marca siempre. RequierePanel e IngresoPanelPage deciden con él adónde ir.
-  const cerrarSesion = useCallback(async (cierre: CierreSesion = 'manual') => {
-    await exigirCliente().auth.signOut();
-    setEstado({ tipo: 'sin_sesion', cierre });
-  }, []);
+  const cerrarSesion = useCallback(
+    async (cierre: CierreSesion = 'manual') => {
+      try {
+        await exigirCliente().auth.signOut();
+      } finally {
+        cambiarDeCuenta({ tipo: 'sin_sesion' });
+        setEstado({ tipo: 'sin_sesion', cierre });
+      }
+    },
+    [cambiarDeCuenta],
+  );
 
   const value = useMemo<SesionContextValue>(
     () => ({ estado, ...acciones, cerrarSesion }),

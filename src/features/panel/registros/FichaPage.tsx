@@ -110,6 +110,9 @@ export default function FichaPage() {
           <Dato termino={t.codigo}>
             <span className="font-mono">{ficha.codigo}</span>
           </Dato>
+          {ficha.institucion ? (
+            <Dato termino={t.institucion}>{ficha.institucion.nombre}</Dato>
+          ) : null}
           <Dato termino={t.modulo}>{panel.modulos[ficha.modulo]}</Dato>
           <Dato termino={t.edad}>{ficha.edad === null ? panel.sinDato : t.anos(ficha.edad)}</Dato>
           {ficha.modulo !== 'adulto' ? (

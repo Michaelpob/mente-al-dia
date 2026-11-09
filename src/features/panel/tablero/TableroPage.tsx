@@ -6,6 +6,8 @@ import { Skeleton } from '@/components/ui/feedback';
 import { panel } from '@/content/panel';
 import { CampoFecha, CampoSelect, EncabezadoPanel, ErrorCarga, PaginaPanel } from '../compartido';
 import { obtenerTablero, obtenerVisitas } from '../datos/consultas';
+import { useAlcance } from '../instituciones/alcance';
+import { EnlaceDeLaInstitucion, SelectorInstitucion } from '../instituciones/piezas';
 import {
   MODULOS,
   PERIODOS,
@@ -37,16 +39,18 @@ export default function TableroPage() {
   const periodo = periodoDe(filtros, hoy);
   const [elegirFechas, setElegirFechas] = useState(false);
   const mostrarFechas = elegirFechas || periodo === 'personalizado';
+  const { elegida } = useAlcance();
 
   const consulta = useQuery({
-    queryKey: ['panel', 'tablero', filtros],
-    queryFn: () => obtenerTablero(filtros),
+    queryKey: ['panel', 'tablero', elegida, filtros],
+    queryFn: () => obtenerTablero(filtros, elegida),
     placeholderData: keepPreviousData,
   });
-  // Las visitas al sitio (D-80) solo dependen del periodo: no tienen módulo ni lugar.
+  // Las visitas al sitio (D-80) solo dependen del periodo: no tienen módulo ni lugar. Con una
+  // institución, son las que llegaron por su enlace (D-86).
   const visitas = useQuery({
-    queryKey: ['panel', 'visitas', filtros.desde, filtros.hasta],
-    queryFn: () => obtenerVisitas(filtros.desde, filtros.hasta),
+    queryKey: ['panel', 'visitas', elegida, filtros.desde, filtros.hasta],
+    queryFn: () => obtenerVisitas(filtros.desde, filtros.hasta, elegida),
     placeholderData: keepPreviousData,
   });
 
@@ -65,7 +69,9 @@ export default function TableroPage() {
   return (
     <PaginaPanel>
       <PageMeta title={t.titulo} indexable={false} />
-      <EncabezadoPanel titulo={t.titulo} descripcion={t.descripcion} />
+      <EncabezadoPanel titulo={t.titulo} descripcion={t.descripcion}>
+        <SelectorInstitucion />
+      </EncabezadoPanel>
 
       <section
         aria-label={f.titulo}
@@ -117,6 +123,8 @@ export default function TableroPage() {
           </div>
         ) : null}
       </section>
+
+      <EnlaceDeLaInstitucion />
 
       {consulta.isError ? (
         <ErrorCarga error={consulta.error} alReintentar={() => void consulta.refetch()} />

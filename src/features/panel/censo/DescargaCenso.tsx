@@ -43,9 +43,12 @@ function descargarArchivo(contenido: BlobPart, nombre: string) {
  */
 export function DescargaCenso({
   filtros,
+  institucion,
   personas,
 }: {
   filtros: FiltrosCenso;
+  /** La institución elegida por el general (null: todas, o la propia del institucional). */
+  institucion: string | null;
   personas: number | undefined;
 }) {
   const [abierto, setAbierto] = useState(false);
@@ -56,7 +59,7 @@ export function DescargaCenso({
   const descarga = useMutation({
     mutationFn: async (motivoLimpio: string) => {
       // Primero la base: si no autoriza la descarga, no se arma nada.
-      const datos = await exportarCenso(filtros, motivoLimpio);
+      const datos = await exportarCenso(filtros, motivoLimpio, institucion);
       const excel = await cargarExcelJS();
       const libro = construirLibroCenso(excel, datos, { filtros, motivo: motivoLimpio });
       descargarArchivo(await libro.xlsx.writeBuffer(), nombreArchivoCenso(datos.generadoEn));

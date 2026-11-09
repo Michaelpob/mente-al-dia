@@ -1,21 +1,35 @@
 import { useQuery } from '@tanstack/react-query';
-import { Menu, PanelLeftClose, PanelLeftOpen, Search, ShieldCheck } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Search,
+  ShieldCheck,
+} from 'lucide-react';
 import { Suspense, useCallback, useState, type FormEvent } from 'react';
-import { Link, Outlet, useNavigate } from 'react-router';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router';
 import { MenteAlDiaIsotipo, MenteAlDiaLogo } from '@/components/brand/logos';
 import { PageLoading } from '@/components/layout/page';
 import { MAIN_CONTENT_ID } from '@/components/layout/skip-link';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { fieldControlClasses } from '@/components/ui/field-styles';
+import { buttonVariants } from '@/components/ui/button-variants';
 import { panel } from '@/content/panel';
+import { panelInstituciones } from '@/content/panel-instituciones';
 import { cn } from '@/lib/utils/cn';
 import { BotonCerrarSesion } from '../acceso/formularios';
+import { esGeneral } from '../acceso/estado-sesion';
 import { useSesion } from '../acceso/sesion-context';
+import { EncabezadoPanel, PaginaPanel } from '../compartido';
 import { obtenerPrioritarios } from '../datos/consultas';
+import { useAlcance } from '../instituciones/alcance';
+import { AlcanceProvider } from '../instituciones/AlcanceProvider';
 import { AvisoInactividad } from './AvisoInactividad';
 import { useInactividad } from './inactividad';
 import { NavegacionPanel } from './NavegacionPanel';
+import { esRutaSoloGeneral } from './rutas';
 
 const CLAVE_MENU = 'mad.panel.menuContraido';
 
@@ -30,19 +44,49 @@ function leerMenuContraido(): boolean {
 /**
  * Estructura del panel (Fase 8): menú lateral contraíble (en el teléfono, un panel deslizable),
  * barra superior con búsqueda y sesión, y el aviso fijo de que los resultados no son un diagnóstico.
- * Solo se monta con la sesión lista (RequierePanel).
+ * Solo se monta con la sesión lista (RequierePanel). Cada administrador institucional ve solo su
+ * institución; el general, todas o la que elija (D-86).
  */
 export default function PanelShell() {
+  return (
+    <AlcanceProvider>
+      <Marco />
+    </AlcanceProvider>
+  );
+}
+
+const s = panelInstituciones.soloGeneral;
+
+function AvisoSoloGeneral() {
+  return (
+    <PaginaPanel>
+      <EncabezadoPanel titulo={s.titulo} descripcion={s.texto} />
+      <Link
+        to="/panel"
+        className={buttonVariants({ variant: 'secundario', className: 'self-start' })}
+      >
+        <LayoutDashboard aria-hidden className="size-4" />
+        {s.volver}
+      </Link>
+    </PaginaPanel>
+  );
+}
+
+function Marco() {
   const { estado, cerrarSesion } = useSesion();
+  const { elegida } = useAlcance();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [contraido, setContraido] = useState(leerMenuContraido);
   const [menuMovil, setMenuMovil] = useState(false);
   const [busqueda, setBusqueda] = useState('');
   const perfil = estado.tipo === 'lista' ? estado.perfil : null;
+  const general = esGeneral(perfil);
+  const bloqueada = !general && esRutaSoloGeneral(pathname);
 
   const prioritarios = useQuery({
-    queryKey: ['panel', 'prioritarios'],
-    queryFn: obtenerPrioritarios,
+    queryKey: ['panel', 'prioritarios', elegida],
+    queryFn: () => obtenerPrioritarios(elegida),
   });
 
   // Por inactividad se va al ingreso, que explica el cierre y al volver a entrar regresa a esta
@@ -68,11 +112,7 @@ export default function PanelShell() {
   };
 
   const nav = (props: { contraido?: boolean; alNavegar?: () => void }) => (
-    <NavegacionPanel
-      superadministrador={perfil?.rol === 'superadministrador'}
-      prioritarios={prioritarios.data?.length}
-      {...props}
-    />
+    <NavegacionPanel general={general} prioritarios={prioritarios.data?.length} {...props} />
   );
 
   return (
@@ -157,7 +197,10 @@ export default function PanelShell() {
               <div className="ml-auto flex items-center gap-3">
                 <p className="hidden text-right text-pequeno leading-tight md:block">
                   <span className="block font-semibold text-grafito-900">{perfil.nombre}</span>
-                  <span className="text-grafito-600">{panel.sesion.roles[perfil.rol]}</span>
+                  <span className="text-grafito-600">
+                    {panel.sesion.roles[perfil.rol]}
+                    {perfil.institucion ? ` · ${perfil.institucion.nombre}` : null}
+                  </span>
                 </p>
                 <BotonCerrarSesion onClick={cerrarSesion} />
               </div>
@@ -170,9 +213,13 @@ export default function PanelShell() {
         </div>
 
         <main id={MAIN_CONTENT_ID} tabIndex={-1} className="flex-1 outline-none">
-          <Suspense fallback={<PageLoading />}>
-            <Outlet />
-          </Suspense>
+          {bloqueada ? (
+            <AvisoSoloGeneral />
+          ) : (
+            <Suspense fallback={<PageLoading />}>
+              <Outlet />
+            </Suspense>
+          )}
         </main>
       </div>
 

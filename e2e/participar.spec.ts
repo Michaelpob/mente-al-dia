@@ -4,10 +4,13 @@ import { expect, test, type Page } from '@playwright/test';
 /**
  * Criterios de aceptación de las Fases 5 y 6: registro, cuestionario y envío.
  * La Edge Function se simula: la build de pruebas apunta a un Supabase ficticio (.env.pruebas).
+ * Se responde siempre con el enlace de una institución (D-86): aquí, Colegio 1.
  */
 
 const FUNCION = '**/functions/v1/enviar-cuestionario';
 const ALMACEN = 'mente-al-dia:participacion';
+const ALMACEN_SEDE = 'mente-al-dia:sede';
+const SEDE = { slug: 'colegio1', nombre: 'Colegio 1' };
 const CLAVE = '6f1c2a4e-8b3d-4c5f-9a7e-1d2b3c4d5e6f';
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -31,6 +34,30 @@ async function simularFuncion(page: Page, respuestas: ('ok' | 'sin_conexion')[] 
     });
   });
   return cuerpos;
+}
+
+/** La institución confirmada en la pestaña, como si se hubiera entrado con su enlace. */
+async function conSede(page: Page) {
+  await page.addInitScript(
+    ([clave, valor]) => {
+      if (!window.sessionStorage.getItem(clave)) window.sessionStorage.setItem(clave, valor);
+    },
+    [ALMACEN_SEDE, JSON.stringify(SEDE)] as const,
+  );
+}
+
+/** Simula la consulta pública del enlace: solo colegio1 es una institución activa. */
+async function simularInstituciones(page: Page) {
+  await page.route('**/rest/v1/rpc/institucion_publica', async (route) => {
+    const peticion = route.request();
+    if (peticion.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+    const { p_slug } = peticion.postDataJSON() as { p_slug: string };
+    return route.fulfill({
+      status: 200,
+      headers: CORS,
+      json: p_slug === SEDE.slug ? [SEDE] : [],
+    });
+  });
 }
 
 /** Las 20 áreas, en el orden de las preguntas (src/content/v1/cuestionarios.ts). */
@@ -108,6 +135,7 @@ async function conEstado(page: Page, cambios: Record<string, unknown>) {
     desdeRevision: false,
     hitos: [],
     enviado: null,
+    sede: SEDE,
     ...cambios,
   };
   await page.addInitScript(
@@ -129,7 +157,9 @@ async function violacionesGraves(page: Page) {
 
 test('una persona adulta se registra, responde con el teclado y envía', async ({ page }) => {
   const cuerpos = await simularFuncion(page);
-  await page.goto('/registro?grupo=adulto');
+  await simularInstituciones(page);
+  await page.goto('/registro?grupo=adulto&sede=colegio1');
+  await expect(page.getByText('Participas con Colegio 1')).toBeVisible();
   await expect(page.getByRole('radio', { name: 'Una persona adulta' })).toBeChecked();
   await page.getByRole('button', { name: 'Continuar' }).click();
 
@@ -158,8 +188,11 @@ test('una persona adulta se registra, responde con el teclado y envía', async (
   expect(cuerpos).toHaveLength(1);
   expect(cuerpos[0]).toMatchObject({
     modulo: 'adulto',
+    sede: 'colegio1',
     participante: { nombre: 'Persona de Prueba', correo: 'prueba@ejemplo.co' },
   });
+  // El navegador manda el enlace de la institución, nunca un identificador interno.
+  expect(JSON.stringify(cuerpos[0])).not.toMatch(/institucion/i);
   expect(cuerpos[0]?.respuestas).toHaveLength(20);
   expect(cuerpos[0]).not.toHaveProperty('resultado');
   // Enviado: en la pestaña ya no quedan datos personales ni respuestas.
@@ -185,6 +218,7 @@ test('si falla la conexión se puede reintentar, con la misma clave de envío', 
 test('el módulo infantil pide al adulto responsable y no ofrece «Prefiero no responder»', async ({
   page,
 }) => {
+  await conSede(page);
   await page.goto('/registro');
   await page.getByRole('radio', { name: 'Una niña o un niño' }).click();
   await page.getByRole('button', { name: 'Continuar' }).click();
@@ -216,6 +250,7 @@ test('el módulo infantil pide al adulto responsable y no ofrece «Prefiero no r
 });
 
 test('sin registro, el cuestionario lleva al registro', async ({ page }) => {
+  await conSede(page);
   await page.goto('/cuestionario');
   await expect(page).toHaveURL(/\/registro$/);
   await expect(page.locator('h1')).toHaveText('¿Quién va a responder?');

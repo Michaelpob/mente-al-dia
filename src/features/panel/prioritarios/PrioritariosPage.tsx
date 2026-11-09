@@ -8,6 +8,8 @@ import { cn } from '@/lib/utils/cn';
 import { EncabezadoPanel, ErrorCarga, PaginaPanel } from '../compartido';
 import { obtenerPrioritarios } from '../datos/consultas';
 import { formatearFecha } from '../datos/formato';
+import { useAlcance } from '../instituciones/alcance';
+import { SelectorInstitucion } from '../instituciones/piezas';
 
 const t = panel.prioritarios;
 
@@ -16,12 +18,30 @@ const DIAS_ALERTA = 7;
 
 /** /panel/prioritarios: bandeja de casos con prioridad pendientes, del más antiguo al más reciente. */
 export default function PrioritariosPage() {
-  const consulta = useQuery({ queryKey: ['panel', 'prioritarios'], queryFn: obtenerPrioritarios });
+  const { general, elegida } = useAlcance();
+  const consulta = useQuery({
+    queryKey: ['panel', 'prioritarios', elegida],
+    queryFn: () => obtenerPrioritarios(elegida),
+  });
+  // Viendo todas las instituciones, el general ve de cuál es cada caso (D-86).
+  const conInstitucion = general && !elegida;
+  const columnas = [
+    'fecha',
+    'nombre',
+    ...(conInstitucion ? (['institucion'] as const) : []),
+    'modulo',
+    'lugar',
+    'motivos',
+    'dias',
+    'asignado',
+  ] as const;
 
   return (
     <PaginaPanel>
       <PageMeta title={t.titulo} indexable={false} />
-      <EncabezadoPanel titulo={t.titulo} descripcion={t.descripcion} />
+      <EncabezadoPanel titulo={t.titulo} descripcion={t.descripcion}>
+        <SelectorInstitucion />
+      </EncabezadoPanel>
 
       {consulta.isError ? (
         <ErrorCarga error={consulta.error} alReintentar={() => void consulta.refetch()} />
@@ -39,9 +59,7 @@ export default function PrioritariosPage() {
             <caption className="sr-only">{t.titulo}</caption>
             <thead className="bg-piedra-50">
               <tr>
-                {(
-                  ['fecha', 'nombre', 'modulo', 'lugar', 'motivos', 'dias', 'asignado'] as const
-                ).map((c) => (
+                {columnas.map((c) => (
                   <th key={c} scope="col" className="px-3 py-2 font-semibold whitespace-nowrap">
                     {t.columnas[c]}
                   </th>
@@ -65,6 +83,9 @@ export default function PrioritariosPage() {
                       {p.codigo}
                     </span>
                   </th>
+                  {conInstitucion ? (
+                    <td className="px-3 py-2">{p.institucion ?? panel.sinDato}</td>
+                  ) : null}
                   <td className="px-3 py-2">{panel.modulos[p.modulo]}</td>
                   <td className="px-3 py-2">{p.lugar ?? panel.sinDato}</td>
                   <td className="px-3 py-2">

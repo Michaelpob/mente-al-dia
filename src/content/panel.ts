@@ -21,6 +21,7 @@ export const panel = {
     configuracion: 'Configuración',
     usuarios: 'Usuarios',
     auditoria: 'Auditoría',
+    instituciones: 'Instituciones',
     cuentas: 'Cuentas',
     censo: 'Censo',
     pendientes: (n: number) => `${n} ${n === 1 ? 'pendiente' : 'pendientes'}`,
@@ -53,6 +54,8 @@ export const panel = {
     },
     quienes: {
       titulo: '¿Quiénes son?',
+      institucion: 'Por institución',
+      institucionNota: 'Cuántas personas respondieron con el enlace de cada institución.',
       modulo: 'Por módulo',
       moduloNota: 'Cuántas personas respondieron cada cuestionario.',
       lugar: 'Lugar de residencia',
@@ -122,6 +125,7 @@ export const panel = {
           'Contiene datos personales y sensibles: guárdalo en un lugar seguro y no lo compartas fuera del equipo autorizado.',
         hojas: { resumen: 'Resumen', areas: 'Áreas', personas: 'Personas' },
         datos: {
+          institucion: 'Institución',
           periodo: 'Periodo',
           modulo: 'Módulo',
           lugar: 'Lugar de residencia',
@@ -137,11 +141,13 @@ export const panel = {
         desde: (desde: string) => `Desde el ${desde}`,
         hasta: (hasta: string) => `Hasta el ${hasta}`,
         todos: 'Todos',
+        todasInstituciones: 'Todas las instituciones',
         indicador: 'Indicador',
         personas: 'Personas',
         porcentaje: 'Porcentaje',
         cuestionarios: 'Cuestionarios respondidos',
         grupos: {
+          institucion: 'Institución',
           modulo: 'Módulo',
           lugar: 'Lugar de residencia',
           edad: 'Edad',
@@ -180,6 +186,7 @@ export const panel = {
           areasFalencia: 'Áreas con falencia',
           areasPorFortalecer: 'Áreas por fortalecer',
           areasFortaleza: 'Áreas de fortaleza',
+          institucion: 'Institución',
         },
         si: 'Sí',
         no: 'No',
@@ -343,7 +350,8 @@ export const panel = {
   sesion: {
     cerrar: 'Cerrar sesión',
     roles: {
-      superadministrador: 'Superadministrador',
+      superadministrador: 'Administrador general',
+      administrador_institucional: 'Administrador institucional',
       profesional: 'Profesional',
       consulta: 'Consulta',
     },
@@ -500,6 +508,7 @@ export const panel = {
     columnas: {
       fecha: 'Fecha',
       nombre: 'Nombre',
+      institucion: 'Institución',
       modulo: 'Módulo',
       lugar: 'Lugar',
       resultado: 'Resultado general',
@@ -526,6 +535,7 @@ export const panel = {
   ficha: {
     volver: 'Volver a los registros',
     codigo: 'Código',
+    institucion: 'Institución',
     modulo: 'Módulo',
     edad: 'Edad',
     anos: (n: number) => `${n} ${n === 1 ? 'año' : 'años'}`,
@@ -594,6 +604,7 @@ export const panel = {
     columnas: {
       fecha: 'Fecha',
       nombre: 'Nombre',
+      institucion: 'Institución',
       modulo: 'Módulo',
       lugar: 'Lugar',
       motivos: 'Motivos de prioridad',

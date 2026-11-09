@@ -1,3 +1,4 @@
+import type { RolPanel } from '@/features/panel/acceso/estado-sesion';
 import type { TipoDispositivo } from '@/features/visitas/dispositivo';
 import type { AreaId, Modulo, Nivel, ValorRespuesta } from '@/types/dominio';
 
@@ -73,6 +74,8 @@ export interface FilaRegistro {
   modulo: Modulo;
   edad: number | null;
   lugar: string | null;
+  /** Nombre de la institución (D-86). */
+  institucion?: string | null;
   resultadoGeneral: ResultadoGeneral;
   atencion: number;
   prioridad: boolean;
@@ -93,6 +96,8 @@ export interface PaginaRegistros {
 export interface Ficha {
   id: string;
   codigo: string;
+  /** La institución del cuestionario (D-86). */
+  institucion?: { id: string; nombre: string } | null;
   creadoEn: string;
   actualizadoEn: string;
   modulo: Modulo;
@@ -136,6 +141,7 @@ export interface Prioritario {
   nombre: string;
   modulo: Modulo;
   lugar: string | null;
+  institucion?: string | null;
   resultadoGeneral: ResultadoGeneral;
   motivos: string[];
   asignado: string | null;
@@ -228,6 +234,8 @@ export interface Censo {
   conPrioridad: number;
   conFalencias: number;
   porModulo: Partial<Record<Modulo, number>>;
+  /** Personas por institución (D-86): en la vista de todas, una fila por institución. */
+  porInstitucion?: { institucion: string; n: number }[];
   resultados: Partial<Record<ResultadoGeneral, number>>;
   porEdad: { edad: number; n: number }[];
   /** Solo niñas, niños y adolescentes; null es «prefirió no responder». */
@@ -248,6 +256,7 @@ export interface PersonaCenso {
   sexo: string | null;
   grado: string | null;
   lugar: string | null;
+  institucion?: string | null;
   resultadoGeneral: ResultadoGeneral;
   prioridad: boolean;
   niveles: Partial<Record<AreaId, Nivel>>;
@@ -269,6 +278,82 @@ export interface PaginaCenso {
 export interface ExportacionCenso {
   generadoEn: string;
   generadoPor: string | null;
+  /** La institución descargada; null o ausente es «todas» (solo el administrador general). */
+  institucion?: string | null;
   resumen: Censo;
   personas: PersonaCenso[];
+}
+
+// ---------------------------------------------------------------------------------- instituciones (D-86)
+
+/** panel_instituciones: cada institución con su enlace y su actividad del periodo. */
+export interface InstitucionPanel {
+  id: string;
+  nombre: string;
+  /** Lo que va después de ?sede= en el enlace. */
+  slug: string;
+  activa: boolean;
+  creadoEn: string;
+  cuestionarios: number;
+  personas: number;
+  prioritariosPendientes: number;
+  ultimoCuestionario: string | null;
+  visitas: number;
+  administradores: number;
+}
+
+export interface CambioInstitucion {
+  id: string;
+  nombre: string;
+  slug: string;
+  activa: boolean;
+}
+
+/** panel_administradores: el general y los administradores de cada institución. */
+export interface AdministradorPanel {
+  id: string;
+  nombre: string;
+  correo: string | null;
+  rol: RolPanel;
+  activo: boolean;
+  institucion: { id: string; nombre: string; activa: boolean } | null;
+  creadoEn: string;
+  ultimoIngreso: string | null;
+  dobleFactor: boolean;
+}
+
+export interface InvitacionAdministrador {
+  nombre: string;
+  correo: string;
+  rol: 'superadministrador' | 'administrador_institucional';
+  /** Obligatoria para el administrador institucional; el general no lleva. */
+  institucionId?: string;
+}
+
+export interface FiltrosAuditoria {
+  desde: string | null;
+  hasta: string | null;
+  accion: string | null;
+  pagina: number;
+}
+
+export interface FilaAuditoria {
+  id: number;
+  ocurridoEn: string;
+  actor: string | null;
+  actorRol: string | null;
+  accion: string;
+  entidad: string;
+  entidadId: string | null;
+  institucion: string | null;
+  detalle: Record<string, unknown> | null;
+}
+
+export interface PaginaAuditoria {
+  total: number;
+  pagina: number;
+  tamano: number;
+  /** Todas las acciones registradas, para el filtro. */
+  acciones: string[];
+  filas: FilaAuditoria[];
 }

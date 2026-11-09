@@ -43,6 +43,8 @@ import {
   moduloDeFiltro,
 } from '../datos/filtros';
 import { formatearFecha, formatearNumero } from '../datos/formato';
+import { useAlcance } from '../instituciones/alcance';
+import { SelectorInstitucion } from '../instituciones/piezas';
 import type {
   EstadoSeguimiento,
   FilaRegistro,
@@ -101,15 +103,16 @@ export default function RegistrosPage() {
   const hoy = useMemo(() => hoyEnColombia(), []);
   const [verFiltros, setVerFiltros] = useState(() => hayFiltros(filtros));
   const [ocultas, setOcultas] = useState(leerOcultas);
+  const { general, elegida } = useAlcance();
 
   const consulta = useQuery({
-    queryKey: ['panel', 'registros', filtros],
-    queryFn: () => obtenerRegistros(filtros),
+    queryKey: ['panel', 'registros', elegida, filtros],
+    queryFn: () => obtenerRegistros(filtros, elegida),
     placeholderData: keepPreviousData,
   });
   const lugares = useQuery({
-    queryKey: ['panel', 'lugares'],
-    queryFn: () => obtenerOpcionesLugar(hoy),
+    queryKey: ['panel', 'lugares', elegida],
+    queryFn: () => obtenerOpcionesLugar(hoy, elegida),
     staleTime: 5 * 60_000,
   });
 
@@ -134,7 +137,15 @@ export default function RegistrosPage() {
       return siguientes;
     });
 
-  const visibles = (['fecha', 'nombre', ...OPCIONALES] as Columna[]).filter((c) => !ocultas.has(c));
+  // Viendo todas las instituciones, el general ve de cuál es cada registro (D-86).
+  const visibles = (
+    [
+      'fecha',
+      'nombre',
+      ...(general && !elegida ? (['institucion'] as const) : []),
+      ...OPCIONALES,
+    ] as Columna[]
+  ).filter((c) => !ocultas.has(c));
   const ordenar = (orden: OrdenRegistros) =>
     cambiar({
       orden,
@@ -159,7 +170,9 @@ export default function RegistrosPage() {
       <EncabezadoPanel
         titulo={t.titulo}
         descripcion={datos ? t.total(formatearNumero(datos.total)) : t.descripcion}
-      />
+      >
+        <SelectorInstitucion />
+      </EncabezadoPanel>
 
       <div className="flex flex-col gap-4 rounded-xl border border-piedra-200 bg-blanco p-4">
         <div className="flex flex-wrap items-end gap-3">
@@ -452,6 +465,8 @@ function Fila({
             {fila.nombre}
           </Link>
         );
+      case 'institucion':
+        return fila.institucion ?? panel.sinDato;
       case 'modulo':
         return panel.modulos[fila.modulo];
       case 'lugar':
