@@ -13,6 +13,7 @@ import {
   type ResultadoParticipante,
   type ValoresRegistro,
 } from './modelo';
+import { esSede, type Sede } from '@/features/instituciones/sede';
 
 /**
  * Estado del registro y del cuestionario. Función pura (reductor), con pruebas.
@@ -38,6 +39,11 @@ export interface EstadoParticipacion {
   version: 1;
   /** Identifica este envío: un reintento con la misma clave no se guarda dos veces (D-50). */
   claveEnvio: string;
+  /**
+   * Institución del enlace (D-86). Queda fija al empezar el registro: abrir el enlace de otra
+   * institución a mitad del cuestionario no lo cambia de institución.
+   */
+  sede: Sede | null;
   modulo: ModuloDisponible | null;
   valores: ValoresRegistro;
   autorizaciones: Autorizaciones;
@@ -55,6 +61,7 @@ export interface EstadoParticipacion {
 }
 
 export type Accion =
+  | { tipo: 'fijarSede'; sede: Sede }
   | { tipo: 'elegirModulo'; modulo: ModuloDisponible }
   | { tipo: 'escribir'; grupo: GrupoCampos; campo: string; valor: string }
   | { tipo: 'autorizar'; campo: keyof Autorizaciones; valor: boolean }
@@ -80,6 +87,7 @@ export function estadoInicial(claveEnvio: string): EstadoParticipacion {
   return {
     version: 1,
     claveEnvio,
+    sede: null,
     modulo: null,
     valores: { participante: {}, acudiente: {} },
     autorizaciones: sinAutorizaciones(),
@@ -96,11 +104,22 @@ export function estadoInicial(claveEnvio: string): EstadoParticipacion {
 /** Lo que se borra al cambiar de módulo o al terminar: datos, autorizaciones y respuestas. */
 const sinDatos = (estado: EstadoParticipacion): EstadoParticipacion => ({
   ...estadoInicial(estado.claveEnvio),
+  sede: estado.sede,
   enviado: estado.enviado,
 });
 
 export function reducir(estado: EstadoParticipacion, accion: Accion): EstadoParticipacion {
   switch (accion.tipo) {
+    case 'fijarSede':
+      // Con el registro o las respuestas en curso, la institución ya no cambia.
+      if (estado.sede && (estado.registroCompleto || Object.keys(estado.respuestas).length > 0)) {
+        return estado;
+      }
+      if (estado.sede?.slug === accion.sede.slug && estado.sede.nombre === accion.sede.nombre) {
+        return estado;
+      }
+      return { ...estado, sede: accion.sede };
+
     case 'elegirModulo':
       if (estado.modulo === accion.modulo) return estado;
       return { ...sinDatos(estado), modulo: accion.modulo };
@@ -179,6 +198,8 @@ export function reducir(estado: EstadoParticipacion, accion: Accion): EstadoPart
       // Guardado en el servidor: aquí ya no quedan datos personales ni respuestas.
       return {
         ...estadoInicial(accion.claveSiguiente),
+        // El siguiente cuestionario de esta pestaña sigue en la misma institución.
+        sede: estado.sede,
         enviado: {
           modulo: estado.modulo,
           codigo: accion.codigo,
@@ -189,7 +210,8 @@ export function reducir(estado: EstadoParticipacion, accion: Accion): EstadoPart
       };
 
     case 'reiniciar':
-      return estadoInicial(accion.claveEnvio);
+      // Empezar de nuevo no cambia la institución con la que se entró en esta pestaña.
+      return { ...estadoInicial(accion.claveEnvio), sede: estado.sede };
   }
 }
 
@@ -207,7 +229,8 @@ export function leerEstado(
         typeof guardado.claveEnvio === 'string' &&
         (guardado.modulo === null || esModuloDisponible(guardado.modulo))
       ) {
-        return { ...estadoInicial(guardado.claveEnvio), ...guardado };
+        const estado = { ...estadoInicial(guardado.claveEnvio), ...guardado };
+        return { ...estado, sede: esSede(estado.sede) ? estado.sede : null };
       }
     }
   } catch {

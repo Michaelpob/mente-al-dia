@@ -6,6 +6,8 @@ import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
 import { MAIN_CONTENT_ID, SkipLink } from '@/components/layout/skip-link';
 import { vistaPrevia } from '@/config/entorno';
+import { AvisoSede } from '@/features/instituciones/AvisoSede';
+import { SedeProvider } from '@/features/instituciones/SedeProvider';
 import { registrarVisita } from '@/features/visitas/registrar-visita';
 
 /** Layout del sitio público: saltar al contenido, encabezado, contenido y pie. */
@@ -42,17 +44,20 @@ export function PublicLayout() {
 
   // Al imprimir (resultados) solo queda el contenido: sin encabezado, pie ni barras.
   return (
-    <div className="flex min-h-dvh flex-col print:[&>:not(main)]:hidden">
-      <SkipLink />
-      <PreviewBar />
-      <SiteHeader />
-      <main id={MAIN_CONTENT_ID} ref={mainRef} tabIndex={-1} className="flex-1 outline-none">
-        <Suspense fallback={<PageLoading />}>
-          <Outlet />
-        </Suspense>
-      </main>
-      <SiteFooter />
-      <ScrollRestoration />
-    </div>
+    <SedeProvider>
+      <div className="flex min-h-dvh flex-col print:[&>:not(main)]:hidden">
+        <SkipLink />
+        <PreviewBar />
+        <SiteHeader />
+        <AvisoSede />
+        <main id={MAIN_CONTENT_ID} ref={mainRef} tabIndex={-1} className="flex-1 outline-none">
+          <Suspense fallback={<PageLoading />}>
+            <Outlet />
+          </Suspense>
+        </main>
+        <SiteFooter />
+        <ScrollRestoration />
+      </div>
+    </SedeProvider>
   );
 }

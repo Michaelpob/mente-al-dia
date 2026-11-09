@@ -137,6 +137,15 @@ export const textos = {
     accesibilidad: 'Accesibilidad',
   },
 
+  /** Institución del enlace (D-86), debajo del encabezado. */
+  sede: {
+    participas: 'Participas con',
+    invalida:
+      'Este enlace no corresponde a una institución activa. Pide a tu institución el enlace correcto para responder.',
+    error: 'No pudimos confirmar el enlace de tu institución. Revisa la conexión.',
+    reintentar: 'Intentar de nuevo',
+  },
+
   lineasAyuda: {
     titulo: 'Líneas de ayuda',
     descripcion: 'Si necesitas apoyo, puedes comunicarte con estas líneas.',

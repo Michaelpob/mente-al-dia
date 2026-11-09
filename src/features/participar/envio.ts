@@ -7,7 +7,8 @@ import type { EnvioCuestionario, ResultadoParticipante } from './modelo';
  * Con la misma clave de envío, reintentar es seguro: el servidor no guarda dos veces (D-50).
  */
 
-export type CodigoErrorEnvio = 'sin_conexion' | 'datos_invalidos' | 'servidor';
+export type CodigoErrorEnvio =
+  'sin_conexion' | 'datos_invalidos' | 'institucion_invalida' | 'servidor';
 
 export class ErrorEnvio extends Error {
   readonly codigo: CodigoErrorEnvio;
@@ -72,6 +73,14 @@ export function crearEnviador({
       clearTimeout(temporizador);
     }
 
+    if (respuesta.status === 422) {
+      const cuerpo = (await respuesta.json().catch(() => null)) as {
+        error?: { codigo?: string };
+      } | null;
+      if (cuerpo?.error?.codigo === 'institucion_invalida') {
+        throw new ErrorEnvio('institucion_invalida', 'La institución del enlace no está activa.');
+      }
+    }
     if (respuesta.status === 400 || respuesta.status === 422) {
       throw new ErrorEnvio(
         'datos_invalidos',

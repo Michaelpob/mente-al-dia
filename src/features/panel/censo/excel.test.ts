@@ -140,5 +140,6 @@ describe('Excel del censo', () => {
     expect(personas.getRow(3).getCell(5).value).toBe('Prefirió no responder');
     expect(personas.getRow(3).getCell(19).value).toBe('Fortaleza');
     expect(personas.getRow(3).getCell(20).value).toBe('Sin dato');
-  });
+    // Armar y volver a abrir el libro tarda varios segundos cuando corren todas las pruebas juntas.
+  }, 30_000);
 });

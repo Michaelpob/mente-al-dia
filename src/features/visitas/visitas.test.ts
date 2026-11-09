@@ -89,6 +89,7 @@ describe('registrarVisita', () => {
     clave: 'sb_publishable_prueba',
     dispositivo: () => 'tableta' as const,
     esAutomatizado: () => false,
+    sede: () => null,
   };
 
   beforeEach(() => reiniciarVisitaParaPruebas());
@@ -100,7 +101,14 @@ describe('registrarVisita', () => {
     const [url, opciones] = fetch.mock.calls[0]!;
     expect(url).toBe('https://proyecto.supabase.co/rest/v1/rpc/registrar_visita');
     expect(opciones.headers).toMatchObject({ apikey: 'sb_publishable_prueba' });
-    expect(JSON.parse(opciones.body)).toEqual({ p_dispositivo: 'tableta' });
+    expect(JSON.parse(opciones.body)).toEqual({ p_dispositivo: 'tableta', p_sede: null });
+  });
+
+  it('cuenta la visita para la institución del enlace', async () => {
+    const fetch = vi.fn().mockResolvedValue(new Response(null, { status: 204 }));
+    await registrarVisita({ ...base, sede: () => 'colegio1', fetch, almacen: memoria() });
+    const [, opciones] = fetch.mock.calls[0]!;
+    expect(JSON.parse(opciones.body)).toEqual({ p_dispositivo: 'tableta', p_sede: 'colegio1' });
   });
 
   it('cuenta una sola visita por sesión del navegador', async () => {

@@ -188,6 +188,8 @@ export const contarRespondidas = (modulo: ModuloDisponible, respuestas: Respuest
 export type EnvioCuestionario =
   | {
       claveEnvio: string;
+      /** Institución del enlace (slug): la base de datos la resuelve (D-86). */
+      sede: string;
       modulo: 'adulto';
       participante: ParticipanteAdulto;
       autorizaciones: { tratamientoDatos: true; datosSensibles: true };
@@ -195,12 +197,21 @@ export type EnvioCuestionario =
     }
   | {
       claveEnvio: string;
+      sede: string;
       modulo: ModuloMenor;
       participante: ParticipanteNino;
       acudiente: Acudiente;
       autorizaciones: { tratamientoDatos: true; datosSensibles: true; autorizacionAcudiente: true };
       respuestas: { areaId: AreaId; valor: ValorRespuesta }[];
     };
+
+/** Sin el enlace de una institución no hay envío (D-86). */
+export class EnvioSinSede extends Error {
+  constructor() {
+    super('Falta el enlace de la institución.');
+    this.name = 'EnvioSinSede';
+  }
+}
 
 export class EnvioIncompleto extends Error {
   constructor(motivo: string) {
@@ -211,6 +222,7 @@ export class EnvioIncompleto extends Error {
 
 interface DatosEnvio {
   claveEnvio: string;
+  sede: { slug: string } | null;
   modulo: ModuloDisponible;
   valores: ValoresRegistro;
   autorizaciones: Autorizaciones;
@@ -230,9 +242,13 @@ export function construirEnvio(datos: DatosEnvio): EnvioCuestionario {
     return { areaId, valor };
   });
 
+  if (!datos.sede) throw new EnvioSinSede();
+  const sede = datos.sede.slug;
+
   if (registro.modulo === 'adulto') {
     return {
       claveEnvio: datos.claveEnvio,
+      sede,
       modulo: 'adulto',
       participante: registro.participante,
       autorizaciones: { tratamientoDatos: true, datosSensibles: true },
@@ -241,6 +257,7 @@ export function construirEnvio(datos: DatosEnvio): EnvioCuestionario {
   }
   return {
     claveEnvio: datos.claveEnvio,
+    sede,
     modulo: registro.modulo,
     participante: registro.participante,
     acudiente: registro.acudiente,

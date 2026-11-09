@@ -13,12 +13,15 @@ import {
 import {
   construirEnvio,
   EnvioIncompleto,
+  EnvioSinSede,
   paraParticipante,
   validarRegistro,
   type ResultadoParticipante,
 } from './modelo';
 
 const CLAVE = '6f1c2a4e-8b3d-4c5f-9a7e-1d2b3c4d5e6f';
+const SEDE = { slug: 'colegio1', nombre: 'Colegio 1' };
+const OTRA_SEDE = { slug: 'alcaldia2', nombre: 'Alcaldía 2' };
 
 const adulto = {
   nombre: '  Persona de Prueba ',
@@ -48,6 +51,7 @@ function registrado(modulo: 'adulto' | 'nino'): EstadoParticipacion {
     }));
   return con(
     estadoInicial(CLAVE),
+    { tipo: 'fijarSede', sede: SEDE },
     { tipo: 'elegirModulo', modulo },
     ...(modulo === 'adulto'
       ? escribir('participante', adulto)
@@ -194,6 +198,42 @@ describe('reducir', () => {
     expect(estado.valores).toEqual({ participante: {}, acudiente: {} });
     expect(estado.respuestas).toEqual({});
     expect(estado.claveEnvio).toBe('otra-clave');
+    // El siguiente cuestionario de la pestaña sigue en la misma institución.
+    expect(estado.sede).toEqual(SEDE);
+  });
+});
+
+describe('institución del enlace (D-86)', () => {
+  it('se fija antes de empezar y puede corregirse mientras no haya datos', () => {
+    const estado = con(
+      estadoInicial(CLAVE),
+      { tipo: 'fijarSede', sede: OTRA_SEDE },
+      { tipo: 'fijarSede', sede: SEDE },
+    );
+    expect(estado.sede).toEqual(SEDE);
+  });
+
+  it('con el registro o las respuestas en curso ya no cambia', () => {
+    expect(con(registrado('adulto'), { tipo: 'fijarSede', sede: OTRA_SEDE }).sede).toEqual(SEDE);
+    const respondiendo = con(
+      registrado('adulto'),
+      { tipo: 'irAPregunta', indice: 0 },
+      { tipo: 'responder', areaId: 'bienestar_emocional', valor: 'si' },
+    );
+    expect(con(respondiendo, { tipo: 'fijarSede', sede: OTRA_SEDE }).sede).toEqual(SEDE);
+  });
+
+  it('cambiar de módulo o empezar de nuevo conserva la institución', () => {
+    expect(con(registrado('adulto'), { tipo: 'elegirModulo', modulo: 'nino' }).sede).toEqual(SEDE);
+    expect(con(registrado('adulto'), { tipo: 'reiniciar', claveEnvio: 'nueva' }).sede).toEqual(
+      SEDE,
+    );
+  });
+
+  it('una institución guardada con otro formato se descarta al leer la pestaña', () => {
+    const guardado = { ...respondido('adulto'), sede: { slug: 'Colegio 1!', nombre: '' } };
+    const almacen = { getItem: () => JSON.stringify(guardado) };
+    expect(leerEstado(almacen, () => 'nueva').sede).toBeNull();
   });
 });
 
@@ -236,6 +276,18 @@ describe('construirEnvio', () => {
       edad: 9,
       grado: 'Cuarto',
     });
+  });
+
+  it('lleva el enlace de la institución, nunca su identificador interno', () => {
+    const envio = construirEnvio({ ...respondido('adulto'), modulo: 'adulto' });
+    expect(envio.sede).toBe('colegio1');
+    expect(JSON.stringify(envio)).not.toMatch(/institucion/i);
+  });
+
+  it('sin la institución del enlace no arma el envío', () => {
+    expect(() => construirEnvio({ ...respondido('adulto'), sede: null, modulo: 'adulto' })).toThrow(
+      EnvioSinSede,
+    );
   });
 
   it('no arma un envío incompleto', () => {

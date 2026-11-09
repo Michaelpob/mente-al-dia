@@ -28,6 +28,8 @@ import {
   SelectField,
 } from '@/features/participar/piezas';
 import { useTituloDelPaso } from '@/features/participar/use-titulo-del-paso';
+import { useSede } from '@/features/instituciones/sede-context';
+import { SinSede } from '@/features/instituciones/SinSede';
 
 type Paso = 'grupo' | 'datos' | 'autorizacion';
 const NUMERO_PASO: Record<Paso, number> = { grupo: 0, datos: 1, autorizacion: 2 };
@@ -48,11 +50,17 @@ interface PasoProps {
  */
 export default function RegistroPage() {
   const { estado, despachar } = useParticipacion();
+  const { estado: sede } = useSede();
   const [parametros] = useSearchParams();
   const grupoPedido = parametros.get('grupo');
   const [paso, setPaso] = useState<Paso>(() => (estado.modulo ? 'datos' : 'grupo'));
   const pasoActual = estado.modulo ? paso : 'grupo';
   const tituloRef = useTituloDelPaso(pasoActual);
+
+  // La institución del enlace queda fija en el cuestionario al empezar (D-86).
+  useEffect(() => {
+    if (sede.tipo === 'valida') despachar({ tipo: 'fijarSede', sede: sede.sede });
+  }, [sede, despachar]);
 
   // /registro?grupo=nino (desde las tarjetas del inicio) llega con el grupo elegido.
   useEffect(() => {
@@ -65,22 +73,28 @@ export default function RegistroPage() {
     <>
       <PageMeta title={textos.paginas.registro.titulo} indexable={false} />
       <PantallaParticipacion>
-        <PasosParticipacion actual={NUMERO_PASO[pasoActual]} />
-        {pasoActual === 'grupo' || !estado.modulo ? (
-          <PasoGrupo tituloRef={tituloRef} onContinuar={() => setPaso('datos')} />
-        ) : pasoActual === 'datos' ? (
-          <PasoDatos
-            modulo={estado.modulo}
-            tituloRef={tituloRef}
-            onVolver={() => setPaso('grupo')}
-            onContinuar={() => setPaso('autorizacion')}
-          />
+        {!estado.sede && sede.tipo !== 'valida' ? (
+          <SinSede confirmando={sede.tipo === 'cargando'} />
         ) : (
-          <PasoAutorizacion
-            modulo={estado.modulo}
-            tituloRef={tituloRef}
-            onVolver={() => setPaso('datos')}
-          />
+          <>
+            <PasosParticipacion actual={NUMERO_PASO[pasoActual]} />
+            {pasoActual === 'grupo' || !estado.modulo ? (
+              <PasoGrupo tituloRef={tituloRef} onContinuar={() => setPaso('datos')} />
+            ) : pasoActual === 'datos' ? (
+              <PasoDatos
+                modulo={estado.modulo}
+                tituloRef={tituloRef}
+                onVolver={() => setPaso('grupo')}
+                onContinuar={() => setPaso('autorizacion')}
+              />
+            ) : (
+              <PasoAutorizacion
+                modulo={estado.modulo}
+                tituloRef={tituloRef}
+                onVolver={() => setPaso('datos')}
+              />
+            )}
+          </>
         )}
       </PantallaParticipacion>
     </>

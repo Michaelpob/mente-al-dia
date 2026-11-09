@@ -41,6 +41,7 @@ import { enviador, ErrorEnvio, type CodigoErrorEnvio } from '@/features/particip
 import { nuevaClaveEnvio } from '@/features/participar/estado';
 import {
   construirEnvio,
+  EnvioSinSede,
   contarRespondidas,
   paraParticipante,
   type ModuloDisponible,
@@ -347,6 +348,9 @@ function Pregunta({
   );
 }
 
+/** La vista previa sin base de datos calcula aquí, sin guardar: no necesita una institución real. */
+const SEDE_VISTA_PREVIA = { slug: 'vista-previa', nombre: 'Vista previa' };
+
 type EstadoEnvio =
   { tipo: 'listo' } | { tipo: 'enviando' } | { tipo: 'error'; codigo: CodigoErrorEnvio };
 
@@ -362,7 +366,7 @@ function Revision({ modulo, tituloRef }: VistaProps) {
   function verEjemplo() {
     let datos;
     try {
-      datos = construirEnvio({ ...estado, modulo });
+      datos = construirEnvio({ ...estado, sede: estado.sede ?? SEDE_VISTA_PREVIA, modulo });
     } catch {
       setEnvio({ tipo: 'error', codigo: 'datos_invalidos' });
       return;
@@ -381,8 +385,11 @@ function Revision({ modulo, tituloRef }: VistaProps) {
     let datos;
     try {
       datos = construirEnvio({ ...estado, modulo });
-    } catch {
-      setEnvio({ tipo: 'error', codigo: 'datos_invalidos' });
+    } catch (error) {
+      setEnvio({
+        tipo: 'error',
+        codigo: error instanceof EnvioSinSede ? 'institucion_invalida' : 'datos_invalidos',
+      });
       return;
     }
     setEnvio({ tipo: 'enviando' });

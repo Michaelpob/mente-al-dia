@@ -15,6 +15,16 @@ export const participar = {
   pasos: ['Quién responde', 'Tus datos', 'Autorización', 'Preguntas', 'Revisión'],
   pasosEtiqueta: 'Avance del registro y el cuestionario',
 
+  /** Sin el enlace de una institución (D-86). */
+  sinSede: {
+    titulo: 'Para responder, entra con el enlace de tu institución',
+    texto:
+      'Cada institución tiene su propio enlace de Mente al Día. Pídeselo a quien te invitó a responder y ábrelo en este navegador.',
+    confirmando: 'Confirmando el enlace de tu institución…',
+    volver: 'Ir al inicio',
+    lineas: 'Si necesitas apoyo ahora, puedes llamar a estas líneas.',
+  },
+
   grupo: {
     titulo: '¿Quién va a responder?',
     texto: 'Cada cuestionario tiene preguntas pensadas para su edad.',
@@ -218,6 +228,8 @@ export const participar = {
     errores: {
       sin_conexion:
         'No pudimos enviar tus respuestas porque falló la conexión. Siguen guardadas en esta pestaña: inténtalo de nuevo.',
+      institucion_invalida:
+        'El enlace de tu institución ya no está activo, así que no pudimos guardar tus respuestas. Pide a tu institución el enlace de nuevo.',
       datos_invalidos:
         'Algunos datos no son válidos. Revisa tus datos y tus respuestas e inténtalo de nuevo.',
       servidor:

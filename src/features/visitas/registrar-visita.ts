@@ -1,3 +1,4 @@
+import { leerSedeGuardada, slugDelEnlace } from '@/features/instituciones/sede';
 import { clasificarDispositivo, senalesDelNavegador, type TipoDispositivo } from './dispositivo';
 
 /**
@@ -19,6 +20,8 @@ export interface ConfiguracionVisita {
   almacen?: Pick<Storage, 'getItem' | 'setItem'> | null;
   dispositivo?: () => TipoDispositivo;
   esAutomatizado?: () => boolean;
+  /** Institución del enlace (D-86): la base de datos la resuelve; una desconocida no cuenta. */
+  sede?: () => string | null;
 }
 
 function almacenDeSesion(): Pick<Storage, 'getItem' | 'setItem'> | null {
@@ -33,6 +36,17 @@ function navegadorAutomatizado(): boolean {
   return navigator.webdriver === true || ROBOT.test(navigator.userAgent ?? '');
 }
 
+/** La sede del enlace por el que se entró, o la que ya estaba en esta pestaña. */
+function sedeDeLaVisita(): string | null {
+  try {
+    return (
+      slugDelEnlace(window.location.search) ?? leerSedeGuardada(window.sessionStorage)?.slug ?? null
+    );
+  } catch {
+    return null;
+  }
+}
+
 let registradaEnEstaCarga = false;
 
 /** Devuelve si envió la visita (false si ya estaba contada, falta configuración o es un robot). */
@@ -43,6 +57,7 @@ export async function registrarVisita({
   almacen = almacenDeSesion(),
   dispositivo = () => clasificarDispositivo(senalesDelNavegador()),
   esAutomatizado = navegadorAutomatizado,
+  sede = sedeDeLaVisita,
 }: ConfiguracionVisita): Promise<boolean> {
   if (!url || !clave || registradaEnEstaCarga || esAutomatizado()) return false;
   try {
@@ -56,7 +71,7 @@ export async function registrarVisita({
     await hacerFetch(`${url.replace(/\/$/, '')}/rest/v1/rpc/registrar_visita`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', apikey: clave },
-      body: JSON.stringify({ p_dispositivo: dispositivo() }),
+      body: JSON.stringify({ p_dispositivo: dispositivo(), p_sede: sede() }),
       // La visita se envía aunque la persona cambie de página o cierre la pestaña enseguida.
       keepalive: true,
     });
