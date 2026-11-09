@@ -31,21 +31,34 @@ const manejar = crearManejador({
     return perfil ? { ...perfil, doble_factor: data.claims.aal === 'aal2' } : null;
   },
 
-  async invitar(correo) {
+  async institucion(id) {
+    const { data, error } = await servidor
+      .from('instituciones')
+      .select('nombre, activa')
+      .eq('id', id)
+      .maybeSingle<{ nombre: string; activa: boolean }>();
+    if (error) throw error;
+    return data;
+  },
+
+  async invitar(correo, { nombre, institucion }) {
+    // Los datos van al correo de invitación (plantilla supabase/templates/invitacion.html).
     const { data, error } = await servidor.auth.admin.inviteUserByEmail(correo, {
       redirectTo: `${sitio}/panel/definir-contrasena`,
+      data: { nombre, ...(institucion ? { institucion } : {}) },
     });
     if (error?.code === 'email_exists') return null;
     if (error) throw error;
     return { id: data.user.id };
   },
 
-  async crearPerfil(actor, id, { nombre, rol }) {
+  async crearPerfil(actor, id, { nombre, rol, institucionId }) {
     const { error } = await servidor.rpc('crear_perfil_invitado', {
       p_actor: actor,
       p_id: id,
       p_nombre: nombre,
       p_rol: rol,
+      p_institucion: institucionId ?? null,
     });
     if (error) throw error;
   },

@@ -23,6 +23,15 @@ const telefono = z
 
 /** La genera el navegador al empezar; con ella un reintento no duplica el envío (D-50). */
 const claveEnvio = z.uuid();
+/**
+ * Institución del enlace (?sede=slug, D-86). Solo el formato: la base de datos la resuelve y exige
+ * que exista y esté activa. El navegador nunca envía el id de la institución.
+ */
+const sede = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .regex(/^[a-z0-9-]{3,40}$/, 'Enlace de institución no válido');
 
 const respuestas = z
   .array(z.object({ areaId: z.enum(idsAreas), valor: z.enum(valores) }).strict())
@@ -33,6 +42,7 @@ const respuestas = z
 const envioAdulto = z
   .object({
     claveEnvio,
+    sede,
     modulo: z.literal('adulto'),
     participante: z
       .object({
@@ -62,6 +72,7 @@ const envioMenor = <M extends 'nino' | 'adolescente'>(
   z
     .object({
       claveEnvio,
+      sede,
       modulo: z.literal(modulo),
       participante: z
         .object({
@@ -116,10 +127,17 @@ export const esquemaInvitacion = z
   .object({
     correo,
     nombre: texto(2, 120),
-    // El panel es solo del administrador (D-65): únicamente se invitan cuentas de superadministrador.
-    rol: z.literal('superadministrador').default('superadministrador'),
+    // Un administrador general u otro de una institución (D-86); los roles antiguos ya no se usan.
+    rol: z
+      .enum(['superadministrador', 'administrador_institucional'])
+      .default('superadministrador'),
+    institucionId: z.uuid().optional(),
   })
-  .strict();
+  .strict()
+  .refine((i) => (i.rol === 'administrador_institucional') === (i.institucionId !== undefined), {
+    message: 'Un administrador institucional necesita su institución; el general, ninguna.',
+    path: ['institucionId'],
+  });
 export type Invitacion = z.infer<typeof esquemaInvitacion>;
 
 /** Lista legible de problemas de validación, sin repetir los valores recibidos. */

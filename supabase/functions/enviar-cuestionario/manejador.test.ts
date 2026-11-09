@@ -31,6 +31,7 @@ const CLAVE = '6f1c2a4e-8b3d-4c5f-9a7e-1d2b3c4d5e6f';
 
 const envioAdulto = (cambios: Record<string, unknown> = {}) => ({
   claveEnvio: CLAVE,
+  sede: 'colegio1',
   modulo: 'adulto',
   participante: {
     nombre: 'Persona de Prueba',
@@ -45,6 +46,7 @@ const envioAdulto = (cambios: Record<string, unknown> = {}) => ({
 
 const envioNino = (cambios: Record<string, unknown> = {}) => ({
   claveEnvio: CLAVE,
+  sede: 'colegio1',
   modulo: 'nino',
   participante: { nombre: 'Niña', edad: 9, grado: 'Cuarto' },
   acudiente: {
@@ -88,6 +90,35 @@ Deno.test('calcula el resultado oficial con el motor y lo guarda', async () => {
   assertEquals(cuerpo.resultado.resultadoGeneral, esperado.resultadoGeneral);
   assertEquals(cuerpo.resultado.rutaAtencionEspecial, esperado.rutaAtencionEspecial);
 });
+
+Deno.test('guarda el cuestionario con la institución de su enlace (D-86)', async () => {
+  const { deps, registros } = dependencias();
+  await crearManejador(deps)(enviar(envioAdulto({ sede: ' Colegio1 ' })));
+  assertEquals(registros[0]!.sede, 'colegio1');
+});
+
+Deno.test('sin enlace de institución, o con uno mal escrito, no se guarda nada', async () => {
+  const { deps, registros } = dependencias();
+  const { sede: _sinSede, ...sinSede } = envioAdulto();
+  assertEquals((await crearManejador(deps)(enviar(sinSede))).status, 400);
+  for (const sede of ['', 'co', 'colegio 1', 'colegio_1', 'x'.repeat(41)]) {
+    assertEquals((await crearManejador(deps)(enviar(envioAdulto({ sede })))).status, 400);
+  }
+  assertEquals(registros.length, 0);
+});
+
+Deno.test(
+  'una institución que no existe o está inactiva responde 422 con un mensaje claro',
+  async () => {
+    const { deps, errores } = dependencias({
+      registrar: () => Promise.reject(Object.assign(new Error('institución'), { code: '22023' })),
+    });
+    const respuesta = await crearManejador(deps)(enviar(envioAdulto({ sede: 'cerrada' })));
+    assertEquals(respuesta.status, 422);
+    assertEquals((await respuesta.json()).error.codigo, 'institucion_invalida');
+    assertEquals(errores.length, 0);
+  },
+);
 
 Deno.test('a quien responde no le devuelve el índice ni los motivos de prioridad', async () => {
   const { deps } = dependencias();

@@ -38,7 +38,7 @@ const manejar = crearManejador({
     return data.valor;
   },
 
-  async registrar({ claveEnvio, participante, consentimientos, respuestas, resultado }) {
+  async registrar({ claveEnvio, sede, participante, consentimientos, respuestas, resultado }) {
     const { data, error } = await servidor
       .rpc('registrar_aplicacion', {
         p_participante: participante,
@@ -46,6 +46,7 @@ const manejar = crearManejador({
         p_respuestas: respuestas,
         p_resultado: resultado,
         p_clave_envio: claveEnvio,
+        p_sede: sede,
       })
       .single<{ id: string; codigo: string }>();
     if (error) throw error;

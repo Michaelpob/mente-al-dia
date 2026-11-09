@@ -8,6 +8,8 @@ export type CodigoError =
   | 'origen_no_permitido'
   | 'entrada_invalida'
   | 'respuestas_invalidas'
+  /** El enlace de la institución no existe o ya no está activo (D-86). */
+  | 'institucion_invalida'
   | 'sin_sesion'
   | 'sin_permiso'
   | 'conflicto'

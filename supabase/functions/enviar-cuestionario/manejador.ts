@@ -21,6 +21,8 @@ import { Http, leerPeticion } from '../_compartido/http.ts';
 export interface DatosRegistro {
   /** Clave del navegador: si ya se guardó, la base de datos devuelve el mismo código. */
   claveEnvio: string;
+  /** Institución del enlace (slug): la base de datos la resuelve y exige que esté activa. */
+  sede: string;
   participante: Record<string, unknown>;
   consentimientos: Record<string, string>;
   respuestas: Envio['respuestas'];
@@ -79,6 +81,7 @@ export function crearManejador(deps: Dependencias) {
       const version = await deps.versionTextosLegales();
       const { codigo } = await deps.registrar({
         claveEnvio: envio.data.claveEnvio,
+        sede: envio.data.sede,
         participante: participanteParaGuardar(envio.data),
         consentimientos: consentimientos(envio.data, version),
         respuestas: envio.data.respuestas,
@@ -102,6 +105,14 @@ export function crearManejador(deps: Dependencias) {
     } catch (error) {
       if (error instanceof ErrorEntradaMotor) {
         return http.error(422, 'respuestas_invalidas', error.message);
+      }
+      // La base rechazó la institución del enlace: no existe o ya no está activa.
+      if ((error as { code?: string } | null)?.code === '22023') {
+        return http.error(
+          422,
+          'institucion_invalida',
+          'El enlace de tu institución no es válido o ya no está activo. Pide el enlace de nuevo.',
+        );
       }
       deps.registrarError('enviar-cuestionario', error);
       return http.error(

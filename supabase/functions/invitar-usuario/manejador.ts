@@ -1,7 +1,7 @@
 /**
  * Invitación de cuentas del panel (Fase 4). Las cuentas no se registran solas: el
- * superadministrador, con doble factor, invita por correo. El panel es solo del administrador
- * (D-65), así que solo se invitan cuentas de superadministrador.
+ * superadministrador (administrador general), con doble factor, invita por correo: a otro
+ * administrador general o al administrador de una institución (D-86), que debe existir y estar activa.
  * La persona invitada define su contraseña y su doble factor al abrir el enlace.
  */
 import { esquemaInvitacion, problemas, type Invitacion } from '../_compartido/esquemas.ts';
@@ -9,7 +9,7 @@ import { Http, leerPeticion } from '../_compartido/http.ts';
 
 export interface PerfilSesion {
   id: string;
-  rol: 'superadministrador' | 'profesional' | 'consulta';
+  rol: 'superadministrador' | 'administrador_institucional' | 'profesional' | 'consulta';
   activo: boolean;
   doble_factor: boolean;
 }
@@ -18,8 +18,16 @@ export interface Dependencias {
   origenes: readonly string[];
   /** Perfil de quien llama según su token (public.mi_perfil); null si el token no es válido. */
   perfilDeSesion(token: string): Promise<PerfilSesion | null>;
-  /** Envía la invitación de Supabase Auth. Devuelve null si el correo ya tiene cuenta. */
-  invitar(correo: string): Promise<{ id: string } | null>;
+  /** La institución (nombre y estado); null si no existe. */
+  institucion(id: string): Promise<{ nombre: string; activa: boolean } | null>;
+  /**
+   * Envía la invitación de Supabase Auth, con el nombre y la institución para el correo. Devuelve
+   * null si el correo ya tiene cuenta.
+   */
+  invitar(
+    correo: string,
+    datos: { nombre: string; institucion: string | null },
+  ): Promise<{ id: string } | null>;
   /** Llama a public.crear_perfil_invitado (deja la auditoría a nombre de quien invita). */
   crearPerfil(actor: string, id: string, datos: Invitacion): Promise<void>;
   /** Deshace la invitación si no se pudo crear el perfil. */
@@ -58,7 +66,23 @@ export function crearManejador(deps: Dependencias) {
         );
       }
 
-      const usuario = await deps.invitar(invitacion.data.correo);
+      let institucion: string | null = null;
+      if (invitacion.data.institucionId) {
+        const encontrada = await deps.institucion(invitacion.data.institucionId);
+        if (!encontrada?.activa) {
+          return http.error(
+            422,
+            'institucion_invalida',
+            'La institución no existe o no está activa.',
+          );
+        }
+        institucion = encontrada.nombre;
+      }
+
+      const usuario = await deps.invitar(invitacion.data.correo, {
+        nombre: invitacion.data.nombre,
+        institucion,
+      });
       if (!usuario) return http.error(409, 'conflicto', 'Ese correo ya tiene una cuenta.');
 
       try {
