@@ -19,3 +19,9 @@ export const SedeContext = createContext<SedeContextValue>(SIN_PROVEEDOR);
 
 /** La institución del enlace por el que se entró (D-86). Fuera del sitio público: «sin sede». */
 export const useSede = () => useContext(SedeContext);
+
+/** El enlace (slug) de la institución con la que participa la persona, o null. */
+export function useSlugDeSede(): string | null {
+  const { estado } = useSede();
+  return estado.tipo === 'valida' ? estado.sede.slug : null;
+}

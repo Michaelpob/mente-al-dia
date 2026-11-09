@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { iconosAreas } from '@/components/bienestar/iconos-areas';
 import { LeyendaNiveles, RuedaNiveles } from '@/components/bienestar/rueda-niveles';
-import { HelplineList, useSedeDeLasLineas } from '@/components/layout/helplines';
+import { HelplineList } from '@/components/layout/helplines';
 import { PageMeta } from '@/components/layout/page';
 import { Button } from '@/components/ui/button';
 import { Callout, Eyebrow } from '@/components/ui/feedback';
@@ -18,6 +18,7 @@ import {
 import { participar } from '@/content/participar';
 import { textos } from '@/content/textos-interfaz';
 import { mensajesAtencionEspecial, mensajesGenerales } from '@/content/v1/mensajes';
+import { useSlugDeSede } from '@/features/instituciones/sede-context';
 import type { ModuloDisponible } from '@/features/participar/modelo';
 import { useParticipacion } from '@/features/participar/participacion-context';
 import { PantallaParticipacion } from '@/features/participar/piezas';
@@ -239,7 +240,7 @@ export default function ResultadosPage() {
 }
 
 function ApoyoInmediato({ modulo, titulo }: { modulo: ModuloDisponible; titulo: string }) {
-  const lineas = lineasDeApoyo(useSedeDeLasLineas());
+  const lineas = lineasDeApoyo(useSlugDeSede());
   return (
     <section aria-labelledby="apoyo-titulo">
       <Callout variant="apoyo">

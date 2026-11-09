@@ -5,7 +5,7 @@ import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from '@/components/
 import { Callout } from '@/components/ui/feedback';
 import { esMarcador } from '@/config/sitio';
 import { esMarcable, lineasPara, numeroVisible, type LineaAyuda } from '@/content/lineas-ayuda';
-import { useSede } from '@/features/instituciones/sede-context';
+import { useSlugDeSede } from '@/features/instituciones/sede-context';
 import { textos } from '@/content/textos-interfaz';
 import { cn } from '@/lib/utils/cn';
 
@@ -53,12 +53,6 @@ function HelplineItem({ linea }: { linea: LineaAyuda }) {
   );
 }
 
-/** La institución con la que participa la persona (por su enlace), para sus líneas propias. */
-export function useSedeDeLasLineas(): string | null {
-  const { estado } = useSede();
-  return estado.tipo === 'valida' ? estado.sede.slug : null;
-}
-
 export function HelplineList({
   className,
   todas = false,
@@ -66,7 +60,8 @@ export function HelplineList({
   className?: string;
   todas?: boolean;
 }) {
-  const sede = useSedeDeLasLineas();
+  // Las líneas del municipio de la institución con la que participa la persona (D-90).
+  const sede = useSlugDeSede();
   return (
     <ul className={cn('grid gap-3', className)}>
       {lineasPara(sede, { todas }).map((linea) => (
