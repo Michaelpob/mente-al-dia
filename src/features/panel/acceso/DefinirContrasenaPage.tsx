@@ -3,19 +3,14 @@ import { PageLoading, PageMeta } from '@/components/layout/page';
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/feedback';
 import { textos } from '@/content/textos-interfaz';
-import {
-  FormularioDefinirContrasena,
-  SinAcceso,
-  TarjetaAcceso,
-  VerificarDobleFactor,
-} from './formularios';
+import { FormularioDefinirContrasena, SinAcceso, TarjetaAcceso } from './formularios';
 import { useSesion } from './sesion-context';
 
 const t = textos.accesoPanel;
 
 /**
  * /panel/definir-contrasena: destino de los enlaces de invitación y de recuperación.
- * El enlace abre una sesión; si la cuenta ya tiene doble factor, se pide antes de cambiar la contraseña.
+ * El enlace abre una sesión con la que se define la contraseña; después se entra con ella (D-89).
  */
 export default function DefinirContrasenaPage() {
   const { estado } = useSesion();
@@ -40,9 +35,6 @@ export default function DefinirContrasenaPage() {
             );
           case 'sin_acceso':
             return <SinAcceso motivo={estado.motivo} />;
-          case 'verificar_doble_factor':
-            return <VerificarDobleFactor factorId={estado.factorId} />;
-          case 'inscribir_doble_factor':
           case 'lista':
             return (
               <FormularioDefinirContrasena

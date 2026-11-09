@@ -1,12 +1,12 @@
-import { KeyRound, LogOut, ShieldCheck } from 'lucide-react';
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { KeyRound, LogOut } from 'lucide-react';
+import { useState, type FormEvent, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/feedback';
 import { TextField } from '@/components/ui/field';
 import { textos } from '@/content/textos-interfaz';
 import { mensajeError } from './errores';
 import type { MotivoSinAcceso } from './estado-sesion';
-import { useSesion, type InscripcionDobleFactor } from './sesion-context';
+import { useSesion } from './sesion-context';
 
 const t = textos.accesoPanel;
 
@@ -140,102 +140,6 @@ export function FormularioIngreso() {
         </Button>
         <p className="text-pequeno text-grafito-600">{t.soloInvitacion}</p>
       </div>
-    </TarjetaAcceso>
-  );
-}
-
-function CampoCodigo() {
-  return (
-    <TextField
-      label={t.codigo}
-      name="codigo"
-      inputMode="numeric"
-      autoComplete="one-time-code"
-      pattern="[0-9]{6}"
-      maxLength={6}
-      required
-      className="max-w-48 text-center font-semibold tracking-[0.3em]"
-    />
-  );
-}
-
-export function VerificarDobleFactor({ factorId }: { factorId: string }) {
-  const { verificarCodigo, cerrarSesion } = useSesion();
-  const { enviando, error, ejecutar } = useAccion();
-  return (
-    <TarjetaAcceso titulo={t.verificarTitulo} texto={t.verificarTexto}>
-      <form
-        className="flex flex-col gap-5"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const codigo = valor(e, 'codigo');
-          void ejecutar(() => verificarCodigo(factorId, codigo));
-        }}
-      >
-        <CampoCodigo />
-        <AvisoError mensaje={error} />
-        <Button type="submit" disabled={enviando}>
-          <ShieldCheck aria-hidden />
-          {enviando ? t.verificando : t.verificar}
-        </Button>
-      </form>
-      <BotonCerrarSesion onClick={cerrarSesion} />
-    </TarjetaAcceso>
-  );
-}
-
-export function InscribirDobleFactor() {
-  const { iniciarInscripcion, verificarCodigo, cerrarSesion } = useSesion();
-  const { enviando, error, setError, ejecutar } = useAccion();
-  const [inscripcion, setInscripcion] = useState<InscripcionDobleFactor | null>(null);
-
-  useEffect(() => {
-    let vigente = true;
-    iniciarInscripcion()
-      .then((datos) => vigente && setInscripcion(datos))
-      .catch((e: unknown) => vigente && setError(mensajeError(e)));
-    return () => {
-      vigente = false;
-    };
-  }, [iniciarInscripcion, setError]);
-
-  return (
-    <TarjetaAcceso titulo={t.inscribirTitulo} texto={t.inscribirTexto}>
-      {inscripcion ? (
-        <>
-          <img
-            src={inscripcion.qr}
-            alt={t.qrAlternativo}
-            width={192}
-            height={192}
-            className="mx-auto size-48 rounded-md border border-piedra-200 bg-blanco p-2"
-          />
-          <div className="flex flex-col gap-1">
-            <p className="text-pequeno text-grafito-600">{t.secreto}</p>
-            <code className="font-mono rounded-md bg-piedra-100 px-3 py-2 text-pequeno break-all">
-              {inscripcion.secreto}
-            </code>
-          </div>
-          <form
-            className="flex flex-col gap-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const codigo = valor(e, 'codigo');
-              void ejecutar(() => verificarCodigo(inscripcion.factorId, codigo));
-            }}
-          >
-            <CampoCodigo />
-            <AvisoError mensaje={error} />
-            <Button type="submit" disabled={enviando}>
-              <ShieldCheck aria-hidden />
-              {enviando ? t.verificando : t.activar}
-            </Button>
-          </form>
-        </>
-      ) : (
-        <AvisoError mensaje={error} />
-      )}
-      <BotonCerrarSesion onClick={cerrarSesion} />
     </TarjetaAcceso>
   );
 }

@@ -1,10 +1,9 @@
 /**
  * Estados del ingreso al panel. Función pura para poder probar cada caso sin Supabase.
- * El orden importa: primero se confirma que la cuenta tiene un perfil activo de administración y
- * luego se exige el doble factor, para no pedir a alguien sin acceso que configure una aplicación
- * de autenticación. Entran el administrador general (superadministrador) y el administrador de
- * cada institución (D-86); los roles antiguos «profesional» y «consulta» ya no entran.
- * La base de datos exige lo mismo por su cuenta (políticas con aal2 y la institución activa).
+ * Se entra con el correo y la contraseña (D-89): basta un perfil activo de administración. Entran
+ * el administrador general (superadministrador) y el administrador de cada institución con su
+ * institución activa (D-86); los roles antiguos «profesional» y «consulta» ya no entran. La base
+ * de datos exige lo mismo por su cuenta.
  */
 export type RolPanel =
   'superadministrador' | 'administrador_institucional' | 'profesional' | 'consulta';
@@ -30,8 +29,6 @@ export type EstadoSesion =
   | { tipo: 'cargando' }
   | { tipo: 'sin_sesion'; cierre?: CierreSesion }
   | { tipo: 'sin_acceso'; motivo: MotivoSinAcceso }
-  | { tipo: 'inscribir_doble_factor' }
-  | { tipo: 'verificar_doble_factor'; factorId: string }
   | { tipo: 'lista'; perfil: PerfilPanel };
 
 export type MotivoSinAcceso = 'sin_perfil' | 'inactivo' | 'sin_permiso' | 'institucion_inactiva';
@@ -85,19 +82,10 @@ export function perfilDeFila(fila: FilaMiPerfil | null): PerfilPanel | null {
 
 export interface DatosSesion {
   haySesion: boolean;
-  /** Nivel de autenticación de la sesión: aal1 (contraseña) o aal2 (con doble factor). */
-  nivel: string | null;
-  /** Factores TOTP ya verificados de la cuenta. */
-  factoresVerificados: readonly string[];
   perfil: PerfilPanel | null;
 }
 
-export function resolverEstado({
-  haySesion,
-  nivel,
-  factoresVerificados,
-  perfil,
-}: DatosSesion): EstadoSesion {
+export function resolverEstado({ haySesion, perfil }: DatosSesion): EstadoSesion {
   if (!haySesion) return { tipo: 'sin_sesion' };
   if (!perfil) return { tipo: 'sin_acceso', motivo: 'sin_perfil' };
   if (!perfil.activo) return { tipo: 'sin_acceso', motivo: 'inactivo' };
@@ -106,9 +94,5 @@ export function resolverEstado({
   if (perfil.rol === 'administrador_institucional' && !perfil.institucion?.activa) {
     return { tipo: 'sin_acceso', motivo: 'institucion_inactiva' };
   }
-  if (nivel === 'aal2') return { tipo: 'lista', perfil };
-  const [factorId] = factoresVerificados;
-  return factorId
-    ? { tipo: 'verificar_doble_factor', factorId }
-    : { tipo: 'inscribir_doble_factor' };
+  return { tipo: 'lista', perfil };
 }

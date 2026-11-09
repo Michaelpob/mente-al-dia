@@ -8,9 +8,6 @@ export function mensajeError(error: unknown): string {
   switch (codigo) {
     case 'invalid_credentials':
       return t.credenciales;
-    case 'mfa_verification_failed':
-    case 'mfa_challenge_expired':
-      return t.codigo;
     case 'weak_password':
       return t.contrasenaDebil;
     case 'same_password':

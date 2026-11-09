@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { supabase } from '@/lib/supabase/cliente';
 import { guardarAlcance } from '../instituciones/alcance';
 import { direccionDefinirContrasena } from './enlaces';
-import { qrComoImagen } from './qr';
 import {
   perfilDeFila,
   resolverEstado,
@@ -18,21 +17,10 @@ async function leerEstado(cliente: SupabaseClient): Promise<EstadoSesion> {
   const { data: sesion } = await cliente.auth.getSession();
   if (!sesion.session) return { tipo: 'sin_sesion' };
 
-  const [nivel, factores, perfil] = await Promise.all([
-    cliente.auth.mfa.getAuthenticatorAssuranceLevel(),
-    cliente.auth.mfa.listFactors(),
-    cliente.rpc('mi_perfil').maybeSingle<FilaMiPerfil>(),
-  ]);
-  if (nivel.error) throw nivel.error;
-  if (factores.error) throw factores.error;
+  const perfil = await cliente.rpc('mi_perfil').maybeSingle<FilaMiPerfil>();
   if (perfil.error) throw perfil.error;
 
-  return resolverEstado({
-    haySesion: true,
-    nivel: nivel.data.currentLevel,
-    factoresVerificados: factores.data.totp.map((f) => f.id),
-    perfil: perfilDeFila(perfil.data),
-  });
+  return resolverEstado({ haySesion: true, perfil: perfilDeFila(perfil.data) });
 }
 
 function exigirCliente(): SupabaseClient {
@@ -40,7 +28,7 @@ function exigirCliente(): SupabaseClient {
   return supabase;
 }
 
-/** Acciones de la sesión. Son funciones fijas: no cambian entre renders (el QR no se regenera). */
+/** Acciones de la sesión. Son funciones fijas: no cambian entre renders. */
 const acciones: Omit<SesionContextValue, 'estado' | 'cerrarSesion'> = {
   async ingresar(correo, contrasena) {
     const { error } = await exigirCliente().auth.signInWithPassword({
@@ -61,32 +49,9 @@ const acciones: Omit<SesionContextValue, 'estado' | 'cerrarSesion'> = {
     const { error } = await exigirCliente().auth.updateUser({ password: contrasena });
     if (error) throw error;
   },
-
-  async iniciarInscripcion() {
-    const cliente = exigirCliente();
-    // Un intento anterior sin terminar deja un factor sin verificar: se descarta.
-    const { data: factores, error: errorFactores } = await cliente.auth.mfa.listFactors();
-    if (errorFactores) throw errorFactores;
-    for (const factor of factores.all.filter((f) => f.status === 'unverified')) {
-      const { error } = await cliente.auth.mfa.unenroll({ factorId: factor.id });
-      if (error) throw error;
-    }
-    const { data, error } = await cliente.auth.mfa.enroll({
-      factorType: 'totp',
-      friendlyName: 'Mente al Día',
-      issuer: 'Mente al Día',
-    });
-    if (error) throw error;
-    return { factorId: data.id, qr: qrComoImagen(data.totp.qr_code), secreto: data.totp.secret };
-  },
-
-  async verificarCodigo(factorId, codigo) {
-    const { error } = await exigirCliente().auth.mfa.challengeAndVerify({ factorId, code: codigo });
-    if (error) throw error;
-  },
 };
 
-/** Sesión del panel: contraseña + doble factor (TOTP) y perfil con rol. */
+/** Sesión del panel: correo y contraseña (D-89) y perfil con rol. */
 export function SesionProvider({ children }: { children: ReactNode }) {
   const [estado, setEstado] = useState<EstadoSesion>(
     supabase ? { tipo: 'cargando' } : { tipo: 'sin_configurar' },

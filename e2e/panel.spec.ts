@@ -10,7 +10,8 @@ const ExcelJS =
 /**
  * Criterios de aceptación de la Fase 8: tablero, registros, ficha, prioritarios y cierre por
  * inactividad. La build de pruebas apunta a un Supabase ficticio (.env.pruebas): aquí se simula una
- * sesión de superadministración con doble factor y las respuestas de las consultas del panel.
+ * sesión de superadministración y las respuestas de las consultas del panel. Desde D-89 se entra
+ * solo con el correo y la contraseña.
  * Desde D-86 también el administrador de una institución, que solo ve la suya.
  */
 
@@ -119,7 +120,6 @@ const ADMINISTRADORES = [
     institucion: null,
     creadoEn: '2026-10-26T20:00:00Z',
     ultimoIngreso: '2026-11-08T12:00:00Z',
-    dobleFactor: true,
   },
   {
     id: RECTORIA,
@@ -130,7 +130,6 @@ const ADMINISTRADORES = [
     institucion: { id: COLEGIO.id, nombre: COLEGIO.nombre, activa: true },
     creadoEn: '2026-11-08T12:00:00Z',
     ultimoIngreso: null,
-    dobleFactor: false,
   },
 ];
 
@@ -864,17 +863,15 @@ test('«Cerrar sesión» vuelve a la página principal y «atrás» no reabre el
   await expect(page.locator('h1')).toHaveText('Ingreso de administración');
 });
 
-test('«Cerrar sesión» en la verificación en dos pasos también vuelve a la página principal', async ({
+test('con el correo y la contraseña se entra directo al panel, sin otro paso (D-89)', async ({
   page,
 }) => {
-  const llamadas = await iniciarSesion(page, 'aal1');
+  // Una sesión abierta solo con la contraseña (aal1), como queda después de «Ingresar».
+  await iniciarSesion(page, 'aal1');
   await page.goto('/panel/ingresar');
-  await expect(
-    page.getByRole('heading', { level: 1, name: 'Verificación en dos pasos' }),
-  ).toBeVisible();
-  await page.getByRole('button', { name: 'Cerrar sesión', exact: true }).click();
-  await expect(page.locator('h1')).toHaveText('Cuidar tu mente también es cuidarte');
-  expect(llamadas.salida).toBe(1);
+  await expect(page).toHaveURL(/\/panel$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Tablero' })).toBeVisible();
+  await expect(page.getByText('Verificación en dos pasos')).toHaveCount(0);
 });
 
 // ---------------------------------------------------------------------------------- D-86

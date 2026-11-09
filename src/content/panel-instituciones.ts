@@ -114,8 +114,6 @@ export const panelInstituciones = {
     activo: 'Activo',
     inactivo: 'Desactivado',
     tu: 'Tú',
-    dobleFactor: 'Verificación en dos pasos activa',
-    sinDobleFactor: 'Sin verificación en dos pasos todavía',
     nunca: 'Todavía no ingresa',
     todas: 'Todas',
     activar: 'Activar',
@@ -132,7 +130,7 @@ export const panelInstituciones = {
     invitar: {
       titulo: 'Invitar a un administrador',
       texto:
-        'La persona recibe un correo para definir su contraseña y su verificación en dos pasos. El rol y la institución los asigna el servidor.',
+        'La persona recibe un correo para definir su contraseña y después entra con ella. El rol y la institución los asigna el servidor.',
       boton: 'Invitar',
       nombre: 'Nombre',
       correo: 'Correo',
@@ -150,8 +148,7 @@ export const panelInstituciones = {
         conflicto: 'Ese correo ya tiene una cuenta.',
         institucion_invalida: 'La institución no existe o está inactiva.',
         entrada_invalida: 'Revisa los datos de la invitación.',
-        sin_permiso:
-          'Solo el administrador general, con verificación en dos pasos, invita cuentas.',
+        sin_permiso: 'Solo el administrador general invita cuentas.',
         sin_sesion: 'Tu sesión venció. Ingresa de nuevo.',
         error:
           'No se pudo enviar la invitación. Si el correo propio de la plataforma no está activado todavía, los correos no salen.',

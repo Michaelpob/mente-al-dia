@@ -72,7 +72,7 @@ set local role authenticated;
 select set_config('request.jwt.claims', (select valor from claims_censo where nombre = 'consulta'), true);
 select throws_ok($$select public.panel_censo()$$, '42501', null, 'El rol consulta no ve el censo');
 select set_config('request.jwt.claims', (select valor from claims_censo where nombre = 'super_aal1'), true);
-select throws_ok($$select public.panel_censo_personas()$$, '42501', null, 'Sin doble factor no se ve la lista');
+select lives_ok($$select public.panel_censo_personas()$$, 'Con solo la contraseña (D-89) se ve la lista');
 select set_config('request.jwt.claims', (select valor from claims_censo where nombre = 'super'), true);
 select throws_ok($$select * from privado.censo_personas(null, null, null, null, null)$$, '42501', null,
   'La ayuda del censo no se puede llamar desde fuera');

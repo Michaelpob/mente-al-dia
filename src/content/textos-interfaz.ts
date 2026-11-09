@@ -219,7 +219,7 @@ export const textos = {
     descripcion: 'Todas las páginas públicas de Mente al Día.',
   },
 
-  /** Ingreso al panel (Fase 4): solo el administrador, con contraseña y doble factor (D-65). */
+  /** Ingreso al panel: solo los administradores, con su correo y su contraseña (D-89). */
   accesoPanel: {
     titulo: 'Ingreso de administración',
     descripcion:
@@ -236,17 +236,6 @@ export const textos = {
       'Si el correo tiene una cuenta del panel, te llegará un enlace en unos minutos. Revisa también la carpeta de correo no deseado.',
     volverIngreso: 'Volver al ingreso',
     soloInvitacion: 'Las cuentas de administración se crean por invitación de otro administrador.',
-    verificarTitulo: 'Verificación en dos pasos',
-    verificarTexto: 'Escribe el código de 6 dígitos que muestra tu aplicación de autenticación.',
-    codigo: 'Código de verificación',
-    verificar: 'Verificar',
-    verificando: 'Verificando…',
-    inscribirTitulo: 'Activa la verificación en dos pasos',
-    inscribirTexto:
-      'El panel la exige para proteger los datos de las personas. Escanea el código QR con una aplicación de autenticación (por ejemplo, Google Authenticator o Microsoft Authenticator) y escribe el código que te muestre.',
-    qrAlternativo: 'Código QR para la aplicación de autenticación',
-    secreto: 'Si no puedes escanear, escribe esta clave en la aplicación:',
-    activar: 'Activar y entrar',
     sinAccesoTitulo: 'Tu cuenta no tiene acceso al panel',
     sinPerfil:
       'Tu cuenta no tiene un rol asignado. Pide al administrador general que revise tu invitación.',
@@ -278,8 +267,6 @@ export const textos = {
       'El panel todavía no está conectado a la base de datos. Cuando se configure el proyecto de Supabase, aquí aparecerá el ingreso.',
     errores: {
       credenciales: 'El correo o la contraseña no son correctos.',
-      codigo:
-        'El código no es correcto o ya venció. Escribe el que aparece ahora en la aplicación.',
       contrasenaDebil:
         'La contraseña debe tener al menos 12 caracteres, con mayúsculas, minúsculas y números.',
       mismaContrasena: 'La contraseña nueva debe ser distinta de la anterior.',

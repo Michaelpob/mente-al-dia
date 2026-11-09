@@ -8,7 +8,6 @@ const SUPER: PerfilSesion = {
   id: 'super',
   rol: 'superadministrador',
   activo: true,
-  doble_factor: true,
 };
 
 function dependencias(perfil: PerfilSesion | null = SUPER, cambios: Partial<Dependencias> = {}) {
@@ -64,7 +63,7 @@ const pedir = (cuerpo: unknown = invitacion, token: string | null = 'token') =>
     body: JSON.stringify(cuerpo),
   });
 
-Deno.test('el superadministrador con doble factor invita y queda como actor', async () => {
+Deno.test('el administrador general invita y queda como actor', async () => {
   const { deps, llamadas } = dependencias();
   const respuesta = await crearManejador(deps)(pedir());
   assertEquals(respuesta.status, 201);
@@ -119,13 +118,12 @@ Deno.test('sin token o con token inválido responde 401', async () => {
   assertEquals((await crearManejador(dependencias(null).deps)(pedir())).status, 401);
 });
 
-Deno.test('solo invita el superadministrador activo y con doble factor', async () => {
+Deno.test('solo invita el administrador general activo', async () => {
   const casos: PerfilSesion[] = [
     { ...SUPER, rol: 'administrador_institucional' },
     { ...SUPER, rol: 'profesional' },
     { ...SUPER, rol: 'consulta' },
     { ...SUPER, activo: false },
-    { ...SUPER, doble_factor: false },
   ];
   for (const perfil of casos) {
     const { deps, llamadas } = dependencias(perfil);

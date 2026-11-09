@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowRightLeft, ShieldAlert, ShieldCheck, UserPlus, Users } from 'lucide-react';
+import { ArrowRightLeft, UserPlus, Users } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { PageMeta } from '@/components/layout/page';
 import { Button } from '@/components/ui/button';
@@ -149,14 +149,6 @@ function FilaAdministrador({
           )}
         >
           {admin.activo ? t.activo : t.inactivo}
-        </span>
-        <span className="mt-1 flex items-center gap-1 text-[0.8125rem] text-grafito-600">
-          {admin.dobleFactor ? (
-            <ShieldCheck aria-hidden className="size-3.5 text-nivel-adecuado" />
-          ) : (
-            <ShieldAlert aria-hidden className="size-3.5" />
-          )}
-          {admin.dobleFactor ? t.dobleFactor : t.sinDobleFactor}
         </span>
       </td>
       <td className="px-3 py-2 whitespace-nowrap">

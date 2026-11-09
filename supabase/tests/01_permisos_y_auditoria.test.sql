@@ -151,15 +151,16 @@ reset role;
 -- --------------------------------------------------------- sesiones sin acceso al panel
 set local role authenticated;
 select set_config('request.jwt.claims', (select valor from claims where nombre = 'prof_aal1'), true);
-select is((select count(*) from public.aplicaciones), 0::bigint, 'Sin doble factor (aal1) un profesional no ve aplicaciones');
+select is((select count(*) from public.aplicaciones), (select count(*) from registradas),
+  'Con solo la contraseña (aal1, D-89) el administrador ve las aplicaciones de su institución');
 select is(
   (select doble_factor from public.mi_perfil()),
   false,
   'mi_perfil indica que falta el doble factor'
 );
-select throws_ok(
-  $$select public.ver_datos_contacto((select id from registradas limit 1))$$,
-  '42501', null, 'Sin doble factor no se ven datos de contacto'
+select lives_ok(
+  $$select public.panel_registros()$$,
+  'Con solo la contraseña (D-89) entra al panel'
 );
 
 select set_config('request.jwt.claims', (select valor from claims where nombre = 'inactivo'), true);

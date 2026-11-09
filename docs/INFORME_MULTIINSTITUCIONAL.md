@@ -46,7 +46,7 @@ Las cuatro primeras tienen su nombre desde el 9 de noviembre (D-90). Las dos pro
 **En el servidor (Edge Functions):**
 
 - `enviar-cuestionario` exige el enlace de la institución con formato válido y responde 422 `institucion_invalida` si la base lo rechaza.
-- `invitar-usuario` solo la usa el general con doble factor. Valida en el servidor el rol y que la institución exista y esté activa. El rol y la institución se guardan en `perfiles`, nunca en datos que el usuario pueda editar.
+- `invitar-usuario` solo la usa el administrador general. Valida en el servidor el rol y que la institución exista y esté activa. El rol y la institución se guardan en `perfiles`, nunca en datos que el usuario pueda editar.
 - La clave `service_role` sigue solo en Supabase: no está en el sitio ni en el repositorio.
 
 **En el sitio:**
@@ -67,7 +67,7 @@ Las cuatro primeras tienen su nombre desde el 9 de noviembre (D-90). Las dos pro
 | Usuarios           | No                                     | Lista, invitación por correo, activar, desactivar, cambiar de institución |
 | Auditoría          | No                                     | Por institución, fecha y acción                                           |
 
-Los dos entran con contraseña y verificación en dos pasos, como antes.
+Los dos entran con su correo y su contraseña, sin aplicación de autenticación (D-89).
 
 ## Cuentas
 

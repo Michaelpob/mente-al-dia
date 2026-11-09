@@ -227,9 +227,9 @@ select throws_ok($$select public.panel_administrador_actualizar('00000000-0000-0
 select throws_ok($$select public.panel_auditoria()$$, '42501', null, 'No lee la auditoría');
 select throws_ok($$select public.panel_cuentas()$$, '42501', null, 'No ve las cuentas públicas');
 
--- Sin doble factor, o con la institución inactiva, no hay acceso.
+-- Con solo la contraseña (D-89) sí hay acceso; con la institución inactiva, no.
 select set_config('request.jwt.claims', (select valor from claims_inst where nombre = 'i1_aal1'), true);
-select throws_ok($$select public.panel_registros()$$, '42501', null, 'Sin doble factor, nada');
+select lives_ok($$select public.panel_registros()$$, 'Con solo la contraseña (D-89) el administrador entra');
 select set_config('request.jwt.claims', (select valor from claims_inst where nombre = 'i7'), true);
 select throws_ok($$select public.panel_registros()$$, '42501', null,
   'El administrador de una institución inactiva no entra al panel');

@@ -19,16 +19,16 @@ const manejar = crearManejador({
   origenes: leerOrigenes(Deno.env.get('ORIGENES_PERMITIDOS')),
 
   async perfilDeSesion(token) {
-    // getClaims verifica la firma del token; el nivel de autenticación (aal) viene en los claims.
+    // getClaims verifica la firma del token; la cuenta (sub) viene en los claims.
     const { data, error } = await servidor.auth.getClaims(token);
     if (error || !data) return null;
     const { data: perfil, error: errorPerfil } = await servidor
       .from('perfiles')
       .select('id, rol, activo')
       .eq('id', data.claims.sub)
-      .maybeSingle<Omit<PerfilSesion, 'doble_factor'>>();
+      .maybeSingle<PerfilSesion>();
     if (errorPerfil) throw errorPerfil;
-    return perfil ? { ...perfil, doble_factor: data.claims.aal === 'aal2' } : null;
+    return perfil;
   },
 
   async institucion(id) {

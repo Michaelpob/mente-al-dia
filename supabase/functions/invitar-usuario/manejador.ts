@@ -1,8 +1,8 @@
 /**
  * Invitación de cuentas del panel (Fase 4). Las cuentas no se registran solas: el
- * superadministrador (administrador general), con doble factor, invita por correo: a otro
+ * superadministrador (administrador general), con su sesión del panel (D-89), invita por correo: a otro
  * administrador general o al administrador de una institución (D-86), que debe existir y estar activa.
- * La persona invitada define su contraseña y su doble factor al abrir el enlace.
+ * La persona invitada define su contraseña al abrir el enlace y entra con ella (D-89).
  */
 import { esquemaInvitacion, problemas, type Invitacion } from '../_compartido/esquemas.ts';
 import { Http, leerPeticion } from '../_compartido/http.ts';
@@ -11,7 +11,6 @@ export interface PerfilSesion {
   id: string;
   rol: 'superadministrador' | 'administrador_institucional' | 'profesional' | 'consulta';
   activo: boolean;
-  doble_factor: boolean;
 }
 
 export interface Dependencias {
@@ -48,12 +47,8 @@ export function crearManejador(deps: Dependencias) {
       const perfil = await deps.perfilDeSesion(token);
       if (!perfil)
         return http.error(401, 'sin_sesion', 'Tu sesión no es válida. Vuelve a ingresar.');
-      if (!perfil.activo || perfil.rol !== 'superadministrador' || !perfil.doble_factor) {
-        return http.error(
-          403,
-          'sin_permiso',
-          'Solo el superadministrador, con doble factor, invita cuentas.',
-        );
+      if (!perfil.activo || perfil.rol !== 'superadministrador') {
+        return http.error(403, 'sin_permiso', 'Solo el administrador general invita cuentas.');
       }
 
       const invitacion = esquemaInvitacion.safeParse(leida.cuerpo);

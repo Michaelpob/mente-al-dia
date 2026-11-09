@@ -63,9 +63,9 @@ select throws_ok(
   '42501', null, 'Una cuenta pública no ve el conteo');
 select throws_ok($$select * from public.visitas$$, '42501', null, 'Una cuenta pública no lee las visitas');
 select set_config('request.jwt.claims', (select valor from claims_visitas where nombre = 'super_aal1'), true);
-select throws_ok(
+select lives_ok(
   $$select public.panel_visitas((select dia from hoy_visitas), (select dia from hoy_visitas))$$,
-  '42501', null, 'Sin doble factor el equipo no ve el conteo');
+  'Con solo la contraseña (D-89) el equipo ve el conteo');
 
 -- -------------------------------------------------------------------------- panel (equipo, aal2)
 select set_config('request.jwt.claims', (select valor from claims_visitas where nombre = 'super'), true);

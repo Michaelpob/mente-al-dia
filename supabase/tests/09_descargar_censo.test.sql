@@ -61,8 +61,7 @@ select set_config('request.jwt.claims', (select valor from claims_descarga where
 select throws_ok($$select public.panel_censo_exportar('Censo mensual del barrio')$$, '42501', null,
   'Un profesional no descarga el censo: es un reporte nominal');
 select set_config('request.jwt.claims', (select valor from claims_descarga where nombre = 'super_aal1'), true);
-select throws_ok($$select public.panel_censo_exportar('Censo mensual del barrio')$$, '42501', null,
-  'Sin doble factor no se descarga el censo');
+select lives_ok($$select public.panel_censo()$$, 'Con solo la contraseña (D-89) el general ve el censo');
 select set_config('request.jwt.claims', (select valor from claims_descarga where nombre = 'super'), true);
 select throws_ok($$select public.panel_censo_exportar(null)$$, '22023', null, 'Pide un motivo');
 select throws_ok($$select public.panel_censo_exportar('  censo   ')$$, '22023', null,

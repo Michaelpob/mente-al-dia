@@ -92,8 +92,8 @@ select set_config('request.jwt.claims', (select valor from claims_panel where no
 select throws_ok($$select public.panel_registros()$$, '42501', null, 'El rol consulta no ve los registros');
 select throws_ok($$select public.panel_prioritarios()$$, '42501', null, 'El rol consulta no ve los prioritarios');
 select set_config('request.jwt.claims', (select valor from claims_panel where nombre = 'prof_aal1'), true);
-select throws_ok($$select public.panel_detalle('00000000-0000-0000-0000-0000000002a1')$$, '42501', null,
-  'Sin doble factor no se ve la ficha');
+select lives_ok($$select public.panel_registros()$$,
+  'Con solo la contraseña (D-89) se ven los registros');
 select throws_ok($$select privado.enmascarar_correo('ana@correo.co')$$, '42501', null,
   'Las ayudas de privado no se pueden llamar desde fuera');
 select set_config('request.jwt.claims', (select valor from claims_panel where nombre = 'prof'), true);
