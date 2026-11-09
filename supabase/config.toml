@@ -46,6 +46,9 @@ double_confirm_changes = true
 enable_confirmations = false
 secure_password_change = true
 max_frequency = "1m0s"
+# Código del segundo paso del panel (D-89): 6 dígitos que vencen a los 10 minutos.
+otp_length = 6
+otp_expiry = 600
 
 # Correos en español (D-79). Las rutas son desde la raíz del proyecto.
 [auth.email.template.recovery]
@@ -64,12 +67,21 @@ content_path = "./supabase/templates/invitacion.html"
 subject = "Confirma tu nuevo correo en Mente al Día"
 content_path = "./supabase/templates/cambio-correo.html"
 
-# Doble factor obligatorio para el panel: lo exigen las políticas de la base de datos (aal2).
+# El código del segundo paso del panel (D-89) sale con la plantilla del ingreso por correo
+# («magic link»), que aquí lleva el código ({{ .Token }}) y no un enlace.
+[auth.email.template.magic_link]
+subject = "Tu código para entrar a Mente al Día"
+content_path = "./supabase/templates/codigo.html"
+
+# El panel ya no usa una aplicación de autenticación (D-89): el segundo paso es el código por
+# correo, y la base de datos ya no acepta el nivel aal2 como verificación. No se inscriben
+# aplicaciones nuevas; la comprobación queda activa solo para no cortar el ingreso anterior
+# mientras se publica el cambio.
 [auth.mfa]
 max_enrolled_factors = 10
 
 [auth.mfa.totp]
-enroll_enabled = true
+enroll_enabled = false
 verify_enabled = true
 
 [auth.rate_limit]
