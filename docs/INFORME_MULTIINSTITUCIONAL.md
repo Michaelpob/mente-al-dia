@@ -97,16 +97,16 @@ Funciones nuevas: `institucion_publica`, `panel_instituciones`, `panel_instituci
 
 ## Pruebas y resultados
 
-Todas se ejecutaron el 8 de noviembre de 2026, antes de publicar. Ninguna dejó datos en la base real: las de la base corren en un bloque que siempre se deshace, y las de navegador simulan el servidor.
+Todas se ejecutaron antes de publicar (8 de noviembre de 2026; repetidas el 9 con la lista de instituciones, D-88). Ninguna dejó datos en la base real: las de la base corren en un bloque que siempre se deshace, y las de navegador simulan el servidor.
 
-| Prueba                                                                                      | Resultado                                                                                 |
-| ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Formato, tipos y estilo (Prettier, TypeScript, ESLint)                                      | Sin errores                                                                               |
-| Pruebas unitarias (Vitest)                                                                  | 194 de 194                                                                                |
-| Edge Functions (Deno)                                                                       | 27 de 27                                                                                  |
-| Base de datos en el proyecto real, con las dos migraciones delante (pgTAP, todo se deshace) | 308 de 308 en 10 archivos                                                                 |
-| Aislamiento entre instituciones (`10_instituciones`, dentro de las 308)                     | 72 de 72                                                                                  |
-| Navegador en computador y teléfono (Playwright)                                             | 160 pasan, 0 fallan, 14 omitidas a propósito (anchos y menú que solo aplican a un tamaño) |
+| Prueba                                                                                  | Resultado                                                                                 |
+| --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Formato, tipos y estilo (Prettier, TypeScript, ESLint)                                  | Sin errores                                                                               |
+| Pruebas unitarias (Vitest)                                                              | 196 de 196                                                                                |
+| Edge Functions (Deno)                                                                   | 27 de 27                                                                                  |
+| Base de datos en el proyecto real, con las migraciones delante (pgTAP, todo se deshace) | 315 de 315 en 11 archivos                                                                 |
+| Aislamiento entre instituciones (`10_instituciones`, dentro de las 315)                 | 72 de 72                                                                                  |
+| Navegador en computador y teléfono (Playwright)                                         | 162 pasan, 0 fallan, 14 omitidas a propósito (anchos y menú que solo aplican a un tamaño) |
 
 Lo que cubren las pruebas del pedido:
 
@@ -124,6 +124,7 @@ Lo que cubren las pruebas del pedido:
 **Verificación en vivo, después de publicar (sin guardar nada):**
 
 - `institucion_publica` responde el nombre de las seis instituciones y nada para un enlace falso.
+- `instituciones_publicas` (D-88) responde las seis instituciones activas, solo con nombre y enlace. Sin enlace, o con uno falso, el registro muestra esa lista para elegir, en computador y teléfono.
 - Las 12 funciones del panel probadas responden «sin permiso» (401, 42501) sin sesión.
 - El envío del cuestionario rechaza:
   - el envío sin enlace (400);
@@ -134,7 +135,7 @@ Lo que cubren las pruebas del pedido:
   - muestran «Participas con …»;
   - abren el registro con sus tres grupos;
   - no desbordan la pantalla ni dan errores.
-- Sin enlace o con uno falso, el sitio pide el enlace de la institución.
+- Sin enlace o con uno falso, la persona elige su institución de la lista (D-88). Al elegir, el registro vuelve arriba con «Participas con …» y deja cambiarla antes de registrarse.
 - En la base quedaron las seis instituciones activas. Los 6 cuestionarios y 6 participantes que había están en Colegio 1 y ninguno quedó sin institución. Las verificaciones no agregaron cuestionarios, participantes ni visitas.
 
 ## Cómo publicar otra vez
