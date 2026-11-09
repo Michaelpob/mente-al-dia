@@ -3,8 +3,8 @@ import { expect, test, type Page } from '@playwright/test';
 
 /**
  * D-86: cada institución tiene su enlace (?sede=…). El sitio confirma la institución con la base,
- * la muestra, y el envío del cuestionario lleva su enlace; sin un enlace válido, el sitio informa
- * pero no deja responder. La base y la Edge Function se simulan (build de pruebas).
+ * la muestra, y el envío del cuestionario lleva su enlace. D-88: sin un enlace válido, la persona
+ * elige su institución de la lista al empezar. La base y la Edge Function se simulan.
  */
 
 const SEDES = [
@@ -71,6 +71,16 @@ async function simularServidor(page: Page, { rechazar = false } = {}) {
       status: 200,
       headers: CORS,
       json: SEDES.filter((s) => s.slug === p_slug),
+    });
+  });
+  // La lista pública: las activas, por nombre (D-88).
+  await page.route('**/rest/v1/rpc/instituciones_publicas', async (route) => {
+    const peticion = route.request();
+    if (peticion.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: CORS });
+    return route.fulfill({
+      status: 200,
+      headers: CORS,
+      json: [...SEDES].sort((a, b) => a.nombre.localeCompare(b.nombre, 'es')),
     });
   });
   await page.route('**/functions/v1/enviar-cuestionario', async (route) => {
@@ -144,7 +154,7 @@ for (const sede of SEDES) {
   });
 }
 
-test('sin el enlace de una institución, el sitio informa pero el cuestionario lo pide', async ({
+test('sin el enlace de una institución, se elige de la lista y se puede cambiar antes de empezar', async ({
   page,
 }) => {
   const { envios } = await simularServidor(page);
@@ -153,17 +163,63 @@ test('sin el enlace de una institución, el sitio informa pero el cuestionario l
   await expect(page.getByText(/Participas con/)).toHaveCount(0);
 
   await page.getByRole('link', { name: 'Comenzar mi cuestionario' }).first().click();
-  await expect(page.locator('h1')).toHaveText(
-    'Para responder, entra con el enlace de tu institución',
-  );
+  await expect(page.locator('h1')).toHaveText('¿Con qué institución vas a responder?');
+  await expect(page.getByRole('radio')).toHaveText([
+    'Alcaldía 1',
+    'Alcaldía 2',
+    'Colegio 1',
+    'Colegio 2',
+    'Institución 5',
+    'Institución 6',
+  ]);
   // Las líneas de ayuda siguen a la mano.
   await expect(page.getByRole('link', { name: /Llamar al 123/ }).first()).toBeVisible();
-  await expect(page.getByRole('radio', { name: 'Una persona adulta' })).toHaveCount(0);
   expect(await violacionesGraves(page)).toEqual([]);
-  expect(envios).toHaveLength(0);
+
+  // Sin elegir no se sigue.
+  await page.getByRole('button', { name: 'Continuar' }).click();
+  await expect(page.getByText('Elige tu institución para continuar.')).toBeVisible();
+  await page.getByRole('radio', { name: 'Alcaldía 2' }).click();
+  await page.getByRole('button', { name: 'Continuar' }).click();
+  await expect(page.getByText('Participas con Alcaldía 2')).toBeVisible();
+  await expect(page.locator('h1')).toHaveText('¿Quién va a responder?');
+
+  // Antes de registrarse, se puede cambiar.
+  await page.getByRole('button', { name: 'Cambiar de institución' }).click();
+  await expect(page.getByRole('radio', { name: 'Alcaldía 2' })).toBeChecked();
+  await page.getByRole('radio', { name: 'Colegio 2' }).click();
+  await page.getByRole('button', { name: 'Continuar' }).click();
+  await expect(page.getByText('Participas con Colegio 2')).toBeVisible();
+
+  await responderComoAdulto(page);
+  await page.getByRole('button', { name: 'Enviar mis respuestas' }).click();
+  await expect(page).toHaveURL(/\/resultados$/);
+  expect(envios).toHaveLength(1);
+  expect(envios[0]).toMatchObject({ sede: 'colegio2' });
 });
 
-test('un enlace que no es de una institución activa avisa y no deja responder', async ({
+test('ya registrada la persona, la institución no se cambia', async ({ page }) => {
+  await simularServidor(page);
+  await page.goto('/registro?sede=colegio1');
+  await expect(page.getByRole('button', { name: 'Cambiar de institución' })).toBeVisible();
+  await page.getByRole('radio', { name: 'Una persona adulta' }).click();
+  await page.getByRole('button', { name: 'Continuar' }).click();
+  await page.getByLabel('Nombre completo').fill('Persona de Prueba');
+  await page.getByLabel('Correo electrónico').fill('prueba@ejemplo.co');
+  await page.getByLabel('Número de teléfono').fill('300 000 0000');
+  await page.getByLabel('Lugar de residencia').fill('Centro');
+  await page.getByRole('button', { name: 'Continuar' }).click();
+  await page.getByRole('checkbox', { name: /tratamiento de mis datos/ }).click();
+  await page.getByRole('checkbox', { name: /datos sensibles/ }).click();
+  await page.getByRole('button', { name: 'Aceptar y continuar' }).click();
+  await expect(page).toHaveURL(/\/cuestionario$/);
+
+  await page.goto('/registro');
+  await expect(page.getByText('Participas con Colegio 1')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Cambiar de institución' })).toHaveCount(0);
+});
+
+test('un enlace que no es de una institución activa avisa y pide elegir de la lista', async ({
   page,
 }) => {
   const { consultas } = await simularServidor(page);
@@ -171,9 +227,8 @@ test('un enlace que no es de una institución activa avisa y no deja responder',
   await expect(
     page.getByText('Este enlace no corresponde a una institución activa.', { exact: false }),
   ).toBeVisible();
-  await expect(page.locator('h1')).toHaveText(
-    'Para responder, entra con el enlace de tu institución',
-  );
+  // Se puede elegir la institución de la lista.
+  await expect(page.locator('h1')).toHaveText('¿Con qué institución vas a responder?');
   expect(consultas).toEqual(['colegio-falso']);
 
   // Un enlace mal escrito ni siquiera se consulta.

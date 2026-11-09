@@ -21,7 +21,7 @@ Todo lo que ya hacía la plataforma sigue igual: el sitio informativo, los tres 
 
 - El nombre, el enlace y el estado de cada institución se cambian en el panel, en **Instituciones**. Si se cambia el enlace, el anterior deja de funcionar.
 - Los seis cuestionarios que había antes del cambio quedaron en **Colegio 1**.
-- El enlace general (sin `?sede=`) sigue mostrando la información pública; para responder, pide el enlace de la institución.
+- Con el enlace general (sin `?sede=`), la persona elige su institución de una lista al empezar a responder (D-88). Antes de registrarse puede cambiarla; después, ya no.
 - El enlace identifica, no autentica: solo dice a qué institución pertenecen las respuestas.
 
 ## Cómo se protege cada institución
@@ -150,6 +150,6 @@ El orden importa: primero la base, luego las funciones y al final el sitio. Las 
 - Activar el correo propio (D-79) para poder invitar a los administradores y recuperar contraseñas.
 - Los nombres y correos de los seis administradores.
 - Los nombres definitivos de las instituciones (se cambian en el panel).
-- Repartir siempre el enlace de cada institución: con el enlace general no se puede responder.
+- Conviene que cada institución reparta su propio enlace: con el enlace general la persona elige la institución de una lista y podría elegir una que no es la suya.
 - Reenviar una invitación: hoy, si alguien perdió el correo de invitación, puede pedir un enlace nuevo con «¿Olvidaste tu contraseña?» en el ingreso (necesita el correo propio activo).
 - El reporte nominal (`reporte_nominal`), que no usa el panel, sigue siendo solo del administrador general y abarca todas las instituciones.

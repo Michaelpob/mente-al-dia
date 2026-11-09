@@ -5,6 +5,7 @@ import {
   guardarSede,
   leerSedeGuardada,
   slugDelEnlace,
+  type Sede,
 } from './sede';
 import { SedeContext, type SedeContextValue } from './sede-context';
 
@@ -24,6 +25,7 @@ const configuracion = {
 /**
  * Lee la institución del enlace (?sede=…) al abrir el sitio, la confirma con la base de datos y la
  * guarda en la pestaña (D-86). Un enlace desconocido o de una institución inactiva no se guarda.
+ * Sin enlace, la persona la elige de la lista al empezar el registro (D-88).
  */
 export function SedeProvider({ children }: { children: ReactNode }) {
   const [busqueda] = useState(() => window.location.search);
@@ -58,6 +60,13 @@ export function SedeProvider({ children }: { children: ReactNode }) {
   }, [slug, intento]);
 
   const reintentar = useCallback(() => setIntento((n) => n + 1), []);
-  const value = useMemo<SedeContextValue>(() => ({ estado, reintentar }), [estado, reintentar]);
+  const elegir = useCallback((sede: Sede) => {
+    guardarSede(almacenSesion(), sede);
+    setEstado({ tipo: 'valida', sede });
+  }, []);
+  const value = useMemo<SedeContextValue>(
+    () => ({ estado, reintentar, elegir }),
+    [estado, reintentar, elegir],
+  );
   return <SedeContext.Provider value={value}>{children}</SedeContext.Provider>;
 }

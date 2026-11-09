@@ -141,7 +141,7 @@ export const textos = {
   sede: {
     participas: 'Participas con',
     invalida:
-      'Este enlace no corresponde a una institución activa. Pide a tu institución el enlace correcto para responder.',
+      'Este enlace no corresponde a una institución activa. Al empezar el cuestionario podrás elegir tu institución de la lista.',
     error: 'No pudimos confirmar el enlace de tu institución. Revisa la conexión.',
     reintentar: 'Intentar de nuevo',
   },

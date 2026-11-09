@@ -40,6 +40,28 @@ function vigilarConsola(page: Page): string[] {
   return mensajes;
 }
 
+// Sin enlace de institución, /registro pide la lista de instituciones (D-88): se simula.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/rest/v1/rpc/instituciones_publicas', (route) =>
+    route.request().method() === 'OPTIONS'
+      ? route.fulfill({
+          status: 204,
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'apikey, content-type',
+          },
+        })
+      : route.fulfill({
+          status: 200,
+          headers: { 'Access-Control-Allow-Origin': '*' },
+          json: [
+            { nombre: 'Colegio 1', slug: 'colegio1' },
+            { nombre: 'Colegio 2', slug: 'colegio2' },
+          ],
+        }),
+  );
+});
+
 test.describe('Rutas públicas', () => {
   for (const ruta of RUTAS_PUBLICAS) {
     test(`${ruta} carga sin errores, con «Líneas de ayuda» y sin violaciones de accesibilidad`, async ({

@@ -16,13 +16,24 @@ export const participar = {
   pasosEtiqueta: 'Avance del registro y el cuestionario',
 
   /** Sin el enlace de una institución (D-86). */
-  sinSede: {
-    titulo: 'Para responder, entra con el enlace de tu institución',
+  /** Sin el enlace de una institución, se elige de la lista (D-88). */
+  elegirSede: {
+    titulo: '¿Con qué institución vas a responder?',
     texto:
-      'Cada institución tiene su propio enlace de Mente al Día. Pídeselo a quien te invitó a responder y ábrelo en este navegador.',
+      'Elige la institución que te invitó a responder. Tus respuestas quedan en esa institución.',
+    leyenda: 'Institución',
+    falta: 'Elige tu institución para continuar.',
+    continuar: 'Continuar',
+    volver: 'Volver',
+    cargando: 'Cargando las instituciones…',
     confirmando: 'Confirmando el enlace de tu institución…',
-    volver: 'Ir al inicio',
+    error: 'No pudimos cargar las instituciones. Revisa la conexión.',
+    reintentar: 'Intentar de nuevo',
+    ninguna: 'Por ahora ninguna institución está recibiendo respuestas.',
+    inicio: 'Ir al inicio',
     lineas: 'Si necesitas apoyo ahora, puedes llamar a estas líneas.',
+    otraInstitucion: '¿No es tu institución?',
+    cambiar: 'Cambiar de institución',
   },
 
   grupo: {

@@ -80,6 +80,28 @@ export async function consultarSede(
   return esSede(fila) ? { slug: fila.slug, nombre: fila.nombre } : null;
 }
 
+/** Las instituciones activas, para elegir con cuál responder (D-88). Solo nombre y enlace. */
+export async function listarSedes({
+  url,
+  clave,
+  fetch: hacerFetch = (...args) => globalThis.fetch(...args),
+}: ConfiguracionSede): Promise<Sede[]> {
+  if (!url || !clave) throw new Error('La plataforma no está conectada a la base de datos.');
+  const respuesta = await hacerFetch(
+    `${url.replace(/\/$/, '')}/rest/v1/rpc/instituciones_publicas`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: clave },
+      body: '{}',
+    },
+  );
+  if (!respuesta.ok) throw new Error(`La base de datos respondió ${respuesta.status}.`);
+  const filas = (await respuesta.json()) as unknown;
+  return Array.isArray(filas)
+    ? filas.filter(esSede).map((fila) => ({ slug: fila.slug, nombre: fila.nombre }))
+    : [];
+}
+
 export type EstadoSede =
   | { tipo: 'sin_sede' }
   | { tipo: 'cargando'; slug: string }

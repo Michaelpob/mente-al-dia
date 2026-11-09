@@ -7,6 +7,7 @@ import {
   estadoInicialSede,
   guardarSede,
   leerSedeGuardada,
+  listarSedes,
   slugDelEnlace,
 } from './sede';
 
@@ -93,6 +94,36 @@ describe('consultarSede', () => {
       consultarSede('colegio1', { ...config, fetch: respuesta({}, 500) }),
     ).rejects.toThrow('500');
     await expect(consultarSede('colegio1', { url: undefined, clave: undefined })).rejects.toThrow();
+  });
+});
+
+describe('listarSedes', () => {
+  const config = { url: 'https://proyecto.supabase.co', clave: 'sb_publishable_prueba' };
+  const respuesta = (cuerpo: unknown, status = 200) =>
+    vi.fn().mockResolvedValue(new Response(JSON.stringify(cuerpo), { status }));
+
+  it('pide a instituciones_publicas las activas y devuelve solo nombre y enlace', async () => {
+    const fetch = respuesta([
+      { nombre: 'Alcaldía 2', slug: 'alcaldia2', extra: 'no' },
+      { nombre: 'Colegio 1', slug: 'colegio1' },
+      { nombre: '', slug: 'vacio' },
+      { nombre: 'Mal escrito', slug: 'Mal Escrito' },
+    ]);
+    await expect(listarSedes({ ...config, fetch })).resolves.toEqual([
+      { nombre: 'Alcaldía 2', slug: 'alcaldia2' },
+      COLEGIO,
+    ]);
+    const [url, opciones] = fetch.mock.calls[0]!;
+    expect(url).toBe('https://proyecto.supabase.co/rest/v1/rpc/instituciones_publicas');
+    expect(opciones.headers).toMatchObject({ apikey: 'sb_publishable_prueba' });
+  });
+
+  it('un error de la base o la falta de configuración se informan como error', async () => {
+    await expect(listarSedes({ ...config, fetch: respuesta({}, 503) })).rejects.toThrow('503');
+    await expect(listarSedes({ url: undefined, clave: undefined })).rejects.toThrow();
+    await expect(listarSedes({ ...config, fetch: respuesta({ no: 'lista' }) })).resolves.toEqual(
+      [],
+    );
   });
 });
 

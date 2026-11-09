@@ -29,7 +29,7 @@ import {
 } from '@/features/participar/piezas';
 import { useTituloDelPaso } from '@/features/participar/use-titulo-del-paso';
 import { useSede } from '@/features/instituciones/sede-context';
-import { SinSede } from '@/features/instituciones/SinSede';
+import { ElegirSede } from '@/features/instituciones/ElegirSede';
 
 type Paso = 'grupo' | 'datos' | 'autorizacion';
 const NUMERO_PASO: Record<Paso, number> = { grupo: 0, datos: 1, autorizacion: 2 };
@@ -56,6 +56,10 @@ export default function RegistroPage() {
   const [paso, setPaso] = useState<Paso>(() => (estado.modulo ? 'datos' : 'grupo'));
   const pasoActual = estado.modulo ? paso : 'grupo';
   const tituloRef = useTituloDelPaso(pasoActual);
+  const [cambiandoSede, setCambiandoSede] = useState(false);
+  // Antes de terminar el registro y de responder, la institución todavía se puede cambiar (D-88).
+  const sedeCambiable =
+    estado.sede !== null && !estado.registroCompleto && Object.keys(estado.respuestas).length === 0;
 
   // La institución del enlace queda fija en el cuestionario al empezar (D-86).
   useEffect(() => {
@@ -74,9 +78,27 @@ export default function RegistroPage() {
       <PageMeta title={textos.paginas.registro.titulo} indexable={false} />
       <PantallaParticipacion>
         {!estado.sede && sede.tipo !== 'valida' ? (
-          <SinSede confirmando={sede.tipo === 'cargando'} />
+          <ElegirSede confirmando={sede.tipo === 'cargando'} />
+        ) : cambiandoSede && sedeCambiable ? (
+          <ElegirSede
+            actual={estado.sede}
+            alCancelar={() => setCambiandoSede(false)}
+            alElegir={() => setCambiandoSede(false)}
+          />
         ) : (
           <>
+            {sedeCambiable ? (
+              <p className="mb-6 flex flex-wrap items-center gap-x-2 text-pequeno text-grafito-600">
+                {participar.elegirSede.otraInstitucion}
+                <button
+                  type="button"
+                  className={claseEnlace}
+                  onClick={() => setCambiandoSede(true)}
+                >
+                  {participar.elegirSede.cambiar}
+                </button>
+              </p>
+            ) : null}
             <PasosParticipacion actual={NUMERO_PASO[pasoActual]} />
             {pasoActual === 'grupo' || !estado.modulo ? (
               <PasoGrupo tituloRef={tituloRef} onContinuar={() => setPaso('datos')} />
