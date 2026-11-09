@@ -349,6 +349,7 @@ export const panel = {
 
   sesion: {
     cerrar: 'Cerrar sesión',
+    cambiarContrasena: 'Cambiar contraseña',
     roles: {
       superadministrador: 'Administrador general',
       administrador_institucional: 'Administrador institucional',

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import {
+  KeyRound,
   LayoutDashboard,
   Menu,
   PanelLeftClose,
@@ -202,6 +203,14 @@ function Marco() {
                     {perfil.institucion ? ` · ${perfil.institucion.nombre}` : null}
                   </span>
                 </p>
+                {/* D-89: quien recibió una contraseña inicial la cambia por una que solo él sepa. */}
+                <Link
+                  to="/panel/definir-contrasena"
+                  className={buttonVariants({ variant: 'fantasma', size: 'sm' })}
+                >
+                  <KeyRound aria-hidden />
+                  <span className="sr-only sm:not-sr-only">{panel.sesion.cambiarContrasena}</span>
+                </Link>
                 <BotonCerrarSesion onClick={cerrarSesion} />
               </div>
             ) : null}

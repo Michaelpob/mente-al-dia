@@ -872,6 +872,11 @@ test('con el correo y la contraseña se entra directo al panel, sin otro paso (D
   await expect(page).toHaveURL(/\/panel$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Tablero' })).toBeVisible();
   await expect(page.getByText('Verificación en dos pasos')).toHaveCount(0);
+
+  // Quien recibió una contraseña inicial la cambia desde la barra de arriba.
+  await page.getByRole('link', { name: 'Cambiar contraseña' }).click();
+  await expect(page).toHaveURL(/\/panel\/definir-contrasena$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Define tu contraseña' })).toBeVisible();
 });
 
 // ---------------------------------------------------------------------------------- D-86
