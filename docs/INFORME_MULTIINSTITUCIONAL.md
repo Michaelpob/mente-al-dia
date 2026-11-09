@@ -67,7 +67,7 @@ Las cuatro primeras tienen su nombre desde el 9 de noviembre (D-90). Las dos pro
 | Usuarios           | No                                     | Lista, invitación por correo, activar, desactivar, cambiar de institución |
 | Auditoría          | No                                     | Por institución, fecha y acción                                           |
 
-Los dos entran con contraseña y verificación en dos pasos, como antes.
+Los dos entran con contraseña y un código que llega a su correo (D-89), en vez de una aplicación de autenticación.
 
 ## Cuentas
 
