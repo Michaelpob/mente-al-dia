@@ -1,0 +1,1 @@
+import{r}from"./index-6lCl8i6p.js";const e=r.createContext(null);function a(){const t=r.useContext(e);if(!t)throw new Error("useParticipacion debe usarse dentro de <Participacion>.");return t}export{e as P,a as u};
