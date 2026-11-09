@@ -99,7 +99,8 @@ Deno.test('guarda el cuestionario con la institución de su enlace (D-86)', asyn
 
 Deno.test('sin enlace de institución, o con uno mal escrito, no se guarda nada', async () => {
   const { deps, registros } = dependencias();
-  const { sede: _sinSede, ...sinSede } = envioAdulto();
+  const sinSede: Record<string, unknown> = envioAdulto();
+  delete sinSede.sede;
   assertEquals((await crearManejador(deps)(enviar(sinSede))).status, 400);
   for (const sede of ['', 'co', 'colegio 1', 'colegio_1', 'x'.repeat(41)]) {
     assertEquals((await crearManejador(deps)(enviar(envioAdulto({ sede })))).status, 400);
