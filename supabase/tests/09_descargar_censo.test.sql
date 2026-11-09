@@ -13,6 +13,10 @@ insert into public.perfiles (id, nombre, rol, activo) values
   ('00000000-0000-0000-0000-000000000501', 'Superadministración Descarga', 'superadministrador', true),
   ('00000000-0000-0000-0000-000000000502', 'Profesional Descarga', 'profesional', true);
 
+-- Institución de prueba (ninguna de las reales): los datos de esta prueba viven en ella.
+insert into public.instituciones (id, nombre, slug) values
+  ('00000000-0000-0000-0000-0000000009e1', 'Institución Pruebadescarga', 'prueba-descarga');
+
 create temporary table claims_descarga (nombre text primary key, valor text);
 grant select on claims_descarga to anon, authenticated;
 insert into claims_descarga values
@@ -21,28 +25,28 @@ insert into claims_descarga values
   ('prof', '{"sub":"00000000-0000-0000-0000-000000000502","role":"authenticated","aal":"aal2"}');
 
 -- Bruno respondió dos veces; Carla y una niña, una vez. Todos viven en «Barrio Pruebadescarga».
-insert into public.participantes (id, modulo, nombre, correo, telefono, lugar_residencia) values
-  ('00000000-0000-0000-0000-0000000005a1', 'adulto', 'Bruno Pruebadescarga', 'bruno.descarga@correo.co', '3001112233', 'Barrio Pruebadescarga'),
-  ('00000000-0000-0000-0000-0000000005a2', 'adulto', 'Bruno Pruebadescarga', 'bruno.descarga@correo.co', '3001112233', 'Barrio Pruebadescarga'),
-  ('00000000-0000-0000-0000-0000000005b1', 'adulto', 'Carla Pruebadescarga', 'carla.descarga@correo.co', '3004445566', 'Barrio Pruebadescarga');
-insert into public.participantes (id, modulo, nombre, lugar_residencia, edad, grado, sexo, acudiente) values
-  ('00000000-0000-0000-0000-0000000005c1', 'nino', 'Ana Pruebadescarga', 'Barrio Pruebadescarga', 8, 'Tercero', 'Mujer',
+insert into public.participantes (institucion_id, id, modulo, nombre, correo, telefono, lugar_residencia) values
+  ('00000000-0000-0000-0000-0000000009e1', '00000000-0000-0000-0000-0000000005a1', 'adulto', 'Bruno Pruebadescarga', 'bruno.descarga@correo.co', '3001112233', 'Barrio Pruebadescarga'),
+  ('00000000-0000-0000-0000-0000000009e1', '00000000-0000-0000-0000-0000000005a2', 'adulto', 'Bruno Pruebadescarga', 'bruno.descarga@correo.co', '3001112233', 'Barrio Pruebadescarga'),
+  ('00000000-0000-0000-0000-0000000009e1', '00000000-0000-0000-0000-0000000005b1', 'adulto', 'Carla Pruebadescarga', 'carla.descarga@correo.co', '3004445566', 'Barrio Pruebadescarga');
+insert into public.participantes (institucion_id, id, modulo, nombre, lugar_residencia, edad, grado, sexo, acudiente) values
+  ('00000000-0000-0000-0000-0000000009e1', '00000000-0000-0000-0000-0000000005c1', 'nino', 'Ana Pruebadescarga', 'Barrio Pruebadescarga', 8, 'Tercero', 'Mujer',
    '{"nombre":"Acudiente Pruebadescarga","correo":"acudiente.descarga@correo.co","telefono":"3007778899"}');
 
-insert into public.aplicaciones (id, codigo, participante_id, modulo, edad, lugar_residencia, respuestas, resultado,
+insert into public.aplicaciones (institucion_id, id, codigo, participante_id, modulo, edad, lugar_residencia, respuestas, resultado,
   resultado_general, indice, prioridad, ruta_atencion_especial, resultado_parcial, reglas_version,
   instrumento_version, estado_seguimiento, creado_en, actualizado_en) values
-  ('00000000-0000-0000-0000-0000000006a1', 'MD-E001', '00000000-0000-0000-0000-0000000005a1', 'adulto', null, 'Barrio Pruebadescarga', '[]',
+  ('00000000-0000-0000-0000-0000000009e1', '00000000-0000-0000-0000-0000000006a1', 'MD-E001', '00000000-0000-0000-0000-0000000005a1', 'adulto', null, 'Barrio Pruebadescarga', '[]',
    '{"niveles":{"bienestar_emocional":"requiere_atencion","sueno_descanso":"requiere_atencion"}}',
    'desafios', 20, true, true, false, '0.1-provisional', '1.0', 'pendiente',
    now() - interval '10 days', now() - interval '10 days'),
-  ('00000000-0000-0000-0000-0000000006a2', 'MD-E002', '00000000-0000-0000-0000-0000000005a2', 'adulto', null, 'Barrio Pruebadescarga', '[]',
+  ('00000000-0000-0000-0000-0000000009e1', '00000000-0000-0000-0000-0000000006a2', 'MD-E002', '00000000-0000-0000-0000-0000000005a2', 'adulto', null, 'Barrio Pruebadescarga', '[]',
    '{"niveles":{"bienestar_emocional":"adecuado","sueno_descanso":"por_fortalecer"}}',
    'por_fortalecer', 70, false, false, false, '0.1-provisional', '1.0', null, now(), now()),
-  ('00000000-0000-0000-0000-0000000006b1', 'MD-E003', '00000000-0000-0000-0000-0000000005b1', 'adulto', null, 'Barrio Pruebadescarga', '[]',
+  ('00000000-0000-0000-0000-0000000009e1', '00000000-0000-0000-0000-0000000006b1', 'MD-E003', '00000000-0000-0000-0000-0000000005b1', 'adulto', null, 'Barrio Pruebadescarga', '[]',
    '{"niveles":{"bienestar_emocional":"adecuado","sueno_descanso":"adecuado"}}',
    'favorable', 95, false, false, false, '0.1-provisional', '1.0', null, now(), now()),
-  ('00000000-0000-0000-0000-0000000006c1', 'MD-E004', '00000000-0000-0000-0000-0000000005c1', 'nino', 8, 'Barrio Pruebadescarga', '[]',
+  ('00000000-0000-0000-0000-0000000009e1', '00000000-0000-0000-0000-0000000006c1', 'MD-E004', '00000000-0000-0000-0000-0000000005c1', 'nino', 8, 'Barrio Pruebadescarga', '[]',
    '{"niveles":{"bienestar_emocional":"requiere_atencion","sueno_descanso":"adecuado"}}',
    'por_fortalecer', 60, false, false, false, '0.1-provisional', '1.0', null, now(), now());
 

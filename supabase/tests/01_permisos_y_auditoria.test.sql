@@ -3,7 +3,7 @@
 -- datos, así que también corre en el proyecto real (D-72), con códigos de prueba para no gastar los reales.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(68);
+select plan(69);
 
 -- ---------------------------------------------------------------------------------- datos base
 insert into auth.users (id, email) values
@@ -14,11 +14,16 @@ insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-000000000005', 'sin-perfil@ejemplo.gov.co'),
   ('00000000-0000-0000-0000-000000000006', 'invitado@ejemplo.gov.co');
 
-insert into public.perfiles (id, nombre, rol, activo) values
-  ('00000000-0000-0000-0000-000000000001', 'Superadministración', 'superadministrador', true),
-  ('00000000-0000-0000-0000-000000000002', 'Profesional Uno', 'profesional', true),
-  ('00000000-0000-0000-0000-000000000003', 'Consulta Uno', 'consulta', true),
-  ('00000000-0000-0000-0000-000000000004', 'Profesional Inactivo', 'profesional', false);
+-- Institución de prueba (ninguna de las reales): los datos de esta prueba viven en ella.
+insert into public.instituciones (id, nombre, slug) values
+  ('00000000-0000-0000-0000-0000000001e1', 'Institución Pruebapermisos', 'prueba-permisos');
+
+-- «prof» es un administrador institucional; «consulta», un rol antiguo que ya no da acceso.
+insert into public.perfiles (id, nombre, rol, activo, institucion_id) values
+  ('00000000-0000-0000-0000-000000000001', 'Superadministración', 'superadministrador', true, null),
+  ('00000000-0000-0000-0000-000000000002', 'Administración Pruebapermisos', 'administrador_institucional', true, '00000000-0000-0000-0000-0000000001e1'),
+  ('00000000-0000-0000-0000-000000000003', 'Consulta Uno', 'consulta', true, null),
+  ('00000000-0000-0000-0000-000000000004', 'Administración Inactiva', 'administrador_institucional', false, '00000000-0000-0000-0000-0000000001e1');
 
 create temporary table claims (nombre text primary key, valor text);
 grant select on claims to anon, authenticated, service_role;
@@ -65,21 +70,24 @@ select * from public.registrar_aplicacion(
   '{"modulo":"adulto","nombre":"Persona Prueba","correo":"persona@correo.co","telefono":"3000000000","lugarResidencia":"Centro"}',
   '{"tratamiento_datos":"0.1-borrador","datos_sensibles":"0.1-borrador"}',
   '[{"areaId":"bienestar_emocional","valor":"no"}]',
-  '{"resultadoGeneral":"desafios","indice":30,"prioridad":true,"rutaAtencionEspecial":true,"resultadoParcial":false,"reglasVersion":"0.1-provisional","instrumentoVersion":"1.0"}'
+  '{"resultadoGeneral":"desafios","indice":30,"prioridad":true,"rutaAtencionEspecial":true,"resultadoParcial":false,"reglasVersion":"0.1-provisional","instrumentoVersion":"1.0"}',
+  null, 'prueba-permisos'
 );
 insert into registradas
 select * from public.registrar_aplicacion(
   '{"modulo":"nino","nombre":"Niña Prueba","edad":9,"grado":"Cuarto","acudiente":{"nombre":"Acudiente","parentesco":"Madre","correo":"acudiente@correo.co","telefono":"3110000000","lugarResidencia":"Zona rural"}}',
   '{"tratamiento_datos":"0.1-borrador","datos_sensibles":"0.1-borrador","autorizacion_acudiente":"0.1-borrador"}',
   '[{"areaId":"bienestar_emocional","valor":"si"}]',
-  '{"resultadoGeneral":"favorable","indice":95,"prioridad":false,"rutaAtencionEspecial":false,"resultadoParcial":false,"reglasVersion":"0.1-provisional","instrumentoVersion":"1.0"}'
+  '{"resultadoGeneral":"favorable","indice":95,"prioridad":false,"rutaAtencionEspecial":false,"resultadoParcial":false,"reglasVersion":"0.1-provisional","instrumentoVersion":"1.0"}',
+  null, 'prueba-permisos'
 );
 select throws_ok(
   $$select * from public.registrar_aplicacion(
     '{"modulo":"nino","nombre":"Sin Autorización","acudiente":{"nombre":"A"}}',
     '{"tratamiento_datos":"0.1-borrador","datos_sensibles":"0.1-borrador"}',
     '[]',
-    '{"resultadoGeneral":"favorable","indice":95,"prioridad":false,"rutaAtencionEspecial":false,"resultadoParcial":false,"reglasVersion":"0.1-provisional","instrumentoVersion":"1.0"}'
+    '{"resultadoGeneral":"favorable","indice":95,"prioridad":false,"rutaAtencionEspecial":false,"resultadoParcial":false,"reglasVersion":"0.1-provisional","instrumentoVersion":"1.0"}',
+    null, 'prueba-permisos'
   )$$,
   '23514', null, 'Sin la autorización del adulto responsable no se registra una aplicación infantil'
 );
@@ -164,11 +172,9 @@ select is((select count(*) from public.mi_perfil()), 0::bigint, 'Una cuenta sin 
 -- -------------------------------------------------------------------------------- consulta
 select set_config('request.jwt.claims', (select valor from claims where nombre = 'consulta'), true);
 select is((select count(*) from public.aplicaciones), 0::bigint, 'El rol consulta no ve registros individuales');
--- Con solo 2 registros, todo queda como grupo pequeño (ver 02_reportes_y_conservacion).
-select results_eq(
-  $$select grupos_pequenos, total from public.reporte_agregado('2000-01-01', '2000-01-31')$$,
-  $$values (true, null::bigint)$$,
-  'El rol consulta ve el reporte agregado, sin detalle de los grupos pequeños'
+select throws_ok(
+  $$select * from public.reporte_agregado('2000-01-01', '2000-01-31')$$,
+  '42501', null, 'El rol consulta ya no genera reportes: no tiene acceso al panel'
 );
 select throws_ok(
   $$select public.ver_datos_contacto((select id from registradas limit 1))$$,
@@ -178,11 +184,11 @@ select throws_ok(
   $$select * from public.reporte_nominal(current_date - 30, current_date, 'Motivo suficientemente largo')$$,
   '42501', null, 'El rol consulta no genera el reporte nominal'
 );
-select is((select count(*) from public.reglas_resultados), 1::bigint, 'El rol consulta lee las reglas');
+select is((select count(*) from public.reglas_resultados), 0::bigint, 'El rol consulta ya no lee las reglas');
 
 -- ----------------------------------------------------------------------------- profesional
 select set_config('request.jwt.claims', (select valor from claims where nombre = 'prof'), true);
-select is((select count(*) from public.aplicaciones where id in (select id from registradas)), 2::bigint, 'Un profesional con doble factor ve las aplicaciones');
+select is((select count(*) from public.aplicaciones where id in (select id from registradas)), 2::bigint, 'Un administrador institucional con doble factor ve las aplicaciones de su institución');
 select throws_ok($$select * from public.participantes$$, '42501', null, 'Un profesional no lee participantes directamente');
 select throws_ok($$select * from public.consentimientos$$, '42501', null, 'Un profesional no lee consentimientos directamente');
 select is(
@@ -191,8 +197,14 @@ select is(
   'Un profesional ve los datos de contacto con ver_datos_contacto'
 );
 select is((select count(*) from public.auditoria), 0::bigint, 'Un profesional no lee la auditoría');
-select is((select count(*) from public.perfiles where id::text like '00000000-0000-0000-0000-00000000000_'), 4::bigint,
-  'Un profesional ve los nombres del equipo');
+select is((select count(*) from public.perfiles where id::text like '00000000-0000-0000-0000-00000000000_'), 2::bigint,
+  'Un administrador institucional solo ve al equipo de su institución');
+-- Con solo 2 registros, todo queda como grupo pequeño (ver 02_reportes_y_conservacion).
+select results_eq(
+  $$select grupos_pequenos, total from public.reporte_agregado('2000-01-01', '2000-01-31')$$,
+  $$values (true, null::bigint)$$,
+  'Un administrador institucional ve el reporte agregado de su institución, sin detalle de los grupos pequeños'
+);
 
 update public.aplicaciones set estado_seguimiento = 'en_contacto' where prioridad and id in (select id from registradas);
 select is(
@@ -230,11 +242,14 @@ select throws_ok(
 select throws_ok($$update public.notas_seguimiento set texto = 'Cambio'$$, '42501', null, 'Las notas no se editan');
 select throws_ok($$delete from public.notas_seguimiento$$, '42501', null, 'Las notas no se borran');
 
-update public.perfiles set rol = 'superadministrador' where id = '00000000-0000-0000-0000-000000000003';
-select is(
-  (select rol::text from public.perfiles where id = '00000000-0000-0000-0000-000000000003'),
-  'consulta',
-  'Un profesional no cambia roles'
+-- Ni siquiera ve ese perfil (no es de su institución): el intento no actualiza ninguna fila.
+select results_eq(
+  $$with cambio as (
+      update public.perfiles set rol = 'superadministrador'
+      where id = '00000000-0000-0000-0000-000000000003' returning 1)
+    select count(*)::integer from cambio$$,
+  $$values (0)$$,
+  'Un administrador institucional no cambia roles'
 );
 select throws_ok(
   $$select public.activar_reglas('0.1-provisional')$$,
@@ -329,7 +344,7 @@ select throws_ok(
   $$select public.crear_perfil_invitado('00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000006', 'Invitada', 'profesional')$$,
   '42501', null, 'Solo un superadministrador puede invitar'
 );
-select public.crear_perfil_invitado('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000006', 'Invitada', 'profesional');
+select public.crear_perfil_invitado('00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000006', 'Invitada', 'administrador_institucional', '00000000-0000-0000-0000-0000000001e1');
 reset role;
 select is(
   (select actor_id from public.auditoria where entidad = 'perfiles' and entidad_id = '00000000-0000-0000-0000-000000000006'),

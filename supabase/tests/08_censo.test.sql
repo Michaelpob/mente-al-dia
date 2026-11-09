@@ -15,6 +15,10 @@ insert into public.perfiles (id, nombre, rol, activo) values
   ('00000000-0000-0000-0000-000000000301', 'Superadministración Censo', 'superadministrador', true),
   ('00000000-0000-0000-0000-000000000303', 'Consulta Censo', 'consulta', true);
 
+-- Institución de prueba (ninguna de las reales): los datos de esta prueba viven en ella.
+insert into public.instituciones (id, nombre, slug) values
+  ('00000000-0000-0000-0000-0000000008e1', 'Institución Pruebacenso', 'prueba-censo');
+
 create temporary table claims_censo (nombre text primary key, valor text);
 grant select on claims_censo to anon, authenticated;
 insert into claims_censo values
@@ -27,33 +31,33 @@ grant select on hoy_censo to anon, authenticated;
 
 -- Ana respondió dos veces (hace 20 días y hoy): cuenta una vez, con el de hoy. Beto, una niña y un
 -- adolescente respondieron hoy. Todos viven en «Barrio Pruebacenso».
-insert into public.participantes (id, modulo, nombre, correo, lugar_residencia) values
-  ('00000000-0000-0000-0000-0000000003a1', 'adulto', 'Ana Pruebacenso', 'ana.censo@correo.co', 'Barrio Pruebacenso'),
-  ('00000000-0000-0000-0000-0000000003a2', 'adulto', 'Ana Pruebacenso', 'ana.censo@correo.co', 'Barrio Pruebacenso'),
-  ('00000000-0000-0000-0000-0000000003b1', 'adulto', 'Beto Pruebacenso', 'beto.censo@correo.co', 'Barrio Pruebacenso');
-insert into public.participantes (id, modulo, nombre, lugar_residencia, edad, grado, sexo, acudiente) values
-  ('00000000-0000-0000-0000-0000000003c1', 'nino', 'Niña Pruebacenso', 'Barrio Pruebacenso', 9, 'Cuarto', 'Mujer',
+insert into public.participantes (institucion_id, id, modulo, nombre, correo, lugar_residencia) values
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000003a1', 'adulto', 'Ana Pruebacenso', 'ana.censo@correo.co', 'Barrio Pruebacenso'),
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000003a2', 'adulto', 'Ana Pruebacenso', 'ana.censo@correo.co', 'Barrio Pruebacenso'),
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000003b1', 'adulto', 'Beto Pruebacenso', 'beto.censo@correo.co', 'Barrio Pruebacenso');
+insert into public.participantes (institucion_id, id, modulo, nombre, lugar_residencia, edad, grado, sexo, acudiente) values
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000003c1', 'nino', 'Niña Pruebacenso', 'Barrio Pruebacenso', 9, 'Cuarto', 'Mujer',
    '{"nombre":"Acudiente Pruebacenso","correo":"acudiente.censo@correo.co"}'),
-  ('00000000-0000-0000-0000-0000000003d1', 'adolescente', 'Adolescente Pruebacenso', 'Barrio Pruebacenso', 15, 'Décimo', null,
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000003d1', 'adolescente', 'Adolescente Pruebacenso', 'Barrio Pruebacenso', 15, 'Décimo', null,
    '{"nombre":"Acudiente Dos Pruebacenso","correo":"acudiente2.censo@correo.co"}');
 
-insert into public.aplicaciones (id, codigo, participante_id, modulo, edad, lugar_residencia, respuestas, resultado,
+insert into public.aplicaciones (institucion_id, id, codigo, participante_id, modulo, edad, lugar_residencia, respuestas, resultado,
   resultado_general, indice, prioridad, ruta_atencion_especial, resultado_parcial, reglas_version,
   instrumento_version, estado_seguimiento, creado_en, actualizado_en) values
-  ('00000000-0000-0000-0000-0000000004a1', 'MD-C001', '00000000-0000-0000-0000-0000000003a1', 'adulto', null, 'Barrio Pruebacenso', '[]',
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000004a1', 'MD-C001', '00000000-0000-0000-0000-0000000003a1', 'adulto', null, 'Barrio Pruebacenso', '[]',
    '{"niveles":{"bienestar_emocional":"requiere_atencion","sueno_descanso":"requiere_atencion","red_apoyo":"adecuado"}}',
    'desafios', 30, true, true, false, '0.1-provisional', '1.0', 'pendiente',
    now() - interval '20 days', now() - interval '20 days'),
-  ('00000000-0000-0000-0000-0000000004a2', 'MD-C002', '00000000-0000-0000-0000-0000000003a2', 'adulto', null, 'Barrio Pruebacenso', '[]',
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000004a2', 'MD-C002', '00000000-0000-0000-0000-0000000003a2', 'adulto', null, 'Barrio Pruebacenso', '[]',
    '{"niveles":{"bienestar_emocional":"requiere_atencion","sueno_descanso":"por_fortalecer","red_apoyo":"adecuado","manejo_estres":"adecuado"}}',
    'por_fortalecer', 60, false, false, false, '0.1-provisional', '1.0', null, now(), now()),
-  ('00000000-0000-0000-0000-0000000004b1', 'MD-C003', '00000000-0000-0000-0000-0000000003b1', 'adulto', null, 'Barrio Pruebacenso', '[]',
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000004b1', 'MD-C003', '00000000-0000-0000-0000-0000000003b1', 'adulto', null, 'Barrio Pruebacenso', '[]',
    '{"niveles":{"bienestar_emocional":"adecuado","sueno_descanso":"adecuado","red_apoyo":"adecuado"}}',
    'favorable', 95, false, false, false, '0.1-provisional', '1.0', null, now(), now()),
-  ('00000000-0000-0000-0000-0000000004c1', 'MD-C004', '00000000-0000-0000-0000-0000000003c1', 'nino', 9, 'Barrio Pruebacenso', '[]',
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000004c1', 'MD-C004', '00000000-0000-0000-0000-0000000003c1', 'nino', 9, 'Barrio Pruebacenso', '[]',
    '{"niveles":{"bienestar_emocional":"adecuado","sueno_descanso":"requiere_atencion","red_apoyo":"sin_dato"}}',
    'por_fortalecer', 70, false, false, false, '0.1-provisional', '1.0', null, now(), now()),
-  ('00000000-0000-0000-0000-0000000004d1', 'MD-C005', '00000000-0000-0000-0000-0000000003d1', 'adolescente', 15, 'Barrio Pruebacenso', '[]',
+  ('00000000-0000-0000-0000-0000000008e1', '00000000-0000-0000-0000-0000000004d1', 'MD-C005', '00000000-0000-0000-0000-0000000003d1', 'adolescente', 15, 'Barrio Pruebacenso', '[]',
    '{"niveles":{"bienestar_emocional":"requiere_atencion","sueno_descanso":"requiere_atencion","red_apoyo":"por_fortalecer"}}',
    'desafios', 25, true, true, false, '0.1-provisional', '1.0', 'pendiente', now(), now());
 
@@ -70,7 +74,7 @@ select throws_ok($$select public.panel_censo()$$, '42501', null, 'El rol consult
 select set_config('request.jwt.claims', (select valor from claims_censo where nombre = 'super_aal1'), true);
 select throws_ok($$select public.panel_censo_personas()$$, '42501', null, 'Sin doble factor no se ve la lista');
 select set_config('request.jwt.claims', (select valor from claims_censo where nombre = 'super'), true);
-select throws_ok($$select * from privado.censo_personas(null, null, null, null)$$, '42501', null,
+select throws_ok($$select * from privado.censo_personas(null, null, null, null, null)$$, '42501', null,
   'La ayuda del censo no se puede llamar desde fuera');
 
 -- ---------------------------------------------------------------------------------- resumen

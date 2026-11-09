@@ -12,10 +12,15 @@ insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-000000000103', 'consulta-panel@ejemplo.gov.co'),
   ('00000000-0000-0000-0000-000000000104', 'sin-perfil-panel@ejemplo.gov.co');
 
-insert into public.perfiles (id, nombre, rol, activo) values
-  ('00000000-0000-0000-0000-000000000101', 'Superadministración Panel', 'superadministrador', true),
-  ('00000000-0000-0000-0000-000000000102', 'Profesional Panel', 'profesional', true),
-  ('00000000-0000-0000-0000-000000000103', 'Consulta Panel', 'consulta', true);
+-- Institución de prueba (ninguna de las reales): los datos de esta prueba viven en ella.
+insert into public.instituciones (id, nombre, slug) values
+  ('00000000-0000-0000-0000-0000000004e1', 'Institución Pruebapanel', 'prueba-panel');
+
+-- «prof» es el administrador institucional de la institución de prueba.
+insert into public.perfiles (id, nombre, rol, activo, institucion_id) values
+  ('00000000-0000-0000-0000-000000000101', 'Superadministración Panel', 'superadministrador', true, null),
+  ('00000000-0000-0000-0000-000000000102', 'Administración Pruebapanel', 'administrador_institucional', true, '00000000-0000-0000-0000-0000000004e1'),
+  ('00000000-0000-0000-0000-000000000103', 'Consulta Panel', 'consulta', true, null);
 
 create temporary table claims_panel (nombre text primary key, valor text);
 grant select on claims_panel to anon, authenticated;
@@ -41,29 +46,29 @@ select set_config('request.jwt.claims', '', true);
 
 -- Ana respondió dos veces (hace 10 días y hoy); cada aplicación guarda su copia de los datos.
 -- Una niña respondió hoy con su acudiente.
-insert into public.participantes (id, modulo, nombre, correo, telefono, lugar_residencia, edad) values
-  ('00000000-0000-0000-0000-0000000001a1', 'adulto', 'Ana Pruebapanel', 'ana@correo.co', '300 999 0189', 'Centro Pruebapanel', 30),
-  ('00000000-0000-0000-0000-0000000001a2', 'adulto', 'Ana Pruebapanel', 'ana@correo.co', '300 999 0189', 'Centro Pruebapanel', 30);
-insert into public.participantes (id, modulo, nombre, lugar_residencia, edad, grado, acudiente) values
-  ('00000000-0000-0000-0000-0000000001b1', 'nino', 'Niña Pruebapanel', 'Norte Pruebapanel', 9, 'Cuarto',
+insert into public.participantes (institucion_id, id, modulo, nombre, correo, telefono, lugar_residencia, edad) values
+  ('00000000-0000-0000-0000-0000000004e1', '00000000-0000-0000-0000-0000000001a1', 'adulto', 'Ana Pruebapanel', 'ana@correo.co', '300 999 0189', 'Centro Pruebapanel', 30),
+  ('00000000-0000-0000-0000-0000000004e1', '00000000-0000-0000-0000-0000000001a2', 'adulto', 'Ana Pruebapanel', 'ana@correo.co', '300 999 0189', 'Centro Pruebapanel', 30);
+insert into public.participantes (institucion_id, id, modulo, nombre, lugar_residencia, edad, grado, acudiente) values
+  ('00000000-0000-0000-0000-0000000004e1', '00000000-0000-0000-0000-0000000001b1', 'nino', 'Niña Pruebapanel', 'Norte Pruebapanel', 9, 'Cuarto',
    '{"nombre":"Acudiente Pruebapanel","parentesco":"Madre","correo":"acudiente.pruebapanel@correo.co","telefono":"3109876543","lugarResidencia":"Norte Pruebapanel"}');
 insert into public.consentimientos (participante_id, tipo, version_texto) values
   ('00000000-0000-0000-0000-0000000001a2', 'tratamiento_datos', '0.1-borrador'),
   ('00000000-0000-0000-0000-0000000001a2', 'datos_sensibles', '0.1-borrador');
 
-insert into public.aplicaciones (id, codigo, participante_id, modulo, edad, lugar_residencia, respuestas, resultado,
+insert into public.aplicaciones (institucion_id, id, codigo, participante_id, modulo, edad, lugar_residencia, respuestas, resultado,
   resultado_general, indice, prioridad, ruta_atencion_especial, resultado_parcial, reglas_version,
   instrumento_version, estado_seguimiento, creado_en, actualizado_en) values
-  ('00000000-0000-0000-0000-0000000002a1', 'MD-T001', '00000000-0000-0000-0000-0000000001a1', 'adulto', 30, 'Centro Pruebapanel',
+  ('00000000-0000-0000-0000-0000000004e1', '00000000-0000-0000-0000-0000000002a1', 'MD-T001', '00000000-0000-0000-0000-0000000001a1', 'adulto', 30, 'Centro Pruebapanel',
    '[{"areaId":"bienestar_emocional","valor":"no"}]',
    '{"niveles":{"bienestar_emocional":"requiere_atencion","relaciones":"por_fortalecer"},"conteo":{"adecuado":0,"porFortalecer":1,"requiereAtencion":1,"sinDato":0},"motivosPrioridad":["Bienestar emocional requiere atención"]}',
    'desafios', 30, true, true, false, '0.1-provisional', '1.0', 'pendiente',
    now() - interval '10 days', now() - interval '10 days'),
-  ('00000000-0000-0000-0000-0000000002a2', 'MD-T002', '00000000-0000-0000-0000-0000000001a2', 'adulto', 30, 'Centro Pruebapanel',
+  ('00000000-0000-0000-0000-0000000004e1', '00000000-0000-0000-0000-0000000002a2', 'MD-T002', '00000000-0000-0000-0000-0000000001a2', 'adulto', 30, 'Centro Pruebapanel',
    '[{"areaId":"bienestar_emocional","valor":"a_veces"}]',
    '{"niveles":{"bienestar_emocional":"por_fortalecer","relaciones":"adecuado"},"conteo":{"adecuado":1,"porFortalecer":1,"requiereAtencion":0,"sinDato":0},"motivosPrioridad":[]}',
    'por_fortalecer', 60, false, false, false, '0.1-provisional', '1.0', null, now(), now()),
-  ('00000000-0000-0000-0000-0000000002b1', 'MD-T003', '00000000-0000-0000-0000-0000000001b1', 'nino', 9, 'Norte Pruebapanel',
+  ('00000000-0000-0000-0000-0000000004e1', '00000000-0000-0000-0000-0000000002b1', 'MD-T003', '00000000-0000-0000-0000-0000000001b1', 'nino', 9, 'Norte Pruebapanel',
    '[{"areaId":"bienestar_emocional","valor":"si"}]',
    '{"niveles":{"bienestar_emocional":"adecuado"},"conteo":{"adecuado":1,"porFortalecer":0,"requiereAtencion":0,"sinDato":0},"motivosPrioridad":[]}',
    'favorable', 95, false, false, false, '0.1-provisional', '1.0', null, now(), now());
@@ -92,7 +97,7 @@ select throws_ok($$select public.panel_detalle('00000000-0000-0000-0000-00000000
 select throws_ok($$select privado.enmascarar_correo('ana@correo.co')$$, '42501', null,
   'Las ayudas de privado no se pueden llamar desde fuera');
 select set_config('request.jwt.claims', (select valor from claims_panel where nombre = 'prof'), true);
-select lives_ok($$select public.panel_registros()$$, 'El rol profesional con doble factor ve los registros');
+select lives_ok($$select public.panel_registros()$$, 'Un administrador institucional con doble factor ve los registros');
 
 -- ---------------------------------------------------------------------------------- tablero
 select set_config('request.jwt.claims', (select valor from claims_panel where nombre = 'super'), true);

@@ -9,15 +9,21 @@ insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-000000000001', 'super@ejemplo.gov.co'),
   ('00000000-0000-0000-0000-000000000003', 'consulta@ejemplo.gov.co');
 
-insert into public.perfiles (id, nombre, rol, activo) values
-  ('00000000-0000-0000-0000-000000000001', 'Superadministración', 'superadministrador', true),
-  ('00000000-0000-0000-0000-000000000003', 'Consulta Uno', 'consulta', true);
+-- Institución de prueba (ninguna de las reales): los datos de esta prueba viven en ella.
+insert into public.instituciones (id, nombre, slug) values
+  ('00000000-0000-0000-0000-0000000002e1', 'Institución Pruebareportes', 'prueba-reportes');
+
+-- Los reportes agregados los pide un administrador institucional: solo ve su institución, así que
+-- cuentan solo los datos de esta prueba.
+insert into public.perfiles (id, nombre, rol, activo, institucion_id) values
+  ('00000000-0000-0000-0000-000000000001', 'Superadministración', 'superadministrador', true, null),
+  ('00000000-0000-0000-0000-000000000003', 'Administración Pruebareportes', 'administrador_institucional', true, '00000000-0000-0000-0000-0000000002e1');
 
 create temporary table claims (nombre text primary key, valor text);
 grant select on claims to anon, authenticated, service_role;
 insert into claims values
   ('super', '{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated","aal":"aal2"}'),
-  ('consulta', '{"sub":"00000000-0000-0000-0000-000000000003","role":"authenticated","aal":"aal2"}');
+  ('institucional', '{"sub":"00000000-0000-0000-0000-000000000003","role":"authenticated","aal":"aal2"}');
 
 -- p_n aplicaciones de adultos en el mismo grupo, respondidas en el instante p_creado.
 create function pg_temp.crear(
@@ -32,16 +38,16 @@ declare
   v_participante uuid;
 begin
   for i in 1..p_n loop
-    insert into public.participantes (modulo, nombre, lugar_residencia, creado_en)
-    values ('adulto', 'Persona ' || i, p_lugar, p_creado)
+    insert into public.participantes (institucion_id, modulo, nombre, lugar_residencia, creado_en)
+    values ('00000000-0000-0000-0000-0000000002e1', 'adulto', 'Persona ' || i, p_lugar, p_creado)
     returning id into v_participante;
     insert into public.aplicaciones (
-      participante_id, modulo, lugar_residencia, respuestas, resultado, resultado_general,
+      institucion_id, participante_id, modulo, lugar_residencia, respuestas, resultado, resultado_general,
       prioridad, ruta_atencion_especial, resultado_parcial, reglas_version, instrumento_version,
       creado_en
     )
     values (
-      v_participante, 'adulto', p_lugar, '[]', '{}', p_resultado,
+      '00000000-0000-0000-0000-0000000002e1', v_participante, 'adulto', p_lugar, '[]', '{}', p_resultado,
       p_prioridad, false, false, '0.1-provisional', '1.0',
       p_creado
     );
@@ -75,12 +81,12 @@ select lives_ok(
   'Se puede dejar el tiempo de conservación sin definir'
 );
 
-insert into public.participantes (modulo, nombre, creado_en) values
-  ('adulto', 'Registro antiguo', now() - interval '2 months'),
-  ('adulto', 'Registro reciente', now());
-update public.configuracion set valor = '1' where clave = 'retencion_meses';
+insert into public.participantes (institucion_id, modulo, nombre, creado_en) values
+  ('00000000-0000-0000-0000-0000000002e1', 'adulto', 'Registro antiguo', now() - interval '101 years'),
+  ('00000000-0000-0000-0000-0000000002e1', 'adulto', 'Registro reciente', now());
+update public.configuracion set valor = '1200' where clave = 'retencion_meses';
 set local role service_role;
-select is(public.purgar_datos_vencidos(), 1, 'Con 1 mes se borra solo lo que tiene más de un mes');
+select is(public.purgar_datos_vencidos(), 1, 'Con 1200 meses se borra solo lo que lleva más de ese tiempo');
 reset role;
 
 -- ------------------------------------------------------------------------- tamaño mínimo de grupo
@@ -107,7 +113,7 @@ select pg_temp.crear(3, '2026-10-21 15:00:00-05', 'Sur');
 
 -- ------------------------------------------------------------------------- reporte agregado
 set local role authenticated;
-select set_config('request.jwt.claims', (select valor from claims where nombre = 'consulta'), true);
+select set_config('request.jwt.claims', (select valor from claims where nombre = 'institucional'), true);
 
 select results_eq(
   $$select semana, grupos_pequenos, total from public.reporte_agregado('2026-09-28', '2026-10-04')$$,
@@ -177,7 +183,7 @@ reset role;
 -- ------------------------------------------------------------------------- mínimo mayor
 update public.configuracion set valor = '10' where clave = 'reporte_minimo_grupo';
 set local role authenticated;
-select set_config('request.jwt.claims', (select valor from claims where nombre = 'consulta'), true);
+select set_config('request.jwt.claims', (select valor from claims where nombre = 'institucional'), true);
 select results_eq(
   $$select grupos_pequenos, total from public.reporte_agregado('2026-10-12', '2026-10-18')$$,
   $$values (true, 10::bigint)$$,

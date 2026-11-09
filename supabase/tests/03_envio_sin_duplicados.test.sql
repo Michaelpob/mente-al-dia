@@ -12,6 +12,8 @@ select (select count(*) from public.participantes) as participantes,
 
 create temporary table envio (participante jsonb, consentimientos jsonb, respuestas jsonb, resultado jsonb);
 grant select on envio to service_role;
+-- Institución de prueba (ninguna de las reales): el enlace ?sede=prueba-envio.
+insert into public.instituciones (nombre, slug) values ('Institución Pruebaenvío', 'prueba-envio');
 insert into envio values (
   '{"modulo":"adulto","nombre":"Persona Prueba","correo":"persona@correo.co","telefono":"3000000000","lugarResidencia":"Centro"}',
   '{"tratamiento_datos":"0.1-borrador","datos_sensibles":"0.1-borrador"}',
@@ -23,22 +25,22 @@ set local role service_role;
 create temporary table primero as
 select r.* from envio e,
   public.registrar_aplicacion(e.participante, e.consentimientos, e.respuestas, e.resultado,
-    '11111111-1111-1111-1111-111111111111') r;
+    '11111111-1111-1111-1111-111111111111', 'prueba-envio') r;
 create temporary table reintento as
 select r.* from envio e,
   public.registrar_aplicacion(e.participante, e.consentimientos, e.respuestas, e.resultado,
-    '11111111-1111-1111-1111-111111111111') r;
+    '11111111-1111-1111-1111-111111111111', 'prueba-envio') r;
 create temporary table otra as
 select r.* from envio e,
   public.registrar_aplicacion(e.participante, e.consentimientos, e.respuestas, e.resultado,
-    '22222222-2222-2222-2222-222222222222') r;
+    '22222222-2222-2222-2222-222222222222', 'prueba-envio') r;
 -- Sin clave (como en la Fase 4): cada llamada guarda una aplicación nueva.
 create temporary table sin_clave as
 select r.* from envio e,
-  public.registrar_aplicacion(e.participante, e.consentimientos, e.respuestas, e.resultado) r
+  public.registrar_aplicacion(e.participante, e.consentimientos, e.respuestas, e.resultado, null, 'prueba-envio') r
 union all
 select r.* from envio e,
-  public.registrar_aplicacion(e.participante, e.consentimientos, e.respuestas, e.resultado) r;
+  public.registrar_aplicacion(e.participante, e.consentimientos, e.respuestas, e.resultado, null, 'prueba-envio') r;
 reset role;
 
 select is(
