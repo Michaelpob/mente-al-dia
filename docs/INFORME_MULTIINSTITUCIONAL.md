@@ -10,14 +10,16 @@ Todo lo que ya hacía la plataforma sigue igual: el sitio informativo, los tres 
 
 ## Las seis instituciones y sus enlaces
 
-| Institución (nombre provisional) | Enlace para responder                                        |
-| -------------------------------- | ------------------------------------------------------------ |
-| Colegio 1                        | https://michaelpob.github.io/mente-al-dia/?sede=colegio1     |
-| Colegio 2                        | https://michaelpob.github.io/mente-al-dia/?sede=colegio2     |
-| Alcaldía 1                       | https://michaelpob.github.io/mente-al-dia/?sede=alcaldia1    |
-| Alcaldía 2                       | https://michaelpob.github.io/mente-al-dia/?sede=alcaldia2    |
-| Institución 5                    | https://michaelpob.github.io/mente-al-dia/?sede=institucion5 |
-| Institución 6                    | https://michaelpob.github.io/mente-al-dia/?sede=institucion6 |
+| Institución                                                   | Enlace para responder                                                |
+| ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Alcaldía de San Luis                                          | https://michaelpob.github.io/mente-al-dia/?sede=alcaldia-sanluis     |
+| Alcaldía Municipal de Coello                                  | https://michaelpob.github.io/mente-al-dia/?sede=alcaldia-coello      |
+| Institución Educativa Sor Josefa del Castillo (Guamo)         | https://michaelpob.github.io/mente-al-dia/?sede=sorjosefa-guamo      |
+| Institución Educativa Técnica General Roberto Leyva (Saldaña) | https://michaelpob.github.io/mente-al-dia/?sede=robertoleyva-saldana |
+| Colegio 1 (provisional)                                       | https://michaelpob.github.io/mente-al-dia/?sede=colegio1             |
+| Alcaldía 1 (provisional)                                      | https://michaelpob.github.io/mente-al-dia/?sede=alcaldia1            |
+
+Las cuatro primeras tienen su nombre desde el 9 de noviembre (D-90). Las dos provisionales esperan su nombre definitivo y conservan sus datos. La Alcaldía de Coello tiene además su línea de apoyo emocional (318 783 4690), que ven quienes participan con ella.
 
 - El nombre, el enlace y el estado de cada institución se cambian en el panel, en **Instituciones**. Si se cambia el enlace, el anterior deja de funcionar.
 - Los seis cuestionarios que había antes del cambio quedaron en **Colegio 1**.
