@@ -183,6 +183,9 @@ test('sin el enlace de una institución, se elige de la lista y se puede cambiar
   await page.getByRole('button', { name: 'Continuar' }).click();
   await expect(page.getByText('Participas con Alcaldía 2')).toBeVisible();
   await expect(page.locator('h1')).toHaveText('¿Quién va a responder?');
+  // Vuelve arriba, con el foco en el título del paso (en el teléfono no se queda abajo).
+  await expect(page.locator('h1')).toBeFocused();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 
   // Antes de registrarse, se puede cambiar.
   await page.getByRole('button', { name: 'Cambiar de institución' }).click();

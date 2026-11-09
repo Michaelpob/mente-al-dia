@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Building2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type RefObject } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { HelplineList } from '@/components/layout/helplines';
 import { Button } from '@/components/ui/button';
@@ -25,11 +25,14 @@ const configuracion = {
  * `actual`, sirve para cambiar la institución antes de empezar el registro.
  */
 export function ElegirSede({
+  tituloRef,
   confirmando = false,
   actual,
   alCancelar,
   alElegir,
 }: {
+  /** El título recibe el foco al llegar desde otro paso del registro. */
+  tituloRef?: RefObject<HTMLHeadingElement | null>;
   /** Mientras se confirma el enlace de la dirección, solo se avisa. */
   confirmando?: boolean;
   /** La institución que ya tenía, para cambiarla. */
@@ -77,7 +80,9 @@ export function ElegirSede({
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-3">
         <Building2 aria-hidden className="size-10 text-salvia-600" />
-        <h1 className="text-h1">{t.titulo}</h1>
+        <h1 ref={tituloRef} tabIndex={-1} className="text-h1 outline-none">
+          {t.titulo}
+        </h1>
         <p className="max-w-lectura text-cuerpo-grande text-grafito-600">{t.texto}</p>
       </div>
 

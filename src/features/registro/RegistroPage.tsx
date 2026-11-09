@@ -55,11 +55,14 @@ export default function RegistroPage() {
   const grupoPedido = parametros.get('grupo');
   const [paso, setPaso] = useState<Paso>(() => (estado.modulo ? 'datos' : 'grupo'));
   const pasoActual = estado.modulo ? paso : 'grupo';
-  const tituloRef = useTituloDelPaso(pasoActual);
   const [cambiandoSede, setCambiandoSede] = useState(false);
   // Antes de terminar el registro y de responder, la institución todavía se puede cambiar (D-88).
   const sedeCambiable =
     estado.sede !== null && !estado.registroCompleto && Object.keys(estado.respuestas).length === 0;
+  const eligiendoSede =
+    (!estado.sede && sede.tipo !== 'valida') || (cambiandoSede && sedeCambiable);
+  // Al pasar de la lista de instituciones a los pasos (o al revés) se vuelve arriba, al título.
+  const tituloRef = useTituloDelPaso(eligiendoSede ? 'institucion' : pasoActual);
 
   // La institución del enlace queda fija en el cuestionario al empezar (D-86).
   useEffect(() => {
@@ -78,9 +81,10 @@ export default function RegistroPage() {
       <PageMeta title={textos.paginas.registro.titulo} indexable={false} />
       <PantallaParticipacion>
         {!estado.sede && sede.tipo !== 'valida' ? (
-          <ElegirSede confirmando={sede.tipo === 'cargando'} />
-        ) : cambiandoSede && sedeCambiable ? (
+          <ElegirSede tituloRef={tituloRef} confirmando={sede.tipo === 'cargando'} />
+        ) : eligiendoSede ? (
           <ElegirSede
+            tituloRef={tituloRef}
             actual={estado.sede}
             alCancelar={() => setCambiandoSede(false)}
             alElegir={() => setCambiandoSede(false)}
