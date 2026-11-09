@@ -19,16 +19,25 @@ const manejar = crearManejador({
   origenes: leerOrigenes(Deno.env.get('ORIGENES_PERMITIDOS')),
 
   async perfilDeSesion(token) {
-    // getClaims verifica la firma del token; el nivel de autenticación (aal) viene en los claims.
+    // getClaims verifica la firma del token; la sesión (session_id) viene en los claims.
     const { data, error } = await servidor.auth.getClaims(token);
     if (error || !data) return null;
+    const claims = data.claims as { sub: string; session_id?: string };
     const { data: perfil, error: errorPerfil } = await servidor
       .from('perfiles')
       .select('id, rol, activo')
-      .eq('id', data.claims.sub)
+      .eq('id', claims.sub)
       .maybeSingle<Omit<PerfilSesion, 'doble_factor'>>();
     if (errorPerfil) throw errorPerfil;
-    return perfil ? { ...perfil, doble_factor: data.claims.aal === 'aal2' } : null;
+    if (!perfil) return null;
+    // Segundo paso (D-89): la sesión debe haber pasado el código que llega al correo.
+    if (!claims.session_id) return { ...perfil, doble_factor: false };
+    const { data: verificada, error: errorSesion } = await servidor.rpc('sesion_verificada_de', {
+      p_usuario: claims.sub,
+      p_sesion: claims.session_id,
+    });
+    if (errorSesion) throw errorSesion;
+    return { ...perfil, doble_factor: verificada === true };
   },
 
   async institucion(id) {

@@ -22,9 +22,9 @@ insert into public.instituciones (id, nombre, slug) values
 create temporary table claims_censo (nombre text primary key, valor text);
 grant select on claims_censo to anon, authenticated;
 insert into claims_censo values
-  ('super', '{"sub":"00000000-0000-0000-0000-000000000301","role":"authenticated","aal":"aal2"}'),
+  ('super', '{"sub":"00000000-0000-0000-0000-000000000301","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000301"}'),
   ('super_aal1', '{"sub":"00000000-0000-0000-0000-000000000301","role":"authenticated","aal":"aal1"}'),
-  ('consulta', '{"sub":"00000000-0000-0000-0000-000000000303","role":"authenticated","aal":"aal2"}');
+  ('consulta', '{"sub":"00000000-0000-0000-0000-000000000303","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000303"}');
 
 create temporary table hoy_censo as select (now() at time zone 'America/Bogota')::date as dia;
 grant select on hoy_censo to anon, authenticated;
@@ -62,6 +62,14 @@ insert into public.aplicaciones (institucion_id, id, codigo, participante_id, mo
    'desafios', 25, true, true, false, '0.1-provisional', '1.0', 'pendiente', now(), now());
 
 -- ---------------------------------------------------------------------------------- permisos
+-- D-89: el equipo entra con el código del correo. Cada sesión simulada (session_id = su cuenta)
+-- de las cuentas de prueba queda verificada; las sesiones sin session_id no lo están.
+insert into privado.sesiones_verificadas (session_id, user_id, expira_en)
+select u.id, u.id, now() + interval '1 day'
+from auth.users u
+where u.id::text like '00000000-0000-0000-0000-%'
+on conflict (session_id) do nothing;
+
 set local role anon;
 select throws_ok($$select public.panel_censo()$$, '42501', null, 'Sin sesión no se puede leer el censo');
 select throws_ok($$select public.panel_censo_personas()$$, '42501', null,

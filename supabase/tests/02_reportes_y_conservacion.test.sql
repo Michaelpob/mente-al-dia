@@ -22,8 +22,8 @@ insert into public.perfiles (id, nombre, rol, activo, institucion_id) values
 create temporary table claims (nombre text primary key, valor text);
 grant select on claims to anon, authenticated, service_role;
 insert into claims values
-  ('super', '{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated","aal":"aal2"}'),
-  ('institucional', '{"sub":"00000000-0000-0000-0000-000000000003","role":"authenticated","aal":"aal2"}');
+  ('super', '{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000001"}'),
+  ('institucional', '{"sub":"00000000-0000-0000-0000-000000000003","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000003"}');
 
 -- p_n aplicaciones de adultos en el mismo grupo, respondidas en el instante p_creado.
 create function pg_temp.crear(
@@ -85,6 +85,14 @@ insert into public.participantes (institucion_id, modulo, nombre, creado_en) val
   ('00000000-0000-0000-0000-0000000002e1', 'adulto', 'Registro antiguo', now() - interval '101 years'),
   ('00000000-0000-0000-0000-0000000002e1', 'adulto', 'Registro reciente', now());
 update public.configuracion set valor = '1200' where clave = 'retencion_meses';
+-- D-89: el equipo entra con el código del correo. Cada sesión simulada (session_id = su cuenta)
+-- de las cuentas de prueba queda verificada; las sesiones sin session_id no lo están.
+insert into privado.sesiones_verificadas (session_id, user_id, expira_en)
+select u.id, u.id, now() + interval '1 day'
+from auth.users u
+where u.id::text like '00000000-0000-0000-0000-%'
+on conflict (session_id) do nothing;
+
 set local role service_role;
 select is(public.purgar_datos_vencidos(), 1, 'Con 1200 meses se borra solo lo que lleva más de ese tiempo');
 reset role;

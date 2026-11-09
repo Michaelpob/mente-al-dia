@@ -25,17 +25,25 @@ insert into public.perfiles (id, nombre, rol, activo, institucion_id) values
 create temporary table claims_panel (nombre text primary key, valor text);
 grant select on claims_panel to anon, authenticated;
 insert into claims_panel values
-  ('super', '{"sub":"00000000-0000-0000-0000-000000000101","role":"authenticated","aal":"aal2"}'),
-  ('prof', '{"sub":"00000000-0000-0000-0000-000000000102","role":"authenticated","aal":"aal2"}'),
+  ('super', '{"sub":"00000000-0000-0000-0000-000000000101","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000101"}'),
+  ('prof', '{"sub":"00000000-0000-0000-0000-000000000102","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000102"}'),
   ('prof_aal1', '{"sub":"00000000-0000-0000-0000-000000000102","role":"authenticated","aal":"aal1"}'),
-  ('consulta', '{"sub":"00000000-0000-0000-0000-000000000103","role":"authenticated","aal":"aal2"}'),
-  ('sin_perfil', '{"sub":"00000000-0000-0000-0000-000000000104","role":"authenticated","aal":"aal2"}');
+  ('consulta', '{"sub":"00000000-0000-0000-0000-000000000103","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000103"}'),
+  ('sin_perfil', '{"sub":"00000000-0000-0000-0000-000000000104","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000104"}');
 
 -- Hoy en Colombia: el tablero cuenta los días en esa hora.
 create temporary table hoy_panel as select (now() at time zone 'America/Bogota')::date as dia;
 grant select on hoy_panel to anon, authenticated;
 
 -- Línea base: lo que ya hubiera (cero en la base de pruebas). Las cuentas comparan contra ella.
+-- D-89: el equipo entra con el código del correo. Cada sesión simulada (session_id = su cuenta)
+-- de las cuentas de prueba queda verificada; las sesiones sin session_id no lo están.
+insert into privado.sesiones_verificadas (session_id, user_id, expira_en)
+select u.id, u.id, now() + interval '1 day'
+from auth.users u
+where u.id::text like '00000000-0000-0000-0000-%'
+on conflict (session_id) do nothing;
+
 select set_config('request.jwt.claims', (select valor from claims_panel where nombre = 'super'), true);
 create temporary table base_panel as
 select public.panel_tablero((select dia from hoy_panel) - 6, (select dia from hoy_panel)) as tablero,

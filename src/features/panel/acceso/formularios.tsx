@@ -1,12 +1,12 @@
-import { KeyRound, LogOut, ShieldCheck } from 'lucide-react';
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { KeyRound, LogOut, MailCheck, RotateCw } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Callout } from '@/components/ui/feedback';
 import { TextField } from '@/components/ui/field';
 import { textos } from '@/content/textos-interfaz';
 import { mensajeError } from './errores';
 import type { MotivoSinAcceso } from './estado-sesion';
-import { useSesion, type InscripcionDobleFactor } from './sesion-context';
+import { useSesion } from './sesion-context';
 
 const t = textos.accesoPanel;
 
@@ -159,83 +159,120 @@ function CampoCodigo() {
   );
 }
 
-export function VerificarDobleFactor({ factorId }: { factorId: string }) {
-  const { verificarCodigo, cerrarSesion } = useSesion();
-  const { enviando, error, ejecutar } = useAccion();
+/** Cuándo se pidió el último código en esta pestaña: para no enviar otro en cada recarga. */
+const CLAVE_ENVIO = 'mad.panel.codigoEnviado';
+const ESPERA_REENVIO = 60_000;
+
+function ultimoEnvio(): number {
+  try {
+    return Number(window.sessionStorage.getItem(CLAVE_ENVIO)) || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function marcarEnvio(momento: number) {
+  try {
+    window.sessionStorage.setItem(CLAVE_ENVIO, String(momento));
+  } catch {
+    // Sin almacenamiento, se cuenta solo mientras la página siga abierta.
+  }
+}
+
+/**
+ * Segundo paso del ingreso (D-89): el código de 6 dígitos que llega al correo de la cuenta. Al
+ * llegar aquí se envía uno (salvo que se haya pedido hace menos de un minuto) y se puede pedir otro.
+ */
+export function VerificarCodigoCorreo() {
+  const { enviarCodigo, verificarCodigo, cerrarSesion } = useSesion();
+  const { enviando, error, setError, ejecutar } = useAccion();
+  const [correo, setCorreo] = useState<string | null>(null);
+  const [aviso, setAviso] = useState<string | null>(null);
+  const [pidiendo, setPidiendo] = useState(false);
+  const [requiereContrasena, setRequiereContrasena] = useState(false);
+  const [ultimo, setUltimo] = useState(ultimoEnvio);
+  const [ahora, setAhora] = useState(() => Date.now());
+  const enviadoAlEntrar = useRef(false);
+
+  const pedirCodigo = useCallback(
+    async (reenvio: boolean) => {
+      const momento = Date.now();
+      marcarEnvio(momento);
+      setUltimo(momento);
+      setPidiendo(true);
+      setError(null);
+      setAviso(null);
+      try {
+        setCorreo(await enviarCodigo());
+        if (reenvio) setAviso(t.codigoReenviado);
+      } catch (e) {
+        setRequiereContrasena((e as { code?: string }).code === 'requiere_contrasena');
+        setError(mensajeError(e));
+      } finally {
+        setPidiendo(false);
+      }
+    },
+    [enviarCodigo, setError],
+  );
+
+  useEffect(() => {
+    if (enviadoAlEntrar.current) return;
+    enviadoAlEntrar.current = true;
+    if (Date.now() - ultimoEnvio() > ESPERA_REENVIO) void pedirCodigo(false);
+  }, [pedirCodigo]);
+
+  useEffect(() => {
+    const reloj = window.setInterval(() => setAhora(Date.now()), 1000);
+    return () => window.clearInterval(reloj);
+  }, []);
+
+  const faltan = Math.max(0, Math.ceil((ultimo + ESPERA_REENVIO - ahora) / 1000));
+
   return (
-    <TarjetaAcceso titulo={t.verificarTitulo} texto={t.verificarTexto}>
+    <TarjetaAcceso titulo={t.codigoTitulo} texto={t.codigoTexto(correo)}>
+      <p className="-mt-3 text-pequeno text-grafito-600">{t.codigoVence}</p>
       <form
         className="flex flex-col gap-5"
         onSubmit={(e) => {
           e.preventDefault();
-          const codigo = valor(e, 'codigo');
-          void ejecutar(() => verificarCodigo(factorId, codigo));
+          const codigo = valor(e, 'codigo').replace(/\s/g, '');
+          setAviso(null);
+          void ejecutar(() => verificarCodigo(codigo));
         }}
       >
         <CampoCodigo />
         <AvisoError mensaje={error} />
+        <p role="status" className="text-pequeno text-grafito-900 empty:hidden">
+          {pidiendo ? t.enviandoCodigo : (aviso ?? '')}
+        </p>
         <Button type="submit" disabled={enviando}>
-          <ShieldCheck aria-hidden />
+          <MailCheck aria-hidden />
           {enviando ? t.verificando : t.verificar}
         </Button>
       </form>
-      <BotonCerrarSesion onClick={cerrarSesion} />
-    </TarjetaAcceso>
-  );
-}
-
-export function InscribirDobleFactor() {
-  const { iniciarInscripcion, verificarCodigo, cerrarSesion } = useSesion();
-  const { enviando, error, setError, ejecutar } = useAccion();
-  const [inscripcion, setInscripcion] = useState<InscripcionDobleFactor | null>(null);
-
-  useEffect(() => {
-    let vigente = true;
-    iniciarInscripcion()
-      .then((datos) => vigente && setInscripcion(datos))
-      .catch((e: unknown) => vigente && setError(mensajeError(e)));
-    return () => {
-      vigente = false;
-    };
-  }, [iniciarInscripcion, setError]);
-
-  return (
-    <TarjetaAcceso titulo={t.inscribirTitulo} texto={t.inscribirTexto}>
-      {inscripcion ? (
-        <>
-          <img
-            src={inscripcion.qr}
-            alt={t.qrAlternativo}
-            width={192}
-            height={192}
-            className="mx-auto size-48 rounded-md border border-piedra-200 bg-blanco p-2"
-          />
-          <div className="flex flex-col gap-1">
-            <p className="text-pequeno text-grafito-600">{t.secreto}</p>
-            <code className="font-mono rounded-md bg-piedra-100 px-3 py-2 text-pequeno break-all">
-              {inscripcion.secreto}
-            </code>
-          </div>
-          <form
-            className="flex flex-col gap-5"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const codigo = valor(e, 'codigo');
-              void ejecutar(() => verificarCodigo(inscripcion.factorId, codigo));
-            }}
-          >
-            <CampoCodigo />
-            <AvisoError mensaje={error} />
-            <Button type="submit" disabled={enviando}>
-              <ShieldCheck aria-hidden />
-              {enviando ? t.verificando : t.activar}
+      <div className="flex flex-col items-start gap-2">
+        {requiereContrasena ? (
+          <Button variant="secundario" onClick={() => void cerrarSesion('reingreso')}>
+            <KeyRound aria-hidden />
+            {t.reingresar}
+          </Button>
+        ) : (
+          <>
+            <Button
+              variant="enlace"
+              disabled={pidiendo || faltan > 0}
+              onClick={() => void pedirCodigo(true)}
+            >
+              <RotateCw aria-hidden />
+              {t.reenviar}
             </Button>
-          </form>
-        </>
-      ) : (
-        <AvisoError mensaje={error} />
-      )}
-      <BotonCerrarSesion onClick={cerrarSesion} />
+            {faltan > 0 ? (
+              <p className="text-pequeno text-grafito-600">{t.reenviarEn(faltan)}</p>
+            ) : null}
+          </>
+        )}
+        <BotonCerrarSesion onClick={cerrarSesion} />
+      </div>
     </TarjetaAcceso>
   );
 }

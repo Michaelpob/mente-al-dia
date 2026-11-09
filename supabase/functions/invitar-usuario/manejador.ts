@@ -1,8 +1,8 @@
 /**
  * Invitación de cuentas del panel (Fase 4). Las cuentas no se registran solas: el
- * superadministrador (administrador general), con doble factor, invita por correo: a otro
+ * superadministrador (administrador general), con su ingreso verificado por correo (D-89), invita: a otro
  * administrador general o al administrador de una institución (D-86), que debe existir y estar activa.
- * La persona invitada define su contraseña y su doble factor al abrir el enlace.
+ * La persona invitada define su contraseña al abrir el enlace; después entra con un código por correo.
  */
 import { esquemaInvitacion, problemas, type Invitacion } from '../_compartido/esquemas.ts';
 import { Http, leerPeticion } from '../_compartido/http.ts';
@@ -52,7 +52,7 @@ export function crearManejador(deps: Dependencias) {
         return http.error(
           403,
           'sin_permiso',
-          'Solo el superadministrador, con doble factor, invita cuentas.',
+          'Solo el administrador general, con su ingreso verificado por correo, invita cuentas.',
         );
       }
 

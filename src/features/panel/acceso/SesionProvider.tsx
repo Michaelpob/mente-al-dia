@@ -1,10 +1,10 @@
-import { isAuthError, type SupabaseClient } from '@supabase/supabase-js';
+import { FunctionsHttpError, isAuthError, type SupabaseClient } from '@supabase/supabase-js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { supabase } from '@/lib/supabase/cliente';
 import { guardarAlcance } from '../instituciones/alcance';
 import { direccionDefinirContrasena } from './enlaces';
-import { qrComoImagen } from './qr';
+import { ErrorCodigo } from './errores';
 import {
   perfilDeFila,
   resolverEstado,
@@ -18,19 +18,13 @@ async function leerEstado(cliente: SupabaseClient): Promise<EstadoSesion> {
   const { data: sesion } = await cliente.auth.getSession();
   if (!sesion.session) return { tipo: 'sin_sesion' };
 
-  const [nivel, factores, perfil] = await Promise.all([
-    cliente.auth.mfa.getAuthenticatorAssuranceLevel(),
-    cliente.auth.mfa.listFactors(),
-    cliente.rpc('mi_perfil').maybeSingle<FilaMiPerfil>(),
-  ]);
-  if (nivel.error) throw nivel.error;
-  if (factores.error) throw factores.error;
+  // mi_perfil dice también si esta sesión ya pasó el código del correo (D-89).
+  const perfil = await cliente.rpc('mi_perfil').maybeSingle<FilaMiPerfil>();
   if (perfil.error) throw perfil.error;
 
   return resolverEstado({
     haySesion: true,
-    nivel: nivel.data.currentLevel,
-    factoresVerificados: factores.data.totp.map((f) => f.id),
+    verificada: perfil.data?.doble_factor === true,
     perfil: perfilDeFila(perfil.data),
   });
 }
@@ -40,8 +34,34 @@ function exigirCliente(): SupabaseClient {
   return supabase;
 }
 
-/** Acciones de la sesión. Son funciones fijas: no cambian entre renders (el QR no se regenera). */
-const acciones: Omit<SesionContextValue, 'estado' | 'cerrarSesion'> = {
+/**
+ * Llama a la Edge Function «codigo-panel» (D-89) con el token de la sesión. Un error llega como
+ * ErrorCodigo con el código que devolvió la función (por ejemplo, «codigo_invalido»).
+ */
+async function llamarCodigoPanel<T>(cuerpo: Record<string, unknown>): Promise<T> {
+  const { data, error } = await exigirCliente().functions.invoke('codigo-panel', { body: cuerpo });
+  if (!error) return data as T;
+  let codigo = 'general';
+  let restantes: number | undefined;
+  if (error instanceof FunctionsHttpError) {
+    try {
+      const respuesta = (await (error.context as Response).json()) as {
+        error?: { codigo?: string; detalles?: { restantes?: number } };
+      };
+      codigo = respuesta.error?.codigo ?? codigo;
+      restantes = respuesta.error?.detalles?.restantes;
+    } catch {
+      // Sin cuerpo legible: queda como error general.
+    }
+  }
+  throw new ErrorCodigo(codigo, restantes);
+}
+
+/** Acciones de la sesión que no dependen del estado: funciones fijas entre renders. */
+const acciones: Pick<
+  SesionContextValue,
+  'ingresar' | 'enviarRecuperacion' | 'definirContrasena' | 'enviarCodigo'
+> = {
   async ingresar(correo, contrasena) {
     const { error } = await exigirCliente().auth.signInWithPassword({
       email: correo,
@@ -58,35 +78,28 @@ const acciones: Omit<SesionContextValue, 'estado' | 'cerrarSesion'> = {
   },
 
   async definirContrasena(contrasena) {
-    const { error } = await exigirCliente().auth.updateUser({ password: contrasena });
-    if (error) throw error;
-  },
-
-  async iniciarInscripcion() {
     const cliente = exigirCliente();
-    // Un intento anterior sin terminar deja un factor sin verificar: se descarta.
-    const { data: factores, error: errorFactores } = await cliente.auth.mfa.listFactors();
-    if (errorFactores) throw errorFactores;
-    for (const factor of factores.all.filter((f) => f.status === 'unverified')) {
-      const { error } = await cliente.auth.mfa.unenroll({ factorId: factor.id });
-      if (error) throw error;
-    }
-    const { data, error } = await cliente.auth.mfa.enroll({
-      factorType: 'totp',
-      friendlyName: 'Mente al Día',
-      issuer: 'Mente al Día',
-    });
+    const { data, error } = await cliente.auth.updateUser({ password: contrasena });
     if (error) throw error;
-    return { factorId: data.id, qr: qrComoImagen(data.totp.qr_code), secreto: data.totp.secret };
+    // El código del correo solo se pide con una sesión abierta con la contraseña (D-89): se entra
+    // con la nueva, y el panel sigue con el código.
+    const correo = data.user?.email;
+    if (correo) {
+      const { error: errorIngreso } = await cliente.auth.signInWithPassword({
+        email: correo,
+        password: contrasena,
+      });
+      if (errorIngreso) throw errorIngreso;
+    }
   },
 
-  async verificarCodigo(factorId, codigo) {
-    const { error } = await exigirCliente().auth.mfa.challengeAndVerify({ factorId, code: codigo });
-    if (error) throw error;
+  async enviarCodigo() {
+    const { correo } = await llamarCodigoPanel<{ correo: string }>({ accion: 'enviar' });
+    return correo;
   },
 };
 
-/** Sesión del panel: contraseña + doble factor (TOTP) y perfil con rol. */
+/** Sesión del panel: contraseña + código por correo (D-89) y perfil con rol. */
 export function SesionProvider({ children }: { children: ReactNode }) {
   const [estado, setEstado] = useState<EstadoSesion>(
     supabase ? { tipo: 'cargando' } : { tipo: 'sin_configurar' },
@@ -142,6 +155,15 @@ export function SesionProvider({ children }: { children: ReactNode }) {
     return () => data.subscription.unsubscribe();
   }, [actualizar]);
 
+  // El código no cambia la sesión de Supabase (no hay aviso de Auth): el estado se lee de nuevo.
+  const verificarCodigo = useCallback(
+    async (codigo: string) => {
+      await llamarCodigoPanel({ accion: 'verificar', codigo });
+      await actualizar();
+    },
+    [actualizar],
+  );
+
   // Supabase borra la sesión de este navegador aunque falle la llamada de cierre, así que el
   // cierre se marca siempre. RequierePanel e IngresoPanelPage deciden con él adónde ir.
   const cerrarSesion = useCallback(
@@ -157,8 +179,8 @@ export function SesionProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo<SesionContextValue>(
-    () => ({ estado, ...acciones, cerrarSesion }),
-    [estado, cerrarSesion],
+    () => ({ estado, ...acciones, verificarCodigo, cerrarSesion }),
+    [estado, verificarCodigo, cerrarSesion],
   );
 
   return <SesionContext.Provider value={value}>{children}</SesionContext.Provider>;

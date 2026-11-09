@@ -28,12 +28,12 @@ insert into public.perfiles (id, nombre, rol, activo, institucion_id) values
 create temporary table claims (nombre text primary key, valor text);
 grant select on claims to anon, authenticated, service_role;
 insert into claims values
-  ('super', '{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated","aal":"aal2"}'),
-  ('prof', '{"sub":"00000000-0000-0000-0000-000000000002","role":"authenticated","aal":"aal2"}'),
+  ('super', '{"sub":"00000000-0000-0000-0000-000000000001","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000001"}'),
+  ('prof', '{"sub":"00000000-0000-0000-0000-000000000002","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000002"}'),
   ('prof_aal1', '{"sub":"00000000-0000-0000-0000-000000000002","role":"authenticated","aal":"aal1"}'),
-  ('consulta', '{"sub":"00000000-0000-0000-0000-000000000003","role":"authenticated","aal":"aal2"}'),
-  ('inactivo', '{"sub":"00000000-0000-0000-0000-000000000004","role":"authenticated","aal":"aal2"}'),
-  ('sin_perfil', '{"sub":"00000000-0000-0000-0000-000000000005","role":"authenticated","aal":"aal2"}');
+  ('consulta', '{"sub":"00000000-0000-0000-0000-000000000003","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000003"}'),
+  ('inactivo', '{"sub":"00000000-0000-0000-0000-000000000004","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000004"}'),
+  ('sin_perfil', '{"sub":"00000000-0000-0000-0000-000000000005","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000005"}');
 
 -- ------------------------------------------------------------------------------ estructura
 select is(
@@ -48,6 +48,14 @@ select is(
 );
 
 -- --------------------------------------------------------------- registro desde el servidor
+-- D-89: el equipo entra con el código del correo. Cada sesión simulada (session_id = su cuenta)
+-- de las cuentas de prueba queda verificada; las sesiones sin session_id no lo están.
+insert into privado.sesiones_verificadas (session_id, user_id, expira_en)
+select u.id, u.id, now() + interval '1 day'
+from auth.users u
+where u.id::text like '00000000-0000-0000-0000-%'
+on conflict (session_id) do nothing;
+
 set local role anon;
 select throws_ok(
   $$select * from public.registrar_aplicacion('{}', '{}', '[]', '{}')$$,

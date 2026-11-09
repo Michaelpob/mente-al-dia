@@ -20,9 +20,9 @@ insert into public.instituciones (id, nombre, slug) values
 create temporary table claims_descarga (nombre text primary key, valor text);
 grant select on claims_descarga to anon, authenticated;
 insert into claims_descarga values
-  ('super', '{"sub":"00000000-0000-0000-0000-000000000501","role":"authenticated","aal":"aal2"}'),
+  ('super', '{"sub":"00000000-0000-0000-0000-000000000501","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000501"}'),
   ('super_aal1', '{"sub":"00000000-0000-0000-0000-000000000501","role":"authenticated","aal":"aal1"}'),
-  ('prof', '{"sub":"00000000-0000-0000-0000-000000000502","role":"authenticated","aal":"aal2"}');
+  ('prof', '{"sub":"00000000-0000-0000-0000-000000000502","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000502"}');
 
 -- Bruno respondió dos veces; Carla y una niña, una vez. Todos viven en «Barrio Pruebadescarga».
 insert into public.participantes (institucion_id, id, modulo, nombre, correo, telefono, lugar_residencia) values
@@ -51,6 +51,14 @@ insert into public.aplicaciones (institucion_id, id, codigo, participante_id, mo
    'por_fortalecer', 60, false, false, false, '0.1-provisional', '1.0', null, now(), now());
 
 -- ---------------------------------------------------------------------------------- permisos
+-- D-89: el equipo entra con el código del correo. Cada sesión simulada (session_id = su cuenta)
+-- de las cuentas de prueba queda verificada; las sesiones sin session_id no lo están.
+insert into privado.sesiones_verificadas (session_id, user_id, expira_en)
+select u.id, u.id, now() + interval '1 day'
+from auth.users u
+where u.id::text like '00000000-0000-0000-0000-%'
+on conflict (session_id) do nothing;
+
 set local role anon;
 select throws_ok($$select public.panel_censo_exportar('Censo mensual del barrio')$$, '42501', null,
   'Sin sesión no se descarga el censo');

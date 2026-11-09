@@ -10,8 +10,9 @@ const ExcelJS =
 /**
  * Criterios de aceptación de la Fase 8: tablero, registros, ficha, prioritarios y cierre por
  * inactividad. La build de pruebas apunta a un Supabase ficticio (.env.pruebas): aquí se simula una
- * sesión de superadministración con doble factor y las respuestas de las consultas del panel.
- * Desde D-86 también el administrador de una institución, que solo ve la suya.
+ * sesión de superadministración (contraseña y código por correo) y las respuestas de las consultas del panel.
+ * Desde D-86 también el administrador de una institución, que solo ve la suya. Desde D-89 el
+ * segundo paso es un código que llega al correo (la Edge Function «codigo-panel» se simula).
  */
 
 const SUPABASE = 'http://127.0.0.1:54321';
@@ -92,6 +93,7 @@ const PERFIL_GENERAL = {
   nombre: 'Administración Prueba',
   rol: 'superadministrador',
   activo: true,
+  doble_factor: true,
   institucion_id: null,
   institucion_nombre: null,
   institucion_slug: null,
@@ -102,6 +104,7 @@ const PERFIL_INSTITUCIONAL = {
   nombre: 'Rectoría Prueba',
   rol: 'administrador_institucional',
   activo: true,
+  doble_factor: true,
   institucion_id: COLEGIO.id,
   institucion_nombre: COLEGIO.nombre,
   institucion_slug: COLEGIO.slug,
@@ -119,7 +122,6 @@ const ADMINISTRADORES = [
     institucion: null,
     creadoEn: '2026-10-26T20:00:00Z',
     ultimoIngreso: '2026-11-08T12:00:00Z',
-    dobleFactor: true,
   },
   {
     id: RECTORIA,
@@ -130,7 +132,6 @@ const ADMINISTRADORES = [
     institucion: { id: COLEGIO.id, nombre: COLEGIO.nombre, activa: true },
     creadoEn: '2026-11-08T12:00:00Z',
     ultimoIngreso: null,
-    dobleFactor: false,
   },
 ];
 
@@ -340,6 +341,8 @@ interface Llamadas {
   administradorActualizado: Record<string, unknown>[];
   invitaciones: Record<string, unknown>[];
   auditoria: Record<string, unknown>[];
+  /** Pedidos a la Edge Function del código por correo (D-89). */
+  codigos: Record<string, unknown>[];
   registros: Record<string, unknown>[];
   censo: Record<string, unknown>[];
   exportacion: Record<string, unknown>[];
@@ -357,16 +360,20 @@ interface OpcionesSesion {
   invitacion?: 'ok' | 'conflicto';
 }
 
+/** El código que acepta la Edge Function simulada (D-89). */
+const CODIGO_CORRECTO = '123456';
+
 /**
- * Sesión de superadministración y las consultas simuladas. Por defecto, con el doble factor ya
- * verificado (aal2); con aal1 la sesión espera el código de la app de autenticación.
+ * Sesión del panel y las consultas simuladas. La sesión se abrió con la contraseña; con «verificado»
+ * (por defecto) ya pasó el código del correo, y con «sin_codigo» el panel lo pide (D-89).
  */
 async function iniciarSesion(
   page: Page,
-  nivel: 'aal1' | 'aal2' = 'aal2',
+  paso: 'verificado' | 'sin_codigo' = 'verificado',
   { perfil = PERFIL_GENERAL, invitacion = 'ok' }: OpcionesSesion = {},
 ): Promise<Llamadas> {
   const ahora = Math.floor(Date.now() / 1000);
+  let verificada = paso === 'verificado';
   const usuario = {
     id: ADMIN,
     aud: 'authenticated',
@@ -375,27 +382,14 @@ async function iniciarSesion(
     app_metadata: {},
     user_metadata: {},
     created_at: '2026-10-26T20:00:00Z',
-    factors: [
-      {
-        id: 'factor-1',
-        factor_type: 'totp',
-        status: 'verified',
-        friendly_name: 'Mente al Día',
-        created_at: '2026-10-26T20:00:00Z',
-        updated_at: '2026-10-26T20:00:00Z',
-      },
-    ],
   };
   const token = [
     base64url({ alg: 'HS256', typ: 'JWT' }),
     base64url({
       sub: ADMIN,
       role: 'authenticated',
-      aal: nivel,
-      amr: [
-        { method: 'password', timestamp: ahora },
-        ...(nivel === 'aal2' ? [{ method: 'totp', timestamp: ahora }] : []),
-      ],
+      aal: 'aal1',
+      amr: [{ method: 'password', timestamp: ahora }],
       session_id: 'sesion-prueba',
       iat: ahora,
       exp: ahora + 86_400,
@@ -432,6 +426,7 @@ async function iniciarSesion(
     administradorActualizado: [],
     invitaciones: [],
     auditoria: [],
+    codigos: [],
     registros: [],
     censo: [],
     exportacion: [],
@@ -455,7 +450,28 @@ async function iniciarSesion(
         llamadas.salida += 1;
         return route.fulfill({ status: 204, headers: CORS });
       case '/rest/v1/rpc/mi_perfil':
-        return json(perfil);
+        return json({ ...perfil, doble_factor: verificada });
+      case '/functions/v1/codigo-panel': {
+        const pedido = peticion.postDataJSON() as { accion: string; codigo?: string };
+        llamadas.codigos.push(pedido);
+        if (pedido.accion === 'enviar')
+          return json({ enviado: true, correo: 'ad***@ejemplo.gov.co' });
+        if (pedido.codigo === CODIGO_CORRECTO) {
+          verificada = true;
+          return json({ verificado: true });
+        }
+        return route.fulfill({
+          status: 422,
+          headers: { ...CORS, 'content-type': 'application/json' },
+          body: JSON.stringify({
+            error: {
+              codigo: 'codigo_invalido',
+              mensaje: 'El código no es correcto o ya venció.',
+              detalles: { restantes: 4 },
+            },
+          }),
+        });
+      }
       case '/rest/v1/rpc/panel_tablero':
         llamadas.tablero.push(peticion.postDataJSON() as Record<string, unknown>);
         return json(TABLERO);
@@ -864,14 +880,43 @@ test('«Cerrar sesión» vuelve a la página principal y «atrás» no reabre el
   await expect(page.locator('h1')).toHaveText('Ingreso de administración');
 });
 
-test('«Cerrar sesión» en la verificación en dos pasos también vuelve a la página principal', async ({
+test('el ingreso pide el código que llega al correo y con él entra al panel (D-89)', async ({
   page,
 }) => {
-  const llamadas = await iniciarSesion(page, 'aal1');
-  await page.goto('/panel/ingresar');
+  const llamadas = await iniciarSesion(page, 'sin_codigo');
+  await page.goto('/panel/censo');
+  await expect(page).toHaveURL(/\/panel\/ingresar$/);
+  await expect(page.getByRole('heading', { level: 1, name: 'Revisa tu correo' })).toBeVisible();
+  // Al llegar se envía el código, una sola vez.
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Verificación en dos pasos' }),
+    page.getByText(/Te enviamos un código de 6 dígitos a ad\*\*\*@ejemplo\.gov\.co/),
   ).toBeVisible();
+  expect(llamadas.codigos).toEqual([{ accion: 'enviar' }]);
+  await expect(page.getByRole('button', { name: 'Enviar otro código' })).toBeDisabled();
+  expect(await violacionesGraves(page)).toEqual([]);
+  // Sin el código no se ve nada del panel.
+  expect(llamadas.tablero).toHaveLength(0);
+  expect(llamadas.censo).toHaveLength(0);
+
+  await page.getByLabel('Código de verificación').fill('000000');
+  await page.getByRole('button', { name: 'Verificar y entrar' }).click();
+  await expect(
+    page.getByText('El código no es correcto o ya venció. Te quedan 4 intentos.'),
+  ).toBeVisible();
+
+  await page.getByLabel('Código de verificación').fill(CODIGO_CORRECTO);
+  await page.getByRole('button', { name: 'Verificar y entrar' }).click();
+  // Entra adonde iba.
+  await expect(page.getByRole('heading', { level: 1, name: 'Censo' })).toBeVisible();
+  expect(llamadas.codigos.at(-1)).toEqual({ accion: 'verificar', codigo: CODIGO_CORRECTO });
+});
+
+test('«Cerrar sesión» en el paso del código también vuelve a la página principal', async ({
+  page,
+}) => {
+  const llamadas = await iniciarSesion(page, 'sin_codigo');
+  await page.goto('/panel/ingresar');
+  await expect(page.getByRole('heading', { level: 1, name: 'Revisa tu correo' })).toBeVisible();
   await page.getByRole('button', { name: 'Cerrar sesión', exact: true }).click();
   await expect(page.locator('h1')).toHaveText('Cuidar tu mente también es cuidarte');
   expect(llamadas.salida).toBe(1);
@@ -891,7 +936,7 @@ async function menuDelPanel(page: Page) {
 test('el administrador de una institución solo ve la suya y no las secciones del general', async ({
   page,
 }) => {
-  const llamadas = await iniciarSesion(page, 'aal2', { perfil: PERFIL_INSTITUCIONAL });
+  const llamadas = await iniciarSesion(page, 'verificado', { perfil: PERFIL_INSTITUCIONAL });
   await page.goto('/panel');
   await expect(page.getByRole('heading', { level: 1, name: 'Tablero' })).toBeVisible();
   // Su institución y el enlace para compartir, sin selector de instituciones.
@@ -924,7 +969,7 @@ test('el administrador de una institución solo ve la suya y no las secciones de
 test('con su institución desactivada, el administrador institucional no entra', async ({
   page,
 }) => {
-  await iniciarSesion(page, 'aal2', {
+  await iniciarSesion(page, 'verificado', {
     perfil: { ...PERFIL_INSTITUCIONAL, institucion_activa: false },
   });
   await page.goto('/panel');
@@ -1036,7 +1081,7 @@ test('Usuarios invita por correo al administrador de una institución', async ({
 });
 
 test('una invitación a un correo que ya tiene cuenta lo explica', async ({ page }) => {
-  await iniciarSesion(page, 'aal2', { invitacion: 'conflicto' });
+  await iniciarSesion(page, 'verificado', { invitacion: 'conflicto' });
   await page.goto('/panel/usuarios');
   await page.getByRole('button', { name: 'Invitar', exact: true }).click();
   const dialogo = page.getByRole('dialog', { name: 'Invitar a un administrador' });

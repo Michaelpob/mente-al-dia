@@ -15,7 +15,7 @@ insert into public.perfiles (id, nombre, rol, activo) values
 create temporary table claims_visitas (nombre text primary key, valor text);
 grant select on claims_visitas to anon, authenticated;
 insert into claims_visitas values
-  ('super', '{"sub":"00000000-0000-0000-0000-000000000401","role":"authenticated","aal":"aal2"}'),
+  ('super', '{"sub":"00000000-0000-0000-0000-000000000401","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000000401"}'),
   ('super_aal1', '{"sub":"00000000-0000-0000-0000-000000000401","role":"authenticated","aal":"aal1"}'),
   ('cuenta', '{"sub":"00000000-0000-0000-0000-000000000402","role":"authenticated","aal":"aal1"}');
 
@@ -23,6 +23,14 @@ create temporary table hoy_visitas as select (now() at time zone 'America/Bogota
 grant select on hoy_visitas to anon, authenticated;
 
 -- Línea base: lo que ya hubiera en la base (los últimos 7 días y los 7 anteriores).
+-- D-89: el equipo entra con el código del correo. Cada sesión simulada (session_id = su cuenta)
+-- de las cuentas de prueba queda verificada; las sesiones sin session_id no lo están.
+insert into privado.sesiones_verificadas (session_id, user_id, expira_en)
+select u.id, u.id, now() + interval '1 day'
+from auth.users u
+where u.id::text like '00000000-0000-0000-0000-%'
+on conflict (session_id) do nothing;
+
 select set_config('request.jwt.claims', (select valor from claims_visitas where nombre = 'super'), true);
 create temporary table base_visitas as
 select public.panel_visitas((select dia from hoy_visitas) - 6, (select dia from hoy_visitas)) as visitas;

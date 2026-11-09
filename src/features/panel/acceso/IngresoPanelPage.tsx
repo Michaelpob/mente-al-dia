@@ -3,18 +3,12 @@ import { PageLoading, PageMeta } from '@/components/layout/page';
 import { Callout } from '@/components/ui/feedback';
 import { panel } from '@/content/panel';
 import { textos } from '@/content/textos-interfaz';
-import {
-  FormularioIngreso,
-  InscribirDobleFactor,
-  SinAcceso,
-  TarjetaAcceso,
-  VerificarDobleFactor,
-} from './formularios';
+import { FormularioIngreso, SinAcceso, TarjetaAcceso, VerificarCodigoCorreo } from './formularios';
 import { useSesion } from './sesion-context';
 
 const t = textos.accesoPanel;
 
-/** /panel/ingresar: contraseña y, siempre, verificación en dos pasos. */
+/** /panel/ingresar: contraseña y, siempre, el código que llega al correo de la cuenta (D-89). */
 export default function IngresoPanelPage() {
   const { estado } = useSesion();
   const desde = (useLocation().state as { desde?: string } | null)?.desde ?? '/panel';
@@ -47,10 +41,8 @@ export default function IngresoPanelPage() {
             );
           case 'sin_acceso':
             return <SinAcceso motivo={estado.motivo} />;
-          case 'inscribir_doble_factor':
-            return <InscribirDobleFactor />;
-          case 'verificar_doble_factor':
-            return <VerificarDobleFactor factorId={estado.factorId} />;
+          case 'verificar_codigo':
+            return <VerificarCodigoCorreo />;
           case 'lista':
             return <Navigate to={desde} replace />;
         }

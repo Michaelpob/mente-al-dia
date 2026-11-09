@@ -319,7 +319,6 @@ export interface AdministradorPanel {
   institucion: { id: string; nombre: string; activa: boolean } | null;
   creadoEn: string;
   ultimoIngreso: string | null;
-  dobleFactor: boolean;
 }
 
 export interface InvitacionAdministrador {

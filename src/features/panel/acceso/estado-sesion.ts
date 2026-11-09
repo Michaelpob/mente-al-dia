@@ -1,10 +1,10 @@
 /**
  * Estados del ingreso al panel. Función pura para poder probar cada caso sin Supabase.
  * El orden importa: primero se confirma que la cuenta tiene un perfil activo de administración y
- * luego se exige el doble factor, para no pedir a alguien sin acceso que configure una aplicación
- * de autenticación. Entran el administrador general (superadministrador) y el administrador de
- * cada institución (D-86); los roles antiguos «profesional» y «consulta» ya no entran.
- * La base de datos exige lo mismo por su cuenta (políticas con aal2 y la institución activa).
+ * luego se pide el código que llega al correo (D-89), para no enviar códigos a quien no tiene acceso.
+ * Entran el administrador general (superadministrador) y el administrador de cada institución
+ * (D-86); los roles antiguos «profesional» y «consulta» ya no entran. La base de datos exige lo
+ * mismo por su cuenta (sesión verificada con el código y la institución activa).
  */
 export type RolPanel =
   'superadministrador' | 'administrador_institucional' | 'profesional' | 'consulta';
@@ -30,18 +30,19 @@ export type EstadoSesion =
   | { tipo: 'cargando' }
   | { tipo: 'sin_sesion'; cierre?: CierreSesion }
   | { tipo: 'sin_acceso'; motivo: MotivoSinAcceso }
-  | { tipo: 'inscribir_doble_factor' }
-  | { tipo: 'verificar_doble_factor'; factorId: string }
+  /** Contraseña correcta: falta el código que llega al correo de la cuenta (D-89). */
+  | { tipo: 'verificar_codigo' }
   | { tipo: 'lista'; perfil: PerfilPanel };
 
 export type MotivoSinAcceso = 'sin_perfil' | 'inactivo' | 'sin_permiso' | 'institucion_inactiva';
 
 /**
  * Cómo se cerró la sesión, cuando la cerró el panel: con «Cerrar sesión» se vuelve a la página
- * principal; por inactividad, al ingreso con el aviso (D-74). Sin valor (nunca hubo sesión, venció
- * o se cerró en otra pestaña), el panel lleva al ingreso.
+ * principal; por inactividad, al ingreso con el aviso (D-74); para volver a ingresar con la
+ * contraseña, al ingreso sin aviso. Sin valor (nunca hubo sesión, venció o se cerró en otra
+ * pestaña), el panel lleva al ingreso.
  */
-export type CierreSesion = 'manual' | 'inactividad';
+export type CierreSesion = 'manual' | 'inactividad' | 'reingreso';
 
 /** Roles que pueden ver el panel (D-65, D-86). */
 export const ROLES_PANEL: readonly RolPanel[] = [
@@ -59,6 +60,8 @@ export interface FilaMiPerfil {
   nombre: string;
   rol: RolPanel;
   activo: boolean;
+  /** La sesión ya pasó el código del correo (D-89). */
+  doble_factor?: boolean | null;
   institucion_id?: string | null;
   institucion_nombre?: string | null;
   institucion_slug?: string | null;
@@ -85,19 +88,12 @@ export function perfilDeFila(fila: FilaMiPerfil | null): PerfilPanel | null {
 
 export interface DatosSesion {
   haySesion: boolean;
-  /** Nivel de autenticación de la sesión: aal1 (contraseña) o aal2 (con doble factor). */
-  nivel: string | null;
-  /** Factores TOTP ya verificados de la cuenta. */
-  factoresVerificados: readonly string[];
+  /** La sesión ya pasó el código que llega al correo (mi_perfil.doble_factor, D-89). */
+  verificada: boolean;
   perfil: PerfilPanel | null;
 }
 
-export function resolverEstado({
-  haySesion,
-  nivel,
-  factoresVerificados,
-  perfil,
-}: DatosSesion): EstadoSesion {
+export function resolverEstado({ haySesion, verificada, perfil }: DatosSesion): EstadoSesion {
   if (!haySesion) return { tipo: 'sin_sesion' };
   if (!perfil) return { tipo: 'sin_acceso', motivo: 'sin_perfil' };
   if (!perfil.activo) return { tipo: 'sin_acceso', motivo: 'inactivo' };
@@ -106,9 +102,5 @@ export function resolverEstado({
   if (perfil.rol === 'administrador_institucional' && !perfil.institucion?.activa) {
     return { tipo: 'sin_acceso', motivo: 'institucion_inactiva' };
   }
-  if (nivel === 'aal2') return { tipo: 'lista', perfil };
-  const [factorId] = factoresVerificados;
-  return factorId
-    ? { tipo: 'verificar_doble_factor', factorId }
-    : { tipo: 'inscribir_doble_factor' };
+  return verificada ? { tipo: 'lista', perfil } : { tipo: 'verificar_codigo' };
 }

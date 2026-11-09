@@ -140,6 +140,21 @@ export const esquemaInvitacion = z
   });
 export type Invitacion = z.infer<typeof esquemaInvitacion>;
 
+/** Código por correo del panel (D-89): pedirlo o comprobarlo. */
+export const esquemaCodigo = z.discriminatedUnion('accion', [
+  z.object({ accion: z.literal('enviar') }).strict(),
+  z
+    .object({
+      accion: z.literal('verificar'),
+      codigo: z
+        .string()
+        .trim()
+        .regex(/^\d{6}$/, 'El código tiene 6 dígitos.'),
+    })
+    .strict(),
+]);
+export type PeticionCodigo = z.infer<typeof esquemaCodigo>;
+
 /** Lista legible de problemas de validación, sin repetir los valores recibidos. */
 export function problemas(error: z.ZodError): { campo: string; mensaje: string }[] {
   return error.issues.map((i) => ({ campo: i.path.join('.'), mensaje: i.message }));

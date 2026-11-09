@@ -12,6 +12,11 @@ export type CodigoError =
   | 'institucion_invalida'
   | 'sin_sesion'
   | 'sin_permiso'
+  /** Código por correo del panel (D-89). */
+  | 'requiere_contrasena'
+  | 'codigo_invalido'
+  | 'demasiados_intentos'
+  | 'espera'
   | 'conflicto'
   | 'error_interno';
 

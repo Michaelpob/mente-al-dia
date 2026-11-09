@@ -40,10 +40,11 @@ create temporary table claims_inst (nombre text primary key, valor text);
 grant select on claims_inst to anon, authenticated;
 insert into claims_inst
 select 'i' || n, json_build_object('sub', '00000000-0000-0000-0000-00000000100' || n,
-                                   'role', 'authenticated', 'aal', 'aal2')::text
+                                   'role', 'authenticated', 'aal', 'aal2',
+                                   'session_id', '00000000-0000-0000-0000-00000000100' || n)::text
 from generate_series(1, 7) n;
 insert into claims_inst values
-  ('general', '{"sub":"00000000-0000-0000-0000-000000001000","role":"authenticated","aal":"aal2"}'),
+  ('general', '{"sub":"00000000-0000-0000-0000-000000001000","role":"authenticated","aal":"aal2","session_id":"00000000-0000-0000-0000-000000001000"}'),
   ('i1_aal1', '{"sub":"00000000-0000-0000-0000-000000001001","role":"authenticated","aal":"aal1"}');
 
 -- La institución k recibe k cuestionarios, por su enlace (?sede=prueba-ik), como el servidor.
@@ -132,6 +133,14 @@ select throws_ok(
 );
 
 -- -------------------------------------------------------------------------------- 10. público
+-- D-89: el equipo entra con el código del correo. Cada sesión simulada (session_id = su cuenta)
+-- de las cuentas de prueba queda verificada; las sesiones sin session_id no lo están.
+insert into privado.sesiones_verificadas (session_id, user_id, expira_en)
+select u.id, u.id, now() + interval '1 day'
+from auth.users u
+where u.id::text like '00000000-0000-0000-0000-%'
+on conflict (session_id) do nothing;
+
 set local role anon;
 select results_eq($$select nombre, slug from public.institucion_publica('prueba-i1')$$,
   $$values ('Prueba Uno'::text, 'prueba-i1'::text)$$, 'El enlace de una institución activa muestra su nombre');
