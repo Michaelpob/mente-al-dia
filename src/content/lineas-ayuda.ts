@@ -1,6 +1,7 @@
 /**
  * Líneas de ayuda (D-85): las que entregó el equipo del proyecto, en su mismo orden. Son las únicas
- * que se muestran en el sitio (encabezado, página de líneas y resultados).
+ * que se muestran en el sitio (encabezado, página de líneas y resultados). Las de un municipio
+ * (D-90) solo las ven quienes participan con esa institución; la página de líneas las muestra todas.
  */
 export type EstadoLinea = 'verificada' | 'completar' | 'opcional';
 
@@ -16,6 +17,11 @@ export interface LineaAyuda {
   estado: EstadoLinea;
   /** Solo las líneas activas se muestran en el sitio. */
   activa: boolean;
+  /**
+   * Enlace (?sede=) de la institución cuyas personas ven esta línea. Sin él, la ve todo el mundo.
+   * Si el enlace de la institución cambia en el panel, hay que cambiarlo también aquí.
+   */
+  sede?: string;
 }
 
 export const lineasAyudaMeta = {
@@ -53,6 +59,16 @@ export const lineasAyuda: readonly LineaAyuda[] = [
     activa: true,
   },
   {
+    id: 'coello-apoyo-emocional',
+    numero: '3187834690',
+    nombre: 'Coello – Línea de apoyo emocional del municipio',
+    atiende: 'Escucha y apoyo emocional',
+    cobertura: 'Municipio de Coello',
+    estado: 'verificada',
+    activa: true,
+    sede: 'alcaldia-coello',
+  },
+  {
     id: 'emergencias',
     numero: '123',
     nombre: 'Emergencias',
@@ -65,6 +81,17 @@ export const lineasAyuda: readonly LineaAyuda[] = [
 ];
 
 export const lineasActivas: readonly LineaAyuda[] = lineasAyuda.filter((linea) => linea.activa);
+
+/**
+ * Las líneas que ve una persona: las generales y las de la institución con la que participa
+ * (por su enlace). Con `todas` (la página de líneas de ayuda) también las de cada municipio.
+ */
+export function lineasPara(
+  sede: string | null,
+  { todas = false }: { todas?: boolean } = {},
+): readonly LineaAyuda[] {
+  return lineasActivas.filter((linea) => !linea.sede || todas || linea.sede === sede);
+}
 
 /** La línea de emergencias (123): va primero en el apoyo inmediato de los resultados. */
 export const lineaEmergencias: LineaAyuda | undefined = lineasActivas.find(

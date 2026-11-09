@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { iconosAreas } from '@/components/bienestar/iconos-areas';
 import { LeyendaNiveles, RuedaNiveles } from '@/components/bienestar/rueda-niveles';
-import { HelplineList } from '@/components/layout/helplines';
+import { HelplineList, useSedeDeLasLineas } from '@/components/layout/helplines';
 import { PageMeta } from '@/components/layout/page';
 import { Button } from '@/components/ui/button';
 import { Callout, Eyebrow } from '@/components/ui/feedback';
@@ -11,7 +11,7 @@ import { NivelBadge } from '@/components/ui/nivel-badge';
 import {
   esMarcable,
   lineaEmergencias,
-  lineasActivas,
+  lineasPara,
   numeroVisible,
   type LineaAyuda,
 } from '@/content/lineas-ayuda';
@@ -34,10 +34,13 @@ import {
 
 const idTarjeta = (areaId: AreaId) => `area-${areaId}`;
 
-/** Botones de llamada del apoyo inmediato: primero el 123 y después las demás líneas marcables. */
-const LINEAS_APOYO = [
+/**
+ * Botones de llamada del apoyo inmediato: primero el 123 y después las demás líneas marcables,
+ * con las del municipio de la institución con la que participa la persona (D-90).
+ */
+const lineasDeApoyo = (sede: string | null) => [
   ...(lineaEmergencias ? [lineaEmergencias] : []),
-  ...lineasActivas.filter((linea) => linea !== lineaEmergencias && esMarcable(linea.numero)),
+  ...lineasPara(sede).filter((linea) => linea !== lineaEmergencias && esMarcable(linea.numero)),
 ];
 /** «Línea Nacional de Salud Mental (106)»; si el nombre ya trae el número, sin repetirlo. */
 const etiquetaLinea = (linea: LineaAyuda) =>
@@ -236,6 +239,7 @@ export default function ResultadosPage() {
 }
 
 function ApoyoInmediato({ modulo, titulo }: { modulo: ModuloDisponible; titulo: string }) {
+  const lineas = lineasDeApoyo(useSedeDeLasLineas());
   return (
     <section aria-labelledby="apoyo-titulo">
       <Callout variant="apoyo">
@@ -250,7 +254,7 @@ function ApoyoInmediato({ modulo, titulo }: { modulo: ModuloDisponible; titulo: 
           </>
         ) : null}
         <div className="mt-5 flex flex-wrap gap-3">
-          {LINEAS_APOYO.map((linea) => (
+          {lineas.map((linea) => (
             <Button
               key={linea.id}
               asChild

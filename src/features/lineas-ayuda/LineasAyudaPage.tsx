@@ -14,7 +14,8 @@ export default function LineasAyudaPage() {
             {textos.lineasAyuda.paginaIntro}
           </p>
         </div>
-        <HelplineList className="mt-10 sm:grid-cols-2 lg:grid-cols-3" />
+        {/* Aquí van todas, también las de cada municipio, con su cobertura (D-90). */}
+        <HelplineList todas className="mt-10 sm:grid-cols-2 lg:grid-cols-3" />
       </section>
     </>
   );

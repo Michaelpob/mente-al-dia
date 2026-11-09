@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Callout } from '@/components/ui/feedback';
 import { esMarcador } from '@/config/sitio';
-import { esMarcable, lineasActivas, numeroVisible, type LineaAyuda } from '@/content/lineas-ayuda';
+import { esMarcable, lineasPara, numeroVisible, type LineaAyuda } from '@/content/lineas-ayuda';
+import { useSede } from '@/features/instituciones/sede-context';
 import { textos } from '@/content/textos-interfaz';
 import { cn } from '@/lib/utils/cn';
 
@@ -52,10 +53,23 @@ function HelplineItem({ linea }: { linea: LineaAyuda }) {
   );
 }
 
-export function HelplineList({ className }: { className?: string }) {
+/** La institución con la que participa la persona (por su enlace), para sus líneas propias. */
+export function useSedeDeLasLineas(): string | null {
+  const { estado } = useSede();
+  return estado.tipo === 'valida' ? estado.sede.slug : null;
+}
+
+export function HelplineList({
+  className,
+  todas = false,
+}: {
+  className?: string;
+  todas?: boolean;
+}) {
+  const sede = useSedeDeLasLineas();
   return (
     <ul className={cn('grid gap-3', className)}>
-      {lineasActivas.map((linea) => (
+      {lineasPara(sede, { todas }).map((linea) => (
         <HelplineItem key={linea.id} linea={linea} />
       ))}
     </ul>
