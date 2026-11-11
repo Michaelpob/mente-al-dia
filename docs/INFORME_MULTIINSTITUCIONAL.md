@@ -19,10 +19,10 @@ Todo lo que ya hacía la plataforma sigue igual: el sitio informativo, los tres 
 | Alcaldía de Saldaña                                           | https://michaelpob.github.io/mente-al-dia/?sede=alcaldia-saldana     |
 | Institución Educativa Técnica Comercial Caldas (Guamo)        | https://michaelpob.github.io/mente-al-dia/?sede=caldas-guamo         |
 
-Las cuatro primeras tienen su nombre desde el 9 de noviembre (D-90) y las dos últimas desde el 11 (D-91). Las provisionales Colegio 1 y Alcaldía 1 quedaron inactivas, con sus datos: sus enlaces ya no sirven para responder, y quien entra con ellos elige su institución de la lista. La Alcaldía de Coello tiene además su línea de apoyo emocional (318 783 4690), que ven quienes participan con ella.
+Las cuatro primeras tienen su nombre desde el 9 de noviembre (D-90) y las dos últimas desde el 11 (D-91). Las provisionales Colegio 1 y Alcaldía 1 se borraron con sus datos de prueba (D-92): sus enlaces ya no sirven para responder, y quien entra con ellos elige su institución de la lista. La Alcaldía de Coello tiene además su línea de apoyo emocional (318 783 4690), que ven quienes participan con ella.
 
 - El nombre, el enlace y el estado de cada institución se cambian en el panel, en **Instituciones**. Si se cambia el enlace, el anterior deja de funcionar.
-- Los seis cuestionarios que había antes del cambio quedaron en **Colegio 1**, hoy inactiva. Solo los ve el administrador general.
+- Los datos de las pruebas (cuestionarios, participantes, visitas y cuentas públicas) se borraron el 11 de noviembre (D-92): la plataforma arranca en cero con las seis instituciones. La auditoría guarda los totales borrados.
 - Con el enlace general (sin `?sede=`), la persona elige su institución de una lista al empezar a responder (D-88). Antes de registrarse puede cambiarla; después, ya no.
 - El enlace identifica, no autentica: solo dice a qué institución pertenecen las respuestas.
 
@@ -152,7 +152,6 @@ El orden importa: primero la base, luego las funciones y al final el sitio. Las 
 ## Pendientes
 
 - Activar el correo propio (D-79) para recuperar contraseñas («¿Olvidaste tu contraseña?») e invitar desde **Usuarios**. Mientras tanto, las cuentas se crean en Supabase (D-91).
-- Qué hacer con los cuestionarios de Colegio 1 y Alcaldía 1: siguen guardados en esas instituciones inactivas.
 - Conviene que cada institución reparta su propio enlace: con el enlace general la persona elige la institución de una lista y podría elegir una que no es la suya.
 - Reenviar una invitación: hoy, si alguien perdió el correo de invitación, puede pedir un enlace nuevo con «¿Olvidaste tu contraseña?» en el ingreso (necesita el correo propio activo).
 - El reporte nominal (`reporte_nominal`), que no usa el panel, sigue siendo solo del administrador general y abarca todas las instituciones.
