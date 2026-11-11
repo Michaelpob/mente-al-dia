@@ -72,7 +72,7 @@ Los dos entran con su correo y su contraseña, sin aplicación de autenticación
 ## Cuentas
 
 - **Administrador general:** la cuenta de superadministrador que ya existía. No cambió.
-- **Administradores institucionales:** uno por institución. Mientras no esté el correo propio de la plataforma (D-79), las cuentas se crean en Supabase y el rol y la institución se asignan en la base (D-91). Ya tienen cuenta San Luis, Coello, Sor Josefa del Castillo y Roberto Leyva; faltan la Alcaldía de Saldaña y la I. E. Caldas.
+- **Administradores institucionales:** uno por institución. Mientras no esté el correo propio de la plataforma (D-79), las cuentas se crean en Supabase y el rol y la institución se asignan en la base (D-91). Las seis instituciones tienen su administrador desde el 11 de noviembre.
 - Cada administrador entra con su correo y su contraseña (D-89). Recibe la contraseña en privado de quien creó la cuenta y la cambia en el panel con **Cambiar contraseña**.
 - Este informe no contiene contraseñas ni correos.
 
@@ -152,7 +152,6 @@ El orden importa: primero la base, luego las funciones y al final el sitio. Las 
 ## Pendientes
 
 - Activar el correo propio (D-79) para recuperar contraseñas («¿Olvidaste tu contraseña?») e invitar desde **Usuarios**. Mientras tanto, las cuentas se crean en Supabase (D-91).
-- Las cuentas de los administradores de la Alcaldía de Saldaña y de la I. E. Caldas.
 - Qué hacer con los cuestionarios de Colegio 1 y Alcaldía 1: siguen guardados en esas instituciones inactivas.
 - Conviene que cada institución reparta su propio enlace: con el enlace general la persona elige la institución de una lista y podría elegir una que no es la suya.
 - Reenviar una invitación: hoy, si alguien perdió el correo de invitación, puede pedir un enlace nuevo con «¿Olvidaste tu contraseña?» en el ingreso (necesita el correo propio activo).
