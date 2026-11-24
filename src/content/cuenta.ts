@@ -20,8 +20,7 @@ export const cuenta = {
     olvide: '¿Olvidaste tu contraseña?',
     sinCuenta: '¿Todavía no tienes una cuenta?',
     crear: 'Crear una cuenta',
-    equipo:
-      'Si eres del equipo de Mente al Día, ingresa aquí con tu correo: después te pediremos el código de verificación.',
+    equipo: 'Si eres del equipo de Mente al Día, ingresa aquí con tu correo: te llevamos al panel.',
   },
 
   recuperar: {

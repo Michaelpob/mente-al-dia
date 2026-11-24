@@ -2,6 +2,7 @@ import { isAuthError, type SupabaseClient } from '@supabase/supabase-js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { supabase } from '@/lib/supabase/cliente';
+import { correoDeIngreso } from '@/lib/utils/correo';
 import { guardarAlcance } from '../instituciones/alcance';
 import { direccionDefinirContrasena } from './enlaces';
 import {
@@ -32,14 +33,14 @@ function exigirCliente(): SupabaseClient {
 const acciones: Omit<SesionContextValue, 'estado' | 'cerrarSesion'> = {
   async ingresar(correo, contrasena) {
     const { error } = await exigirCliente().auth.signInWithPassword({
-      email: correo,
+      email: correoDeIngreso(correo),
       password: contrasena,
     });
     if (error) throw error;
   },
 
   async enviarRecuperacion(correo) {
-    const { error } = await exigirCliente().auth.resetPasswordForEmail(correo, {
+    const { error } = await exigirCliente().auth.resetPasswordForEmail(correoDeIngreso(correo), {
       redirectTo: direccionDefinirContrasena(window.location.origin, import.meta.env.BASE_URL),
     });
     if (error) throw error;

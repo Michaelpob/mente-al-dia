@@ -165,6 +165,36 @@ test.describe('Rutas públicas', () => {
     expect(await violacionesGraves(page)).toEqual([]);
   });
 
+  test('se puede ingresar aunque el correo se escriba con tildes, mayúsculas o espacios', async ({
+    page,
+  }) => {
+    const cors = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*' };
+    const enviados: string[] = [];
+    await page.route('**/auth/v1/token?grant_type=password*', async (route) => {
+      if (route.request().method() === 'OPTIONS') {
+        await route.fulfill({ status: 204, headers: cors });
+        return;
+      }
+      enviados.push((route.request().postDataJSON() as { email: string }).email);
+      await route.fulfill({
+        status: 400,
+        headers: cors,
+        json: { code: 400, error_code: 'invalid_credentials', msg: 'Invalid login credentials' },
+      });
+    });
+    for (const ruta of ['/cuenta/ingresar', '/panel/ingresar']) {
+      await page.goto(ruta);
+      await page.getByLabel(/^Correo/).fill('Psicología.Niñez@Ejemplo.gov.co');
+      await page.getByRole('textbox', { name: 'Contraseña' }).fill('Cuidarme2026');
+      await page.locator('main form').getByRole('button', { name: 'Ingresar' }).click();
+      await expect(page.getByText('El correo o la contraseña no son correctos.')).toBeVisible();
+    }
+    expect(enviados).toEqual([
+      'psicologia.ninez@ejemplo.gov.co',
+      'psicologia.ninez@ejemplo.gov.co',
+    ]);
+  });
+
   test('desde el ingreso se vuelve a la página principal con el logo o «Volver al inicio»', async ({
     page,
   }) => {

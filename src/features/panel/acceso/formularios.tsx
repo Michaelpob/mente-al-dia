@@ -63,6 +63,20 @@ function useAccion() {
 const valor = (evento: FormEvent<HTMLFormElement>, campo: string) =>
   String(new FormData(evento.currentTarget).get(campo) ?? '').trim();
 
+/**
+ * Campo del correo. No es de tipo «email» porque el navegador rechazaría una tilde antes de enviar, y
+ * el ingreso la acepta (correoDeIngreso). El teclado del teléfono sigue siendo el de correo.
+ */
+const campoCorreo = {
+  name: 'correo',
+  type: 'text',
+  inputMode: 'email',
+  autoCapitalize: 'none',
+  autoCorrect: 'off',
+  spellCheck: false,
+  required: true,
+} as const;
+
 export function FormularioIngreso() {
   const { ingresar, enviarRecuperacion } = useSesion();
   const { enviando, error, ejecutar } = useAccion();
@@ -88,7 +102,7 @@ export function FormularioIngreso() {
               });
             }}
           >
-            <TextField label={t.correo} name="correo" type="email" autoComplete="email" required />
+            <TextField label={t.correo} {...campoCorreo} autoComplete="email" />
             <AvisoError mensaje={error} />
             <Button type="submit" disabled={enviando}>
               {t.enviarEnlace}
@@ -120,7 +134,7 @@ export function FormularioIngreso() {
           void ejecutar(() => ingresar(correo, contrasena));
         }}
       >
-        <TextField label={t.correo} name="correo" type="email" autoComplete="username" required />
+        <TextField label={t.correo} {...campoCorreo} autoComplete="username" />
         <TextField
           label={t.contrasena}
           name="contrasena"

@@ -16,7 +16,7 @@ const r = cuenta.recuperar;
 
 /**
  * /cuenta/ingresar: el ingreso de todas las personas (D-78). Una cuenta pública va a «Mi cuenta»
- * (o a donde iba); el equipo del panel sigue a su verificación en dos pasos.
+ * (o a donde iba); una cuenta del panel sigue al panel (D-89).
  */
 export default function IngresarCuentaPage() {
   const navigate = useNavigate();

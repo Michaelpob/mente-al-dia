@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { cuenta as textos } from '@/content/cuenta';
 import { RUTA_NUEVA_CONTRASENA_CUENTA } from '@/features/panel/acceso/enlaces';
+import { correoDeIngreso } from '@/lib/utils/correo';
 import { avisarCambioCuenta } from './sesion-guardada';
 import { normalizarUsuario } from './validacion';
 
@@ -99,11 +100,11 @@ export async function crearCuenta(datos: NuevaCuenta): Promise<{ conSesion: bool
   return { conSesion: Boolean(data.session) };
 }
 
-/** Ingresa con correo y contraseña. El equipo del panel sigue a su verificación en dos pasos. */
+/** Ingresa con correo y contraseña. Con una cuenta del panel, devuelve «equipo». */
 export async function ingresar(correo: string, contrasena: string): Promise<'equipo' | 'cuenta'> {
   const supabase = await cliente();
   const { error } = await supabase.auth.signInWithPassword({
-    email: correo.trim(),
+    email: correoDeIngreso(correo),
     password: contrasena,
   });
   if (error) throw new ErrorCuenta(motivoDeError(error));
@@ -121,7 +122,7 @@ export async function salir(): Promise<void> {
 
 export async function enviarRecuperacion(correo: string): Promise<void> {
   const supabase = await cliente();
-  const { error } = await supabase.auth.resetPasswordForEmail(correo.trim(), {
+  const { error } = await supabase.auth.resetPasswordForEmail(correoDeIngreso(correo), {
     redirectTo: direccion(RUTA_NUEVA_CONTRASENA_CUENTA),
   });
   if (error) throw new ErrorCuenta(motivoDeError(error));
