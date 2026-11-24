@@ -172,10 +172,11 @@ function Marco() {
               </DrawerContent>
             </Drawer>
 
+            {/* La búsqueda nunca baja de 20rem: si no cabe con la sesión, la sesión pasa a otra línea. */}
             <form
               role="search"
               onSubmit={buscar}
-              className="order-last flex w-full min-w-0 gap-2 sm:order-none sm:w-auto sm:max-w-md sm:flex-1"
+              className="order-last flex w-full min-w-0 gap-2 sm:order-none sm:w-auto sm:max-w-md sm:min-w-80 sm:flex-1"
             >
               <label htmlFor="busqueda-global" className="sr-only">
                 {panel.busqueda.etiqueta}
@@ -195,23 +196,42 @@ function Marco() {
             </form>
 
             {perfil ? (
-              <div className="ml-auto flex items-center gap-3">
-                <p className="hidden text-right text-pequeno leading-tight md:block">
-                  <span className="block font-semibold text-grafito-900">{perfil.nombre}</span>
-                  <span className="text-grafito-600">
-                    {panel.sesion.roles[perfil.rol]}
-                    {perfil.institucion ? ` · ${perfil.institucion.nombre}` : null}
+              <div className="ml-auto flex min-w-0 items-center gap-3">
+                {/* Si no cabe, el texto se corta con «…» y completo queda en el título. Entre xl y
+                    2xl se limita para que todo quepa en una línea; en tableta la sesión pasa a su
+                    propia línea con el texto entero. La segunda línea es la institución (o el
+                    rol, para el general). */}
+                <p
+                  className="hidden min-w-0 text-right text-pequeno leading-tight md:block xl:max-w-60 2xl:max-w-none"
+                  title={[perfil.nombre, panel.sesion.roles[perfil.rol], perfil.institucion?.nombre]
+                    .filter(Boolean)
+                    .join(' · ')}
+                >
+                  <span className="block truncate font-semibold text-grafito-900">
+                    {perfil.nombre}
+                  </span>
+                  <span className="block truncate text-grafito-600">
+                    {perfil.institucion ? (
+                      <>
+                        <span className="sr-only">{panel.sesion.roles[perfil.rol]} · </span>
+                        {perfil.institucion.nombre}
+                      </>
+                    ) : (
+                      panel.sesion.roles[perfil.rol]
+                    )}
                   </span>
                 </p>
-                {/* D-89: quien recibió una contraseña inicial la cambia por una que solo él sepa. */}
-                <Link
-                  to="/panel/definir-contrasena"
-                  className={buttonVariants({ variant: 'fantasma', size: 'sm' })}
-                >
-                  <KeyRound aria-hidden />
-                  <span className="sr-only sm:not-sr-only">{panel.sesion.cambiarContrasena}</span>
-                </Link>
-                <BotonCerrarSesion onClick={cerrarSesion} />
+                <div className="flex shrink-0 items-center gap-3">
+                  {/* D-89: quien recibió una contraseña inicial la cambia por una que solo él sepa. */}
+                  <Link
+                    to="/panel/definir-contrasena"
+                    className={buttonVariants({ variant: 'fantasma', size: 'sm' })}
+                  >
+                    <KeyRound aria-hidden />
+                    <span className="sr-only sm:not-sr-only">{panel.sesion.cambiarContrasena}</span>
+                  </Link>
+                  <BotonCerrarSesion onClick={cerrarSesion} />
+                </div>
               </div>
             ) : null}
           </header>

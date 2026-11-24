@@ -1071,3 +1071,65 @@ test('Auditoría muestra quién hizo qué y filtra por acción', async ({ page }
       p_institucion: null,
     });
 });
+
+test('la barra superior no se encima con un nombre y una institución largos', async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name === 'movil',
+    'La prueba recorre todos los anchos, también el del teléfono',
+  );
+  await iniciarSesion(page, 'aal2', {
+    perfil: {
+      ...PERFIL_INSTITUCIONAL,
+      nombre: 'Administración I. E. Técnica Comercial Caldas',
+      institucion_nombre: 'Institución Educativa Técnica Comercial Caldas (Guamo)',
+    },
+  });
+  await page.goto('/panel');
+  const piezas = {
+    búsqueda: page.locator('#busqueda-global'),
+    buscar: page.locator('form[role="search"] button[type="submit"]'),
+    usuario: page.locator('header p'),
+    contraseña: page.getByRole('link', { name: 'Cambiar contraseña' }),
+    salir: page.getByRole('button', { name: 'Cerrar sesión' }),
+  };
+  await expect(piezas.contraseña).toBeVisible();
+
+  interface Caja {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  }
+  const seCruzan = (a: Caja, b: Caja) =>
+    a.x < b.x + b.width - 1 &&
+    b.x < a.x + a.width - 1 &&
+    a.y < b.y + b.height - 1 &&
+    b.y < a.y + a.height - 1;
+
+  for (const ancho of [412, 768, 1024, 1280, 1366, 1440, 1920]) {
+    await page.setViewportSize({ width: ancho, height: 900 });
+    await expect(piezas.búsqueda).toBeVisible();
+    const cajas: [string, Caja][] = [];
+    for (const [nombre, pieza] of Object.entries(piezas)) {
+      const caja = await pieza.boundingBox();
+      if (caja && caja.width > 0) cajas.push([nombre, caja]);
+    }
+    // El cuadro de búsqueda conserva un ancho útil y ninguna pieza pisa a otra.
+    expect(cajas.find(([n]) => n === 'búsqueda')![1].width, `ancho ${ancho}`).toBeGreaterThan(180);
+    for (const [i, [a, cajaA]] of cajas.entries()) {
+      for (const [b, cajaB] of cajas.slice(i + 1)) {
+        expect(seCruzan(cajaA, cajaB), `${a} y ${b} a ${ancho} px`).toBe(false);
+      }
+    }
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+      `sin desborde a ${ancho} px`,
+    ).toBe(true);
+    await page.screenshot({
+      path: testInfo.outputPath(`barra-${ancho}.png`),
+      clip: { x: 0, y: 0, width: ancho, height: 160 },
+    });
+  }
+});
