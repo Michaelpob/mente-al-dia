@@ -1,0 +1,55 @@
+name: Mantener activo Supabase
+
+# El proyecto de Supabase está en el plan gratuito, que se pausa tras unos siete días sin uso: pasó en
+# noviembre de 2026 y nadie pudo entrar ni responder (D-93). Cada día esta tarea hace una consulta de
+# solo lectura: la lista pública de instituciones, con la clave publicable que ya va en el sitio. No
+# usa secretos, no guarda nada y no cuenta como visita. Si la base no responde, la tarea falla y
+# GitHub avisa por correo.
+# GitHub apaga las tareas programadas si el repositorio pasa 60 días sin cambios; antes manda un
+# correo y se vuelven a activar en la pestaña «Actions».
+on:
+  schedule:
+    # Todos los días a las 6:23 a. m. de Colombia (UTC-5).
+    - cron: '23 11 * * *'
+  # A mano, desde la pestaña «Actions».
+  workflow_dispatch:
+  # Y al cambiar este archivo, para comprobar que funciona.
+  push:
+    branches: [main]
+    paths: ['.github/workflows/mantener-activo.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mantener-activo
+  cancel-in-progress: true
+
+jobs:
+  consultar:
+    name: Consultar la base
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Traer la dirección pública del proyecto
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: .env.production
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - name: Consultar las instituciones publicadas
+        run: |
+          set -euo pipefail
+          leer() { grep "^$1=" .env.production | cut -d= -f2- | tr -d '\r"'; }
+          url="$(leer VITE_SUPABASE_URL)"
+          clave="$(leer VITE_SUPABASE_PUBLISHABLE_KEY)"
+          respuesta="$(curl --fail --silent --show-error --max-time 30 \
+            --retry 5 --retry-delay 20 --retry-all-errors \
+            --request POST "$url/rest/v1/rpc/instituciones_publicas" \
+            --header "apikey: $clave" \
+            --header 'Content-Type: application/json' \
+            --data '{}')"
+          total="$(jq length <<< "$respuesta")"
+          echo "La base respondió: $total instituciones activas."
+          test "$total" -gt 0
