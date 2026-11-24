@@ -108,6 +108,14 @@ El proyecto en la nube ya existe: `mente-al-dia` (ref `lpcfrtlfiljgwxarpslf`, S�
    ```
    `pnpm build` y `pnpm pages:preparar` los usan. En desarrollo van en `.env.local`; sin ellos, el panel muestra su página provisional.
 
+## Si Supabase se pausa (D-93)
+
+El plan gratuito pausa el proyecto tras unos siete días sin uso.
+
+- **Cómo se nota:** fallan todos los ingresos y el cuestionario, y la dirección del proyecto no existe (`ENOTFOUND`). `npx supabase@2.119.0 projects list` lo muestra como `INACTIVE`.
+- **Cómo se reactiva:** en supabase.com, abrir el proyecto y pulsar «Resume project». Tarda unos minutos y vuelve con todos sus datos, las mismas claves y las mismas cuentas. Lo que se intentó enviar mientras estaba pausado no quedó guardado.
+- **Cómo se evita:** la tarea diaria `.github/workflows/mantener-activo.yml` consulta la base. Si falla, GitHub avisa por correo. Si el repositorio pasa 60 días sin cambios, GitHub la apaga y hay que activarla otra vez en la pestaña «Actions». El plan Pro evita la pausa del todo.
+
 ## Pruebas
 
 | Comando                        | Qué prueba                                                                                                                    |

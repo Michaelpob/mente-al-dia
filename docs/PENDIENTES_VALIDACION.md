@@ -98,6 +98,7 @@ Todo lo que debe validar el equipo profesional, jurídico o técnico del proyect
 | F14-05 | Segundo paso para entrar al panel        | Se quitó por decisión del equipo (D-89): se entra solo con correo y contraseña. Si se quiere volver a exigir, el código por correo está listo en la rama `codigo-por-correo` (necesita el correo propio, D-79).                                                       | Equipo del proyecto | Decidido  |
 | F14-04 | Enlace sin institución                   | Con el enlace general, la persona elige su institución de una lista (D-88), así que alguien podría elegir una que no es la suya. Conviene que cada institución reparta su propio enlace, que ya la deja puesta.                                                       | Equipo del proyecto | Pendiente |
 | F14-06 | Cuestionarios de las provisionales       | Se borraron el 11 de noviembre (D-92), con las dos instituciones provisionales y con las visitas y las cuentas públicas de las pruebas. La auditoría guarda los totales.                                                                                              | Equipo del proyecto | Resuelto  |
+| F14-07 | Plan de Supabase                         | El proyecto está en el plan gratuito y en noviembre se pausó por falta de uso. Una tarea diaria lo evita (D-93), sin garantía. El plan Pro lo evita del todo y agrega copias de seguridad diarias.                                                                    | Equipo del proyecto | Pendiente |
 
 ## Censo del panel (D-83)
 
